@@ -39,13 +39,16 @@
 #include <QFormLayout>
 #include <QLabel>
 #include <QLocale>
+#include <QMoveEvent>
 #include <QPushButton>
+#include <QResizeEvent>
 #include <QSettings>
 #include <QxtLineEdit>
 
 PatientDataDialog::PatientDataDialog(bool noWorklist, const QString& settingsKey, QWidget *parent)
     : QDialog(parent)
     , settingsKey(settingsKey)
+    , moveCounter(0)
 {
     QSettings settings;
     auto listMandatory = settings.value("ui/patient-data-mandatory-fields", DEFAULT_MANDATORY_FIELDS).toStringList();
@@ -154,7 +157,19 @@ PatientDataDialog::PatientDataDialog(bool noWorklist, const QString& settingsKey
     }
 }
 
-void PatientDataDialog::showEvent(QShowEvent *)
+void PatientDataDialog::moveEvent(QMoveEvent *evt)
+{
+    ++moveCounter;
+    QDialog::moveEvent(evt);
+}
+
+void PatientDataDialog::resizeEvent(QResizeEvent *evt)
+{
+    ++moveCounter;
+    QDialog::resizeEvent(evt);
+}
+
+void PatientDataDialog::showEvent(QShowEvent *evt)
 {
     QSettings settings;
     if (settings.value("show-onboard").toBool())
@@ -162,12 +177,16 @@ void PatientDataDialog::showEvent(QShowEvent *)
         QDBusInterface("org.onboard.Onboard", "/org/onboard/Onboard/Keyboard",
                        "org.onboard.Onboard.Keyboard").call( "Show");
     }
+    QDialog::showEvent(evt);
 }
 
-void PatientDataDialog::hideEvent(QHideEvent *)
+void PatientDataDialog::hideEvent(QHideEvent *evt)
 {
     QSettings settings;
-    settings.setValue("ui/patient-data-geometry", saveGeometry());
+    if (moveCounter > 10)
+    {
+        settings.setValue("ui/patient-data-geometry", saveGeometry());
+    }
     settings.setValue("ui/patient-data-state", (int)windowState() & ~Qt::WindowMinimized);
 
     if (settings.value("show-onboard").toBool())
@@ -175,6 +194,7 @@ void PatientDataDialog::hideEvent(QHideEvent *)
         QDBusInterface("org.onboard.Onboard", "/org/onboard/Onboard/Keyboard",
                        "org.onboard.Onboard.Keyboard").call( "Hide");
     }
+    QDialog::hideEvent(evt);
 }
 
 void PatientDataDialog::done(int result)

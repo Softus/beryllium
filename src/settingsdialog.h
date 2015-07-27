@@ -31,6 +31,11 @@ class SettingsDialog : public QDialog
 {
     Q_OBJECT
     QPushButton *btnCancel;
+
+    // Workaround for stupid compiz bug: actualy save the geometry of the dialog
+    // only when user "really" changes size/position
+    int          moveCounter;
+
 public:
     SettingsDialog(const QString &page, QWidget *parent = 0, Qt::WindowFlags flags = 0);
 signals:
@@ -49,8 +54,10 @@ private slots:
 
 protected:
     virtual void accept();
-    virtual void showEvent(QShowEvent *);
-    virtual void hideEvent(QHideEvent *);
+    virtual void hideEvent(QHideEvent *evt);
+    virtual void moveEvent(QMoveEvent *evt);
+    virtual void resizeEvent(QResizeEvent *evt);
+    virtual void showEvent(QShowEvent *evt);
 
 private:
     void createPages();

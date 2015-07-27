@@ -46,9 +46,11 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QMenu>
-#include <QStackedWidget>
-#include <QSettings>
+#include <QMoveEvent>
 #include <QPushButton>
+#include <QResizeEvent>
+#include <QSettings>
+#include <QStackedWidget>
 #include <QUrl>
 #include "qwaitcursor.h"
 
@@ -57,6 +59,7 @@ static int QMetaObjectMetaType = qRegisterMetaType<QMetaObject>();
 
 SettingsDialog::SettingsDialog(const QString& pageTitle, QWidget *parent, Qt::WindowFlags flags)
     : QDialog(parent, flags)
+    , moveCounter(0)
 {
     QSettings settings;
 
@@ -236,7 +239,19 @@ void SettingsDialog::accept()
     QDialog::accept();
 }
 
-void SettingsDialog::showEvent(QShowEvent *)
+void SettingsDialog::moveEvent(QMoveEvent *evt)
+{
+    ++moveCounter;
+    QDialog::moveEvent(evt);
+}
+
+void SettingsDialog::resizeEvent(QResizeEvent *evt)
+{
+    ++moveCounter;
+    QDialog::resizeEvent(evt);
+}
+
+void SettingsDialog::showEvent(QShowEvent *evt)
 {
     QSettings settings;
     if (settings.value("show-onboard").toBool())
@@ -244,13 +259,17 @@ void SettingsDialog::showEvent(QShowEvent *)
         QDBusInterface("org.onboard.Onboard", "/org/onboard/Onboard/Keyboard",
                        "org.onboard.Onboard.Keyboard").call( "Show");
     }
+    QDialog::showEvent(evt);
 }
 
-void SettingsDialog::hideEvent(QHideEvent *)
+void SettingsDialog::hideEvent(QHideEvent *evt)
 {
     QSettings settings;
     settings.beginGroup("ui");
-    settings.setValue("settings-geometry", saveGeometry());
+    if (moveCounter > 10)
+    {
+        settings.setValue("settings-geometry", saveGeometry());
+    }
     settings.setValue("settings-state", (int)windowState() & ~Qt::WindowMinimized);
     settings.setValue("settings-page", listWidget->currentItem()->text());
     settings.endGroup();
@@ -260,6 +279,7 @@ void SettingsDialog::hideEvent(QHideEvent *)
         QDBusInterface("org.onboard.Onboard", "/org/onboard/Onboard/Keyboard",
                        "org.onboard.Onboard.Keyboard").call( "Hide");
     }
+    QDialog::hideEvent(evt);
 }
 
 

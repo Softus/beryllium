@@ -46,6 +46,10 @@ class PatientDataDialog : public QDialog
     QCheckBox*   checkDontShow;
     QPushButton* btnStart;
 
+    // Workaround for stupid compiz bug: actualy save the geometry of the dialog
+    // only when user "really" changes size/position
+    int          moveCounter;
+
 public:
     explicit PatientDataDialog(bool noWorklist = false, const QString &settingsKey = QString(), QWidget *parent = 0);
 
@@ -76,9 +80,11 @@ public:
     int exec();
 
 protected:
-    virtual void showEvent(QShowEvent *);
-    virtual void hideEvent(QHideEvent *);
     virtual void done(int result);
+    virtual void hideEvent(QHideEvent *evt);
+    virtual void moveEvent(QMoveEvent *evt);
+    virtual void resizeEvent(QResizeEvent *evt);
+    virtual void showEvent(QShowEvent *evt);
 
 signals:
 
