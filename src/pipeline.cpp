@@ -150,6 +150,7 @@ Sample:
                 videosplitter. ! identity  name=videoinspect drop-probability=1.0 ! queue ! valve name=videovalve drop=1 ! [mpegpsmux name=videomux ! filesink name=videosink]
                 videosplitter. ! queue ! rtph264pay ! udpsink name=rtpsink clients=127.0.0.1:5000 sync=0 async=0
                 videosplitter. ! queue ! mpegtsmux name=httpmux ! souphttpclientsink async=0 name=httpsink location="http://videoserver/channel"
+                videosplitter. ! queue ! flvmux name=rtmpmux ! rtmpsink async=0 name=rtmpsink location="rtmp://videoserver/app/channel"
                 videosplitter. ! identity  name=clipinspect drop-probability=1.0 ! queue ! valve name=clipvalve ! [ mpegpsmux name=clipmux ! filesink name=clipsink]
         splitter. ! identity name=imagevalve drop-probability=1.0 ! jpegenc ! multifilesink name=imagesink post-messages=1 async=0 sync=0 location=/video/image
 
