@@ -55,6 +55,8 @@ class VideoSourceDetails : public QDialog
     QCheckBox *checkEnableRtp;
     QLineEdit *editHttpPushUrl;
     QCheckBox *checkEnableHttp;
+    QLineEdit *editRtmpPushUrl;
+    QCheckBox *checkEnableRtmp;
     QCheckBox *checkDeinterlace;
     QGst::CapsPtr caps;
 

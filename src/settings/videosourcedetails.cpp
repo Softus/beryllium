@@ -123,10 +123,18 @@ VideoSourceDetails::VideoSourceDetails(const QVariantMap& parameters, QWidget *p
     // Http streaming
     //
     editHttpPushUrl = new QLineEdit(parameters.value("http-push-url").toString());
-    layoutMain->addRow(checkEnableHttp = new QCheckBox(tr("&Http push URL")), editHttpPushUrl);
+    layoutMain->addRow(checkEnableHttp = new QCheckBox(tr("&HTTP push URL")), editHttpPushUrl);
     connect(checkEnableHttp, SIGNAL(toggled(bool)), editHttpPushUrl, SLOT(setEnabled(bool)));
     checkEnableHttp->setChecked(parameters.value("enable-http").toBool());
     editHttpPushUrl->setEnabled(checkEnableHttp->isChecked());
+
+    // Rtmp streaming
+    //
+    editRtmpPushUrl = new QLineEdit(parameters.value("rtmp-push-url").toString());
+    layoutMain->addRow(checkEnableRtmp = new QCheckBox(tr("R&TMP push URL")), editRtmpPushUrl);
+    connect(checkEnableRtmp, SIGNAL(toggled(bool)), editRtmpPushUrl, SLOT(setEnabled(bool)));
+    checkEnableRtmp->setChecked(parameters.value("enable-rtmp").toBool());
+    editRtmpPushUrl->setEnabled(checkEnableRtmp->isChecked());
 
     // Buttons row
     //
@@ -456,6 +464,8 @@ void VideoSourceDetails::updateParameters(QVariantMap& settings)
     settings["rtp-clients"]       = editRtpClients->text();
     settings["enable-http"]       = checkEnableHttp->isChecked();
     settings["http-push-url"]     = editHttpPushUrl->text();
+    settings["enable-rtmp"]       = checkEnableRtmp->isChecked();
+    settings["rtmp-push-url"]     = editRtmpPushUrl->text();
     settings["bitrate"]           = spinBitrate->value();
     settings["video-deinterlace"] = checkDeinterlace->isChecked();
 
