@@ -50,7 +50,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 else {
     PKGCONFIG += QtGLib-2.0 QtGStreamer-0.10 QtGStreamerUi-0.10
 }
-PKGCONFIG += gstreamer-0.10 gstreamer-base-0.10 gstreamer-interfaces-0.10 gstreamer-pbutils-0.10 gio-2.0 opencv libsoup-2.4
+PKGCONFIG += gstreamer-0.10 gstreamer-base-0.10 gstreamer-interfaces-0.10 gstreamer-pbutils-0.10 gio-2.0 opencv libsoup-2.4 librtmp
 
 TARGET   = beryllium
 TEMPLATE = app
@@ -96,7 +96,8 @@ SOURCES += \
     src/settings/mandatoryfields.cpp \
     src/settings/hotkeys.cpp \
     src/settings/debug.cpp \
-    src/settings/confirmations.cpp
+    src/settings/confirmations.cpp \
+    gst/rtmp/gstrtmpsink.c
 
 unix: SOURCES += src/smartshortcut_x11.cpp
 win32:SOURCES += src/smartshortcut_win.cpp
@@ -142,7 +143,8 @@ HEADERS += \
     src/settings/physicians.h \
     src/settings/storage.h \
     src/settings/studies.h \
-    src/settings/videorecord.h
+    src/settings/videorecord.h \
+    gst/rtmp/gstrtmpsink.h
 
 FORMS   +=
 
