@@ -134,10 +134,10 @@ The pipeline for software encoder:
   [image writer]             [video encoder]
                                    |
                                    V
-                       +----[video splitter]----+---------------+
-                       |           |            |               |
-                       V           V            V               V
-            [movie writer]   [clip valve]  [rtp sender #] [http sender #]
+                       +----[video splitter]----+---------------+--------------+
+                       |           |            |               |              |
+                       V           V            V               V              V
+            [movie writer]   [clip valve]  [rtp sender #] [http sender #] [rtmpsink #]
                                    |
                                    V
                             [clip writer]
@@ -148,7 +148,8 @@ Sample:
         splitter. ! autovideosink name=displaysink async=0
         splitter. ! valve name=encvalve drop=1 ! queue max-size-bytes=0 ! videorate max-rate=30/1 ! x264enc name=videoencoder ! tee name=videosplitter
                 videosplitter. ! identity  name=videoinspect drop-probability=1.0 ! queue ! valve name=videovalve drop=1 ! [mpegpsmux name=videomux ! filesink name=videosink]
-                videosplitter. ! queue ! rtph264pay ! udpsink name=rtpsink clients=127.0.0.1:5000 sync=0
+                videosplitter. ! queue ! rtph264pay ! udpsink name=rtpsink clients=127.0.0.1:5000 sync=0 async=0
+                videosplitter. ! queue ! mpegtsmux name=httpmux ! souphttpclientsink async=0 name=httpsink location="http://videoserver/channel"
                 videosplitter. ! identity  name=clipinspect drop-probability=1.0 ! queue ! valve name=clipvalve ! [ mpegpsmux name=clipmux ! filesink name=clipsink]
         splitter. ! identity name=imagevalve drop-probability=1.0 ! jpegenc ! multifilesink name=imagesink post-messages=1 async=0 sync=0 location=/video/image
 
@@ -157,10 +158,10 @@ The pipeline for hardware encoder:
                 [video src #]
                      |
                      V
-         +----[video splitter #]----+----------+------------+
-         |           |              |          |            |
-         V           V              V          V            V
-[movie writer] [clip valve] [rtp sender #] [decoder #] [http sender #]
+         +----[video splitter #]----+----------+------------+--------------+
+         |           |              |          |            |              |
+         V           V              V          V            V              V
+[movie writer] [clip valve] [rtp sender #] [decoder #] [http sender #] [rtmpsink #]
                      |                        |
                      V                        V
                [clip writer]             [splitter]-------+
@@ -200,8 +201,13 @@ QString appendVideo(QString& pipe, const QSettings& settings, bool enableVideoLo
     auto httpPushUrl     = settings.value("http-push-url").toString();
     auto httpSinkParams  = settings.value(httpSinkDef + "-parameters").toString();
 
+    auto rtmpSinkDef     = settings.value("rtmp-sink",      DEFAULT_RTMP_SINK).toString();
+    auto enableRtmp      = !rtmpSinkDef.isEmpty() && settings.value("enable-rtmp").toBool();
+    auto rtmpPushUrl     = settings.value("rtmp-push-url").toString();
+    auto rtmpSinkParams  = settings.value(rtmpSinkDef + "-parameters").toString();
+
     pipe.append(" ! tee name=videosplitter");
-    if (enableRtp || enableHttp || enableVideoLog)
+    if (enableRtp || enableRtmp || enableHttp || enableVideoLog)
     {
         if (enableVideoLog)
         {
@@ -229,6 +235,12 @@ QString appendVideo(QString& pipe, const QSettings& settings, bool enableVideoLo
         {
             pipe.append("\nvideosplitter. ! queue ! mpegtsmux name=httpmux ! ").append(httpSinkDef)
                 .append(" async=0 name=httpsink location=\"").append(httpPushUrl).append("\" ").append(httpSinkParams);
+        }
+
+        if (enableRtmp && !rtmpPushUrl.isEmpty())
+        {
+            pipe.append("\nvideosplitter. ! queue ! flvmux name=rtmpmux ! ").append(rtmpSinkDef)
+                .append(" async=0 name=rtmpsink location=\"").append(rtmpPushUrl).append("\" ").append(rtmpSinkParams);
         }
     }
 
