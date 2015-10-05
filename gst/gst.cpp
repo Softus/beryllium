@@ -18,6 +18,7 @@
 #include <gst/gst.h>
 
 #include "soup/gstsouphttpclientsink.h"
+#include "rtmp/gstrtmpsink.h"
 
 #define MPEG_SYS_CAPS gst_static_caps_get(&mpeg_sys_caps)
 
@@ -39,5 +40,7 @@ bool gstApplyFixes()
         gst_motion_cells_plugin_init, PRODUCT_VERSION_STR, "LGPL", "gst", PRODUCT_SHORT_NAME, PRODUCT_SITE_URL)
 
     && gst_element_register (nullptr, "souphttpclientsink", GST_RANK_NONE,
-        GST_TYPE_SOUP_HTTP_CLIENT_SINK);
+        GST_TYPE_SOUP_HTTP_CLIENT_SINK)
+
+    && gst_element_register (nullptr, "rtmpsink", GST_RANK_NONE, GST_TYPE_RTMP_SINK);
 }
