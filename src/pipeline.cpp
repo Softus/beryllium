@@ -241,7 +241,9 @@ QString appendVideo(QString& pipe, const QSettings& settings, bool enableVideoLo
         if (enableRtmp && !rtmpPushUrl.isEmpty())
         {
             pipe.append("\nvideosplitter. ! queue ! flvmux name=rtmpmux ! ").append(rtmpSinkDef)
-                .append(" async=0 name=rtmpsink location=\"").append(rtmpPushUrl).append("\" ").append(rtmpSinkParams);
+                .append(" async=0 name=rtmpsink location=\"").append(rtmpPushUrl).append("\" ").append(rtmpSinkParams)
+                // Add fake audio channel to avoid any issues with dumb TV-boxes
+                .append(" audiotestsrc wave=silence ! queue ! voaacenc ! rtmpmux.");
         }
     }
 
