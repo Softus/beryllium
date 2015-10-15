@@ -45,12 +45,12 @@ DEFINES += OS_DISTRO=$$OS_DISTRO OS_REVISION=$$OS_REVISION USERNAME=$$USERNAME
 
 CONFIG += link_pkgconfig
 greaterThan(QT_MAJOR_VERSION, 4) {
-    PKGCONFIG += Qt5GLib-2.0 Qt5GStreamer-0.10 Qt5GStreamerUi-0.10
+    PKGCONFIG += Qt5GLib-2.0 Qt5GStreamer-1.0 Qt5GStreamerUi-1.0 gstreamer-1.0 gstreamer-base-1.0 gstreamer-pbutils-1.0
 }
 else {
-    PKGCONFIG += QtGLib-2.0 QtGStreamer-0.10 QtGStreamerUi-0.10
+    PKGCONFIG += QtGLib-2.0 QtGStreamer-0.10 QtGStreamerUi-0.10 gstreamer-0.10 gstreamer-base-0.10 gstreamer-interfaces-0.10 gstreamer-pbutils-0.10
 }
-PKGCONFIG += gstreamer-0.10 gstreamer-base-0.10 gstreamer-interfaces-0.10 gstreamer-pbutils-0.10 gio-2.0 opencv libsoup-2.4 librtmp
+PKGCONFIG += gio-2.0 opencv libsoup-2.4 librtmp
 
 TARGET   = beryllium
 TEMPLATE = app

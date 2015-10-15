@@ -197,7 +197,7 @@ QImage ExtractImage(const QGst::BufferPtr& buf, int width = 0)
     auto src   = QGst::ElementFactory::make("appsrc", "src");
     auto vaapi = structure->name() == "video/x-surface"?
          QGst::ElementFactory::make("vaapidownload", "vaapi"): QGst::ElementPtr();
-    auto cvt   = QGst::ElementFactory::make("ffmpegcolorspace", "cvt");
+    auto cvt   = QGst::ElementFactory::make(DEFAULT_VIDEO_CONVERTER, "cvt");
     auto sink  = QGst::ElementFactory::make("appsink", "sink");
 
     if (pipeline && src && cvt && sink)

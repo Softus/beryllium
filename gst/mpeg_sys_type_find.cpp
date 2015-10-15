@@ -14,9 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <gst/gstinfo.h>
-#include <gst/gsttypefind.h>
-#include <gst/gstutils.h>
+#include <gst/gst.h>
+
+#if !GST_CHECK_VERSION(1,0,0)
 
 #define IS_MPEG_HEADER(data) (G_UNLIKELY((((guint8 *)(data))[0] == 0x00) &&  \
                                          (((guint8 *)(data))[1] == 0x00) &&  \
@@ -273,3 +273,5 @@ suggest:
         "mpegversion", G_TYPE_INT, mpegversion, NULL);
   }
 }
+
+#endif // !GST_CHECK_VERSION(1,0,0)

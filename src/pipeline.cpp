@@ -295,7 +295,7 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
         alias = QString("src%1").arg(index);
     }
 
-    auto colorConverter = QString(" ! ").append(settings.value("color-converter", "ffmpegcolorspace").toString());
+    auto colorConverter = QString(" ! ").append(settings.value("color-converter", DEFAULT_VIDEO_CONVERTER).toString());
     auto videoCodec     = settings.value("video-encoder",  DEFAULT_VIDEO_ENCODER).toString();
     auto bitrate        = settings.value("bitrate").toString();
 
@@ -978,7 +978,7 @@ void Pipeline::onElementMessage(const QGst::ElementMessagePtr& msg)
 #if GST_CHECK_VERSION(1,0,0)
     if (QGst::VideoOverlay::isPrepareWindowHandleMessage(msg))
 #else
-    if (s->name() == "prepare-xwindow-id" || s->name() == "prepare-window-handle")
+    if (s->name() == PREPARE_WINDOW_HANDLE_MESSAGE)
 #endif
     {
         // At this time the video output finally has a sink, so set it up now

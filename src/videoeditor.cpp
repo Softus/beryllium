@@ -223,7 +223,7 @@ void VideoEditor::loadFile(const QString& filePath)
 
     if (!pipeline)
     {
-        pipeline = QGst::ElementFactory::make("playbin2").dynamicCast<QGst::Pipeline>();
+        pipeline = QGst::ElementFactory::make(PLAYBIN_ELEMENT).dynamicCast<QGst::Pipeline>();
         if (pipeline)
         {
             //let the video widget watch the pipeline for new video sinks
@@ -304,12 +304,12 @@ void VideoEditor::onBusMessage(const QGst::MessagePtr& message)
         break;
     case QGst::MessageElement:
         {
-            const QGst::StructurePtr s = message->internalStructure();
+            auto s = message->internalStructure();
             if (!s || !message->source())
             {
                 qDebug() << "Got empty QGst::MessageElement";
             }
-            else if (s->name() == "prepare-xwindow-id" || s->name() == "prepare-window-handle")
+            else if (s->name() == PREPARE_WINDOW_HANDLE_MESSAGE)
             {
                 // At this time the video output finally has a sink, so set it up now
                 //
@@ -361,7 +361,11 @@ void VideoEditor::onStateChange(const QGst::StateChangedMessagePtr& message)
                 auto pad = sink->getStaticPad("sink");
                 if (pad)
                 {
+#if GST_CHECK_VERSION(1,0,0)
+                    auto caps = pad->currentCaps();
+#else
                     auto caps = pad->negotiatedCaps();
+#endif
                     if (caps)
                     {
                         auto s = caps->internalStructure(0);
@@ -471,7 +475,7 @@ bool VideoEditor::exportVideo(QFile* outFile)
     QSettings settings;
     settings.beginGroup("gst");
     auto encoder         = settings.value("video-encoder", DEFAULT_VIDEO_ENCODER).toString();
-    auto colorConverter =  settings.value("color-converter", "ffmpegcolorspace").toString();
+    auto colorConverter =  settings.value("color-converter", DEFAULT_VIDEO_CONVERTER).toString();
     auto fixColor        = settings.value(encoder + "-colorspace").toBool()? colorConverter + " ! ": "";
     auto encoderParams   = settings.value(encoder + "-parameters").toString();
     auto muxer           = settings.value("video-muxer", DEFAULT_VIDEO_MUXER).toString();
@@ -561,7 +565,7 @@ void VideoEditor::onSeekClick()
             QGst::SeekEventPtr evt = QGst::SeekEvent::create(
                  1.0, QGst::FormatTime, QGst::SeekFlagFlush,
                  QGst::SeekTypeSet, newPos,
-                 QGst::SeekTypeCur, frameDuration
+                 QGst::SeekTypeNone, frameDuration
              );
 
             pipeline->sendEvent(evt);

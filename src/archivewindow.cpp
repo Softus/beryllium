@@ -64,6 +64,7 @@
 #include <QGlib/Error>
 #include <QGst/Bus>
 #include <QGst/Caps>
+#include <QGst/Clock>
 #include <QGst/Event>
 #include <QGst/Pad>
 #include <QGst/Parse>
@@ -145,7 +146,7 @@ static QStringList collectRemovableDrives()
 #ifdef Q_OS_WIN
     else
     {
-        Uint32 dummy = 0, drives = GetLogicalDrives();
+        DWORD dummy = 0, drives = GetLogicalDrives();
         wchar_t drvPath[] = {'0', ':', '\\', '\x0'};
 
         for (int i = 0; i < 26; ++i)
@@ -1121,7 +1122,7 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
     {
 //      auto pipeDef = QString("filesrc location=\"%1\" ! decodebin ! autovideosink name=displaysink async=0").arg(fi.absoluteFilePath());
 //      auto pipeDef = QString("uridecodebin uri=\"%1\" ! autovideosink name=displaysink async=0").arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toString());
-        auto pipeDef = QString("playbin2 uri=\"%1\"").arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toEncoded().constData());
+        auto pipeDef = QString(PLAYBIN_ELEMENT " uri=\"%1\"").arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toEncoded().constData());
         pipeline = QGst::Parse::launch(pipeDef).dynamicCast<QGst::Pipeline>();
         auto hiddenVideoWidget = static_cast<QGst::Ui::VideoWidget*>(pagesWidget->widget(1 - pagesWidget->currentIndex()));
         hiddenVideoWidget->watchPipeline(pipeline);
@@ -1158,12 +1159,12 @@ void ArchiveWindow::onBusMessage(const QGst::MessagePtr& message)
         break;
     case QGst::MessageElement:
         {
-            const QGst::StructurePtr s = message->internalStructure();
+            auto s = message->internalStructure();
             if (!s)
             {
                 qDebug() << "Got empty QGst::MessageElement";
             }
-            else if (s->name() == "prepare-xwindow-id" || s->name() == "prepare-window-handle")
+            else if (s->name() == PREPARE_WINDOW_HANDLE_MESSAGE)
             {
                 // At this time the video output finally has a sink, so set it up now
                 //
@@ -1207,12 +1208,22 @@ void ArchiveWindow::onBusMessage(const QGst::MessagePtr& message)
         }
         break;
 #ifdef QT_DEBUG
+#if GST_CHECK_VERSION(1,0,0)
+    case QGst::MessageDurationChanged:
+    {
+        auto durationQuery = QGst::DurationQuery::create(QGst::FormatTime);
+        message->source().staticCast<QGst::Element>()->query(durationQuery);
+        qDebug() << "Duration" << durationQuery->format() << durationQuery->duration();
+    }
+    break;
+#else
     case QGst::MessageDuration:
-        {
-            auto msg = message.staticCast<QGst::DurationMessage>();
-            qDebug() << "Duration" << msg->format() << msg->duration();
-        }
-        break;
+    {
+        auto msg = message.staticCast<QGst::DurationMessage>();
+        qDebug() << "Duration" << msg->format() << msg->duration();
+    }
+    break;
+#endif
     case QGst::MessageInfo:
         qDebug() << message->source()->property("name").toString() << " " << message.staticCast<QGst::InfoMessage>()->error();
         break;
@@ -1256,7 +1267,11 @@ void ArchiveWindow::onStateChangedMessage(const QGst::StateChangedMessagePtr& me
                 auto pad = sink->getStaticPad("sink");
                 if (pad)
                 {
+#if GST_CHECK_VERSION(1,0,0)
+                    auto caps = pad->currentCaps();
+#else
                     auto caps = pad->negotiatedCaps();
+#endif
                     if (caps)
                     {
                         auto s = caps->internalStructure(0);
@@ -1267,11 +1282,13 @@ void ArchiveWindow::onStateChangedMessage(const QGst::StateChangedMessagePtr& me
 
             if (denominator > 0 && numerator > 0)
             {
+                qDebug() << GST_SECOND;
                 auto frameDuration = (GST_SECOND * denominator) / numerator + 1;
                 //qDebug() << "Framerate " << denominator << "/" << numerator << " duration" << frameDuration;
                 actionSeekFwd->setData((int)frameDuration);
                 actionSeekBack->setData((int)-frameDuration);
             }
+
 
             // The pipeline now in paused state.
             // At this time we still don't know, is it a clip or a picture.
@@ -1279,7 +1296,7 @@ void ArchiveWindow::onStateChangedMessage(const QGst::StateChangedMessagePtr& me
             //
             QGst::SeekEventPtr evt = QGst::SeekEvent::create(
                  1.0, QGst::FormatTime, QGst::SeekFlagFlush,
-                 QGst::SeekTypeCur, 0,
+                 QGst::SeekTypeSet, 0,
                  QGst::SeekTypeNone, QGst::ClockTime::None
              );
 

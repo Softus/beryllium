@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+D:\work\free\dc\beryllium\wix\beryllium.wxs<?xml version="1.0" encoding="UTF-8"?>
 
 <?define ProductBuild     = "1.3" ?>
 <?define ProductRevision  = "0" ?>
@@ -31,6 +31,8 @@
   <?define SysEnv            = "no" ?>
 <?endif ?>
 
+<?define GstreamerVersion  = "1.0" ?>
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="*"
     Manufacturer="$(var.Manufacturer)"
@@ -59,10 +61,10 @@
     </Upgrade>
 
     <Property Id="GSTREAMERSDKROOT_X86" Secure="yes">
-      <RegistrySearch Id="GstreamerSdkRoot_key" Root="HKLM" Key="SOFTWARE\GStreamerSDK\x86" Name="InstallDir" Type="raw" />
+      <RegistrySearch Id="GstreamerSdkRoot_key" Root="HKLM" Key="SOFTWARE\GStreamer$(var.GstreamerVersion)\x86" Name="InstallDir" Type="raw" />
     </Property>
     <Property Id="GSTREAMERSDKVERSION_X86" Secure="yes">
-      <RegistrySearch Id="GstreamerSdkVersion_key" Root="HKLM" Key="SOFTWARE\GStreamerSDK\x86" Name="SdkVersion" Type="raw" />
+      <RegistrySearch Id="GstreamerSdkVersion_key" Root="HKLM" Key="SOFTWARE\GStreamer$(var.GstreamerVersion)\x86" Name="SdkVersion" Type="raw" />
     </Property>
 
     <Property Id="ARPURLINFOABOUT">http://$(var.Manufacturer)/products/$(var.ProductName)</Property>

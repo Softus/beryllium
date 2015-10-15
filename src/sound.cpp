@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "defaults.h"
 #include "sound.h"
 
 #include <QApplication>
@@ -31,7 +32,7 @@ bool Sound::play(const QString& filePath)
 {
     if (!pipeline)
     {
-        pipeline = QGst::ElementFactory::make("playbin2").dynamicCast<QGst::Pipeline>();
+        pipeline = QGst::ElementFactory::make(PLAYBIN_ELEMENT).dynamicCast<QGst::Pipeline>();
     }
 
     if (!pipeline)
