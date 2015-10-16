@@ -487,8 +487,18 @@ bool VideoEditor::exportVideo(QFile* outFile)
         auto caps = TypeDetect(filePath);
         if (caps.startsWith("video/x-dv"))
         {
-            encoder = "ffenc_dvvideo";
-            muxer = "ffmux_dv";
+            // Some distros have libav plugins, some ffmpeg plugins
+            //
+            if (QGst::ElementFactory::find("avenc_dvvideo"))
+            {
+                encoder = "avenc_dvvideo";
+                muxer = "avmux_dv";
+            }
+            else
+            {
+                encoder = "ffenc_dvvideo";
+                muxer = "ffmux_dv";
+            }
         }
         else
         {

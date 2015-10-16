@@ -16,6 +16,7 @@
 #define QT_NO_EMIT
 #include "typedetect.h"
 #include "product.h"
+#include "gstcompat.h"
 #include <gio/gio.h>
 
 #include <QDebug>
@@ -32,14 +33,6 @@
 #include <QGst/Pipeline>
 #include <QGst/Structure>
 #include <QGst/ClockTime>
-
-#include <gst/gstversion.h>
-#if GST_CHECK_VERSION(1,0,0)
-#define X_RAW_RGB "video/x-raw"
-#else
-#define X_RAW_RGB "video/x-raw-rgb"
-#endif
-
 
 bool SetFileExtAttribute(const QString& filePath, const QString& name, const QString& value)
 {

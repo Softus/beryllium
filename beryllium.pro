@@ -62,14 +62,21 @@ DEFINES += QXT_STATIC
 lessThan(QT_MAJOR_VERSION, 5) {
 SOURCES += \
     gst/mpeg_sys_type_find.cpp \
+    gst/motioncells/gstmotioncells.cpp \
+    gst/motioncells/MotionCells.cpp \
+    gst/motioncells/motioncells_wrapper.cpp \
     gst/soup/gstsouphttpclientsink.c
+
+HEADERS += \
+    gst/motioncells/gstmotioncells.h \
+    gst/motioncells/MotionCells.h \
+    gst/motioncells/motioncells_wrapper.h \
+    gst/soup/gstsouphttpclientsink.h \
 }
 
 SOURCES += \
     gst/gst.cpp \
-    gst/motioncells/gstmotioncells.cpp \
-    gst/motioncells/MotionCells.cpp \
-    gst/motioncells/motioncells_wrapper.cpp \
+    gst/rtmp/gstrtmpsink.c \
     libqxt/qxtconfirmationmessage.cpp \
     libqxt/qxtlineedit.cpp \
     libqxt/qxtspanslider.cpp \
@@ -101,16 +108,13 @@ SOURCES += \
     src/settings/mandatoryfields.cpp \
     src/settings/hotkeys.cpp \
     src/settings/debug.cpp \
-    src/settings/confirmations.cpp \
-    gst/rtmp/gstrtmpsink.c
+    src/settings/confirmations.cpp
 
 unix: SOURCES += src/smartshortcut_x11.cpp
 win32:SOURCES += src/smartshortcut_win.cpp
 
 HEADERS += \
-    gst/motioncells/gstmotioncells.h \
-    gst/motioncells/MotionCells.h \
-    gst/motioncells/motioncells_wrapper.h \
+    gst/rtmp/gstrtmpsink.h \
     libqxt/qxtconfirmationmessage.h \
     libqxt/qxtlineedit.h \
     libqxt/qxtspanslider.h \
@@ -137,7 +141,6 @@ HEADERS += \
     src/videoeditor.h \
     src/videoencodingprogressdialog.h \
     src/settingsdialog.h \
-    gst/soup/gstsouphttpclientsink.h \
     src/pipeline.h \
     src/videowidget.h \
     src/settings/videosources.h \
@@ -149,8 +152,7 @@ HEADERS += \
     src/settings/physicians.h \
     src/settings/storage.h \
     src/settings/studies.h \
-    src/settings/videorecord.h \
-    gst/rtmp/gstrtmpsink.h
+    src/settings/videorecord.h
 
 FORMS   +=
 
