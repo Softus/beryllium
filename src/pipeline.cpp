@@ -18,6 +18,7 @@
 #include "defaults.h"
 #include "typedetect.h"
 #include "settings/videosources.h"
+#include "gstcompat.h"
 
 #include <QApplication>
 #include <QPainter>
@@ -28,7 +29,6 @@
 #include <QGst/ElementFactory>
 #include <QGst/Parse>
 
-#include <gst/gst.h>
 #if GST_CHECK_VERSION(1,0,0)
 #include <QGst/VideoOverlay>
 #endif

@@ -16,6 +16,7 @@
 
 #include "defaults.h"
 #include "sound.h"
+#include "gstcompat.h"
 
 #include <QApplication>
 #include <QMessageBox>

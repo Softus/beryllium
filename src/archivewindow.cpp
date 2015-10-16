@@ -21,6 +21,7 @@
 #include "qwaitcursor.h"
 #include "thumbnaillist.h"
 #include "typedetect.h"
+#include "gstcompat.h"
 
 #ifdef WITH_DICOM
 #include "dicom/dcmclient.h"

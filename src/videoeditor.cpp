@@ -20,6 +20,7 @@
 #include "defaults.h"
 #include "typedetect.h"
 #include "qwaitcursor.h"
+#include "gstcompat.h"
 
 #include <QAction>
 #include <QApplication>

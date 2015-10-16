@@ -117,15 +117,4 @@
 #endif
 #endif
 
-#include "gst/gstversion.h"
-#if GST_CHECK_VERSION(1,0,0)
-#define PLAYBIN_ELEMENT "playbin"
-#define DEFAULT_VIDEO_CONVERTER "videoconvert"
-#define PREPARE_WINDOW_HANDLE_MESSAGE "prepare-window-handle"
-#else
-#define PLAYBIN_ELEMENT "playbin2"
-#define DEFAULT_VIDEO_CONVERTER "ffmpegcolorspace"
-#define PREPARE_WINDOW_HANDLE_MESSAGE "prepare-xwindow-id"
-#endif
-
 #endif // BERYLLIUM_DEFAULTS_H

@@ -113,6 +113,7 @@ HEADERS += \
     src/aboutdialog.h \
     src/archivewindow.h \
     src/comboboxwithpopupsignal.h \
+    src/gstcompat.h \
     src/defaults.h \
     src/hotkeyedit.h \
     src/mainwindowdbusadaptor.h \
