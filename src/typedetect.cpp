@@ -105,7 +105,7 @@ QString GetFileExtAttribute(const QString& filePath, const QString& name)
 #endif
         if (err)
         {
-            qDebug() << QString::fromLocal8Bit(err->message);
+            qDebug() << QString::fromUtf8(err->message);
             g_error_free(err);
         }
 

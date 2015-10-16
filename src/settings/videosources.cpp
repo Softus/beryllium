@@ -150,11 +150,12 @@ void VideoSources::showEvent(QShowEvent *e)
     //
     updateDeviceList(PLATFORM_SPECIFIC_SOURCE, PLATFORM_SPECIFIC_PROPERTY);
 
-#ifndef Q_OS_WIN
-    // Populate firewire list
-    //
-    updateDeviceList("dv1394src", "guid");
-#endif
+    if (QGst::ElementFactory::find("dv1394src"))
+    {
+        // Populate firewire list
+        //
+        updateDeviceList("dv1394src", "guid");
+    }
 }
 
 void VideoSources::updateDeviceList(const char* elmName, const char* propName)

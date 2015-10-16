@@ -156,7 +156,8 @@ static QStringList collectRemovableDrives()
                 continue;
 
             drvPath[0] = 'A' + i;
-            if (GetDriveTypeW(drvPath) == 2 && GetDiskFreeSpaceW(drvPath, &dummy, &dummy, &dummy, &dummy))
+            if (GetDriveTypeW(drvPath) == DRIVE_REMOVABLE &&
+                GetDiskFreeSpaceW(drvPath, &dummy, &dummy, &dummy, &dummy))
             {
                 ret.append(QString::fromWCharArray(drvPath));
             }

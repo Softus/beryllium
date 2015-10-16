@@ -156,7 +156,7 @@ static gboolean
 setModeCallback(const gchar *name, const gchar *value, gpointer, GError **)
 {
     windowType = name[2]; // --settings => 's', --archive => 'a'
-    windowArg = QString::fromLocal8Bit(value);
+    windowArg = QString::fromUtf8(value);
     return true;
 }
 
