@@ -39,12 +39,11 @@ bool gstApplyFixes()
     return gst_plugin_register_static(GST_VERSION_MAJOR, GST_VERSION_MINOR, "motioncells", "",
         gst_motion_cells_plugin_init, PRODUCT_VERSION_STR, "LGPL", "gst", PRODUCT_SHORT_NAME, PRODUCT_SITE_URL)
 
-    && gst_element_register (nullptr, "souphttpclientsink", GST_RANK_NONE,
-        GST_TYPE_SOUP_HTTP_CLIENT_SINK)
-
     && gst_element_register (nullptr, "rtmpsink", GST_RANK_NONE, GST_TYPE_RTMP_SINK)
 
 #if !GST_CHECK_VERSION(1,0,0)
+    && gst_element_register (nullptr, "souphttpclientsink", GST_RANK_NONE,
+        GST_TYPE_SOUP_HTTP_CLIENT_SINK)
     && gst_type_find_register(nullptr, "video/mpegps", GST_RANK_NONE,
         mpeg_sys_type_find, (gchar **)mpeg_sys_exts, MPEG_SYS_CAPS, NULL, NULL)
 #endif

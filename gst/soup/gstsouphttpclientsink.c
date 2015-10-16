@@ -660,7 +660,7 @@ send_message_locked (GstSoupHttpClientSink * souphttpsink)
     for (g = souphttpsink->streamheader_buffers; g; g = g_list_next (g)) {
       GstBuffer *buffer = g->data;
       soup_message_body_append (souphttpsink->message->request_body,
-          SOUP_MEMORY_STATIC, GST_BUFFER_DATA (buffer),
+          SOUP_MEMORY_COPY, GST_BUFFER_DATA (buffer),
           GST_BUFFER_SIZE (buffer));
       n += GST_BUFFER_SIZE (buffer);
     }
@@ -670,7 +670,7 @@ send_message_locked (GstSoupHttpClientSink * souphttpsink)
     GstBuffer *buffer = g->data;
     if (!GST_BUFFER_FLAG_IS_SET (buffer, GST_BUFFER_FLAG_IN_CAPS)) {
       soup_message_body_append (souphttpsink->message->request_body,
-          SOUP_MEMORY_STATIC, GST_BUFFER_DATA (buffer),
+          SOUP_MEMORY_COPY, GST_BUFFER_DATA (buffer),
           GST_BUFFER_SIZE (buffer));
       n += GST_BUFFER_SIZE (buffer);
     }

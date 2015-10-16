@@ -58,12 +58,18 @@ TEMPLATE = app
 INCLUDEPATH += libqxt
 DEFINES += QXT_STATIC
 
+# Come code backported from 1.6 to 0.10
+lessThan(QT_MAJOR_VERSION, 5) {
+SOURCES += \
+    gst/mpeg_sys_type_find.cpp \
+    gst/soup/gstsouphttpclientsink.c
+}
+
 SOURCES += \
     gst/gst.cpp \
     gst/motioncells/gstmotioncells.cpp \
     gst/motioncells/MotionCells.cpp \
     gst/motioncells/motioncells_wrapper.cpp \
-    gst/mpeg_sys_type_find.cpp \
     libqxt/qxtconfirmationmessage.cpp \
     libqxt/qxtlineedit.cpp \
     libqxt/qxtspanslider.cpp \
@@ -84,7 +90,6 @@ SOURCES += \
     src/videoeditor.cpp \
     src/videoencodingprogressdialog.cpp \
     src/settingsdialog.cpp \
-    gst/soup/gstsouphttpclientsink.c \
     src/pipeline.cpp \
     src/videowidget.cpp \
     src/settings/videosources.cpp \

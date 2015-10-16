@@ -16,8 +16,6 @@
 
 #include <gst/gst.h>
 
-#if !GST_CHECK_VERSION(1,0,0)
-
 #define IS_MPEG_HEADER(data) (G_UNLIKELY((((guint8 *)(data))[0] == 0x00) &&  \
                                          (((guint8 *)(data))[1] == 0x00) &&  \
                                          (((guint8 *)(data))[2] == 0x01)))
@@ -273,5 +271,3 @@ suggest:
         "mpegversion", G_TYPE_INT, mpegversion, NULL);
   }
 }
-
-#endif // !GST_CHECK_VERSION(1,0,0)
