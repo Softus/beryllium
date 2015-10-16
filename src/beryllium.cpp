@@ -179,16 +179,18 @@ void setupGstDebug(const QSettings& settings)
         qputenv("GST_DEBUG_DUMP_DOT_DIR", debugDotDir.toLocal8Bit());
     }
     auto debugLogFile = settings.value("gst-debug-log-file", DEFAULT_GST_DEBUG_LOG_FILE).toString();
-    if (!debugLogFile.isEmpty())
-    {
-        QFileInfo(debugLogFile).absoluteDir().mkpath(".");
-        qputenv("GST_DEBUG_FILE", debugLogFile.toLocal8Bit());
-        _gst_debug_init();
-    }
     auto gstDebug = settings.value("gst-debug", DEFAULT_GST_DEBUG).toString();
     if (!gstDebug.isEmpty())
     {
         qputenv("GST_DEBUG", gstDebug.toLocal8Bit());
+    }
+    if (!debugLogFile.isEmpty())
+    {
+        QFileInfo(debugLogFile).absoluteDir().mkpath(".");
+        qputenv("GST_DEBUG_FILE", debugLogFile.toLocal8Bit());
+#if !GST_CHECK_VERSION(1,0,0)
+        _gst_debug_init();
+#endif
     }
     gst_debug_set_colored(!settings.value("gst-debug-no-color", DEFAULT_GST_DEBUG_NO_COLOR).toBool());
     auto gstDebugLevel = (GstDebugLevel)settings.value("gst-debug-level", DEFAULT_GST_DEBUG_LEVEL).toInt();

@@ -36,7 +36,9 @@
 // From Gstreamer SDK
 //
 #include <gst/gstdebugutils.h>
+#if !GST_CHECK_VERSION(1,0,0)
 #include <gst/interfaces/tuner.h>
+#endif
 
 #ifdef Q_OS_WIN
   #ifndef FILE_ATTRIBUTE_HIDDEN
@@ -77,8 +79,14 @@ Pipeline::~Pipeline()
 
 void Pipeline::releasePipeline()
 {
+    pipeline->setState(QGst::StateReady);
+    pipeline->getState(nullptr, nullptr, 10000000000L); // 10 sec
     pipeline->setState(QGst::StateNull);
     pipeline->getState(nullptr, nullptr, 10000000000L); // 10 sec
+
+    pipeline->bus()->removeSignalWatch();
+    QGlib::disconnect(pipeline->bus(), "message", this, &Pipeline::onBusMessage);
+
     motionDetected = false;
 
     displaySink.clear();
@@ -488,6 +496,7 @@ bool Pipeline::updatePipeline()
     //
     pipeline->setState(QGst::StateReady);
 
+#if !GST_CHECK_VERSION(1,0,0)
     auto videoInputChannel = settings.value("video-channel").toString();
     if (!videoInputChannel.isEmpty())
     {
@@ -509,6 +518,7 @@ bool Pipeline::updatePipeline()
             g_object_unref(tuner);
         }
     }
+#endif
 
     if (index >= 0)
     {
@@ -925,7 +935,7 @@ void Pipeline::onBusMessage(const QGst::MessagePtr& msg)
 
 void Pipeline::onElementMessage(const QGst::ElementMessagePtr& msg)
 {
-    const QGst::StructurePtr s = msg->internalStructure();
+    auto s = msg->internalStructure();
     if (!s)
     {
         qDebug() << "Got empty QGst::MessageElement";
@@ -941,7 +951,18 @@ void Pipeline::onElementMessage(const QGst::ElementMessagePtr& msg)
             QPixmap pm;
 
             auto lastBuffer = msg->source()->property("last-buffer").get<QGst::BufferPtr>();
-            bool ok = lastBuffer && pm.loadFromData(lastBuffer->data(), lastBuffer->size());
+            bool ok = lastBuffer;
+
+#if GST_CHECK_VERSION(1,0,0)
+            QGst::MapInfo map;
+            if (ok)
+            {
+                ok = lastBuffer->map(map, QGst::MapRead) && pm.loadFromData(map.data(), map.size());
+                lastBuffer->unmap(map);
+            }
+#else
+            ok = ok && pm.loadFromData(lastBuffer->data(), lastBuffer->size());
+#endif
 
             // If we can not load from the buffer, try to load from the file
             //
@@ -1017,7 +1038,11 @@ void Pipeline::onElementMessage(const QGst::ElementMessagePtr& msg)
 
 void Pipeline::onImageReady(const QGst::BufferPtr& buf)
 {
+#if GST_CHECK_VERSION(1,0,0)
+    qDebug() << "imageValve handoff " << buf->size() << " " << buf->decodingTimeStamp() << " " << buf->flags();
+#else
     qDebug() << "imageValve handoff " << buf->size() << " " << buf->timeStamp() << " " << buf->flags();
+#endif
     imageValve->setProperty("drop-probability", 1.0);
     imageReady();
 }

@@ -16,6 +16,7 @@
 
 #include "videosourcedetails.h"
 #include "../defaults.h"
+#include "../gstcompat.h"
 #include <algorithm>
 
 #include <QApplication>
@@ -40,10 +41,14 @@
 #include <QGst/Pad>
 #include <QGst/Parse>
 #include <QGst/Pipeline>
+#if !GST_CHECK_VERSION(1,0,0)
 #include <QGst/PropertyProbe>
+#endif
 #include <QGst/Structure>
 #include <gst/gst.h>
+#if !GST_CHECK_VERSION(1,0,0)
 #include <gst/interfaces/tuner.h>
+#endif
 
 static QString getPropName(const QString& deviceType)
 {
@@ -178,7 +183,11 @@ QString VideoSourceDetails::updateGstList(const QVariantMap& parameters, const c
     for (auto curr = elmList; curr; curr = curr->next)
     {
         auto factory = QGst::ElementFactoryPtr::wrap(GST_ELEMENT_FACTORY(curr->data), true);
+#if GST_CHECK_VERSION(1,0,0)
+        cb->addItem(factory->metadata("Long-name"), factory->name());
+#else
         cb->addItem(factory->longName(), factory->name());
+#endif
         if (selectedCodec == factory->name())
         {
             cb->setCurrentIndex(cb->count() - 1);
@@ -216,9 +225,14 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
         src->setState(QGst::StateReady);
         src->getState(nullptr, nullptr, GST_SECOND * 10);
 
+#if GST_CHECK_VERSION(1,0,0)
+        caps = srcPad->padTemplateCaps();
+#else
         caps = srcPad->caps();
+#endif
         qDebug() << caps->toString();
 
+#if !GST_CHECK_VERSION(1,0,0)
         auto tuner = GST_TUNER(src);
         if (tuner)
         {
@@ -240,6 +254,7 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
             }
         }
         else
+#endif
         {
             if (deviceType == "dv1394src")
             {
@@ -276,9 +291,12 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
 
 static QString valueToString(const QGlib::Value& value)
 {
-    return GST_TYPE_FOURCC == value.type()? "(fourcc)" + value.toString():
-           G_TYPE_STRING == value.type()?   "(string)" + value.toString():
-           value.toString();
+    return
+#if !GST_CHECK_VERSION(1,0,0)
+       GST_TYPE_FOURCC == value.type()? "(fourcc)" + value.toString():
+       G_TYPE_STRING == value.type()?   "(string)" + value.toString():
+#endif
+       value.toString();
 }
 
 static QList<QGlib::Value> getFormats(const QGlib::Value& value)

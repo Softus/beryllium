@@ -155,6 +155,17 @@ QString TypeDetect(const QString& filePath)
     return "";
 }
 
+#if GST_CHECK_VERSION(1,0,0)
+QImage ExtractRgbImage(const QGst::BufferPtr& buf, int width = 0)
+{
+    return QImage();
+}
+
+QImage ExtractImage(const QGst::BufferPtr& buf, int width = 0)
+{
+    return QImage();
+}
+#else
 QImage ExtractRgbImage(const QGst::BufferPtr& buf, int width = 0)
 {
     if (!buf)
@@ -221,3 +232,4 @@ QImage ExtractImage(const QGst::BufferPtr& buf, int width = 0)
 
     return img;
 }
+#endif

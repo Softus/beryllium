@@ -17,6 +17,7 @@
 #include "videosources.h"
 #include "../defaults.h"
 #include "videosourcedetails.h"
+#include "../gstcompat.h"
 
 #include <QApplication>
 #include <QBoxLayout>
@@ -25,7 +26,9 @@
 #include <QPushButton>
 
 #include <QGst/ElementFactory>
+#if !GST_CHECK_VERSION(1,0,0)
 #include <QGst/PropertyProbe>
+#endif
 
 static QTreeWidgetItem*
 newItem(const QString& name, const QString& device, const QVariantMap& parameters, bool enabled)
@@ -157,13 +160,15 @@ void VideoSources::showEvent(QShowEvent *e)
 void VideoSources::updateDeviceList(const char* elmName, const char* propName)
 {
     auto src = QGst::ElementFactory::make(elmName);
-    if (!src) {
+    if (!src)
+    {
         QMessageBox::critical(this, windowTitle(), tr("Failed to create element '%1'").arg(elmName));
         return;
     }
 
     auto defaultDevice = src->property(propName).toString();
 
+#if !GST_CHECK_VERSION(1,0,0)
     // Look for device-name for windows and "device" for linux/macosx
     //
     QGst::PropertyProbePtr propertyProbe = src.dynamicCast<QGst::PropertyProbe>();
@@ -239,6 +244,7 @@ void VideoSources::updateDeviceList(const char* elmName, const char* propName)
             }
         }
     }
+#endif
 }
 
 void VideoSources::onTreeItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *)
