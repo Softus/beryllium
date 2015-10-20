@@ -27,14 +27,17 @@
 #include <QGlib/Signal>
 #include <QGst/Buffer>
 #include <QGst/Caps>
+#include <QGst/ClockTime>
 #include <QGst/Event>
 #include <QGst/ElementFactory>
 #include <QGst/Fourcc>
 #include <QGst/Pipeline>
+#if GST_CHECK_VERSION(1,0,0)
+#include <QGst/Sample>
+#endif
 #include <QGst/Structure>
-#include <QGst/ClockTime>
 
-bool SetFileExtAttribute(const QString& filePath, const QString& name, const QString& value)
+bool setFileExtAttribute(const QString& filePath, const QString& name, const QString& value)
 {
     auto encodedValue = QUrl::toPercentEncoding(value);
 
@@ -71,7 +74,7 @@ bool SetFileExtAttribute(const QString& filePath, const QString& name, const QSt
     return ret;
 }
 
-QString GetFileExtAttribute(const QString& filePath, const QString& name)
+QString getFileExtAttribute(const QString& filePath, const QString& name)
 {
     QByteArray encodedValue;
     auto file = g_file_new_for_path(filePath.toLocal8Bit());
@@ -114,7 +117,7 @@ QString GetFileExtAttribute(const QString& filePath, const QString& name)
     return QUrl::fromPercentEncoding(encodedValue);
 }
 
-QString TypeDetect(const QString& filePath)
+QString typeDetect(const QString& filePath)
 {
     QGst::State   state;
     QGst::CapsPtr caps;
@@ -155,53 +158,50 @@ QString TypeDetect(const QString& filePath)
     return "";
 }
 
-#if GST_CHECK_VERSION(1,0,0)
-QImage ExtractRgbImage(const QGst::BufferPtr& buf, int width = 0)
+QImage extractRgbImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int width = 0)
 {
-    return QImage();
-}
-
-QImage ExtractImage(const QGst::BufferPtr& buf, int width = 0)
-{
-    return QImage();
-}
-#else
-QImage ExtractRgbImage(const QGst::BufferPtr& buf, int width = 0)
-{
-    if (!buf)
-    {
-        return QImage();
-    }
-
-    auto structure = buf->caps()->internalStructure(0);
+    auto structure = caps->internalStructure(0);
     auto imgWidth  = structure->value("width").toInt();
     auto imgHeight = structure->value("height").toInt();
 
-    QImage img(buf->data(), imgWidth, imgHeight, QImage::Format_RGB888);
+#if GST_CHECK_VERSION(1,0,0)
+    QGst::MapInfo map;
+    auto data = buf->map(map, QGst::MapRead)? map.data(): nullptr;
+#else
+    auto data = buf->data();
+#endif
+    QImage img(data, imgWidth, imgHeight, QImage::Format_RGB888);
+
+#if GST_CHECK_VERSION(1,0,0)
+    buf->unmap(map);
+#endif
 
     // Must copy image bits, they will be unavailable after the pipeline stops
     //
     return width > 0? img.scaledToWidth(width): img.copy();
 }
 
-QImage ExtractImage(const QGst::BufferPtr& buf, int width = 0)
+QImage extractImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int width = 0)
 {
     QImage img;
     QGst::State   state;
-    auto caps = buf->caps();
-    auto structure = buf->caps()->internalStructure(0);
-    if (structure->name() == X_RAW_RGB && structure->value("bpp").toInt() == 24)
+    auto structure = caps->internalStructure(0);
+#if GST_CHECK_VERSION(1,0,0)
+    if (structure->name() == "video/x-raw" && structure->value("format").toString() == "RGB" && structure->value("bpp").toInt() == 24)
+#else
+    if (structure->name() == "video/x-raw-rgb" && structure->value("bpp").toInt() == 24)
+#endif
     {
         // Already good enought buffer
         //
-        return ExtractRgbImage(buf, width);
+        return extractRgbImage(buf, caps, width);
     }
 
     auto pipeline = QGst::Pipeline::create("imgconvert");
     auto src   = QGst::ElementFactory::make("appsrc", "src");
     auto vaapi = structure->name() == "video/x-surface"?
          QGst::ElementFactory::make("vaapidownload", "vaapi"): QGst::ElementPtr();
-    auto cvt   = QGst::ElementFactory::make("ffmpegcolorspace", "cvt");
+    auto cvt   = QGst::ElementFactory::make(DEFAULT_VIDEO_CONVERTER, "cvt");
     auto sink  = QGst::ElementFactory::make("appsink", "sink");
 
     if (pipeline && src && cvt && sink)
@@ -213,7 +213,11 @@ QImage ExtractImage(const QGst::BufferPtr& buf, int width = 0)
             pipeline->add(vaapi);
         }
         src->setProperty("caps", caps);
-        sink->setProperty("caps", QGst::Caps::fromString(X_RAW_RGB ",bpp=24"));
+#if GST_CHECK_VERSION(1,0,0)
+        sink->setProperty("caps", QGst::Caps::fromString("video/x-raw,format=RGB,bpp=24"));
+#else
+        sink->setProperty("caps", QGst::Caps::fromString("video/x-raw-rgb,bpp=24"));
+#endif
         sink->setProperty("async", false);
 
         if (vaapi? QGst::Element::linkMany(src, vaapi, cvt, sink): QGst::Element::linkMany(src, cvt, sink))
@@ -223,7 +227,13 @@ QImage ExtractImage(const QGst::BufferPtr& buf, int width = 0)
             if (QGst::StateChangeSuccess == pipeline->getState(&state, nullptr, timeout))
             {
                 QGlib::emit<void>(src, "push-buffer", buf);
-                img = ExtractImage(QGlib::emit<QGst::BufferPtr>(sink, "pull-preroll"), width);
+#if GST_CHECK_VERSION(1,0,0)
+                auto rgbSample = QGlib::emit<QGst::SamplePtr>(sink, "pull-preroll");
+                img = extractRgbImage(rgbSample->buffer(), rgbSample->caps(), width);
+#else
+                auto rgbBuf = QGlib::emit<QGst::BufferPtr>(sink, "pull-preroll");
+                img = extractRgbImage(rgbBuf, rgbBuf->caps(), width);
+#endif
             }
             pipeline->setState(QGst::StateNull);
             pipeline->getState(&state, nullptr, timeout);
@@ -232,4 +242,3 @@ QImage ExtractImage(const QGst::BufferPtr& buf, int width = 0)
 
     return img;
 }
-#endif

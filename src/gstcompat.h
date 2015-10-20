@@ -23,13 +23,11 @@
 #define PLAYBIN_ELEMENT "playbin"
 #define DEFAULT_VIDEO_CONVERTER "videoconvert"
 #define PREPARE_WINDOW_HANDLE_MESSAGE "prepare-window-handle"
-#define X_RAW_RGB "video/x-raw"
 #define WIN_VIDEO_SOURCE "ksvideosrc"
 #else
 #define PLAYBIN_ELEMENT "playbin2"
 #define DEFAULT_VIDEO_CONVERTER "ffmpegcolorspace"
 #define PREPARE_WINDOW_HANDLE_MESSAGE "prepare-xwindow-id"
-#define X_RAW_RGB "video/x-raw-rgb"
 #define WIN_VIDEO_SOURCE "dshowvideosrc"
 #endif
 

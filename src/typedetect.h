@@ -19,9 +19,9 @@
 
 #include <QString>
 
-QString TypeDetect(const QString& filePath);
+QString typeDetect(const QString& filePath);
 
-QString GetFileExtAttribute(const QString& filePath, const QString &name);
-bool    SetFileExtAttribute(const QString& filePath, const QString &name, const QString &value);
+QString getFileExtAttribute(const QString& filePath, const QString &name);
+bool    setFileExtAttribute(const QString& filePath, const QString &name, const QString &value);
 
 #endif // TYPEDETECT_H

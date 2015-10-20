@@ -776,7 +776,7 @@ QString Pipeline::appendVideoTail(const QDir& dir, const QString& prefix, QStrin
     auto realFileName = split? absPath.replace("%02d","00"): absPath;
     if (!modality.isEmpty())
     {
-        SetFileExtAttribute(realFileName, "modality", modality);
+        setFileExtAttribute(realFileName, "modality", modality);
     }
 
     if (prefix == "clip" && settings.value("save-clip-thumbnails", DEFAULT_SAVE_CLIP_THUMBNAILS).toBool())
@@ -829,7 +829,7 @@ void Pipeline::removeVideoTail(const QString& prefix)
     if (!modality.isEmpty())
     {
         auto realFileName = sink->property("location").toString().replace("%02d","00");
-        SetFileExtAttribute(realFileName, "modality", modality);
+        setFileExtAttribute(realFileName, "modality", modality);
     }
 }
 
@@ -1021,7 +1021,7 @@ void Pipeline::onElementMessage(const QGst::ElementMessagePtr& msg)
 
         if (!modality.isEmpty())
         {
-            SetFileExtAttribute(filename, "modality", modality);
+            setFileExtAttribute(filename, "modality", modality);
         }
         return;
     }

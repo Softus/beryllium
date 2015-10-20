@@ -662,7 +662,7 @@ bool DcmClient::sendToServer(const QString& server, DcmDataset* dsPatient, const
     }
     else
     {
-        auto modality = GetFileExtAttribute(file, "modality");
+        auto modality = getFileExtAttribute(file, "modality");
         if (modality.isEmpty())
         {
             modality = QSettings().value("dicom/modality", DEFAULT_MODALITY).toString();
@@ -787,7 +787,7 @@ bool DcmClient::sendToServer(QWidget *parent, DcmDataset *dsPatient, const QFile
                 continue;
             }
 
-            auto mimeType = TypeDetect(filePath);
+            auto mimeType = typeDetect(filePath);
             if (mimeType.startsWith("video/"))
             {
                 auto thumbnailFileTemplate = QStringList("." + file.fileName() + ".*");
@@ -829,7 +829,7 @@ bool DcmClient::sendToServer(QWidget *parent, DcmDataset *dsPatient, const QFile
             if (!sendToServer(server, dsPatient, seriesUID, seriesNo, filePath, mimeType, i))
             {
                 result = false;
-                SetFileExtAttribute(filePath, "dicom-status", lastError());
+                setFileExtAttribute(filePath, "dicom-status", lastError());
                 if (QMessageBox::Yes != QMessageBox::critical(&pdlg, parent->windowTitle(),
                       tr("Failed to send '%1' to '%2':\n%3\nContinue?").arg(filePath, server, lastError()),
                       QMessageBox::Yes, QMessageBox::No))
@@ -841,7 +841,7 @@ bool DcmClient::sendToServer(QWidget *parent, DcmDataset *dsPatient, const QFile
             }
             else
             {
-                SetFileExtAttribute(filePath, "dicom-status", "ok");
+                setFileExtAttribute(filePath, "dicom-status", "ok");
             }
         }
     }

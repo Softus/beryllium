@@ -15,6 +15,7 @@
  */
 
 #include "videowidget.h"
+#include "gstcompat.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -25,9 +26,12 @@
 #include <QGst/Buffer>
 #include <QGst/Element>
 #include <QGst/Fourcc>
+#if GST_CHECK_VERSION(1,0,0)
+#include <QGst/Sample>
+#endif
 #include <QGst/Structure>
 
-extern QImage ExtractImage(const QGst::BufferPtr& buf, int width = 0);
+extern QImage extractImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int width = 0);
 
 VideoWidget::VideoWidget(QWidget *parent) :
     QGst::Ui::VideoWidget(parent)
@@ -68,9 +72,15 @@ void VideoWidget::mouseMoveEvent(QMouseEvent *evt)
      if (sink)
      {
          QImage img;
+#if GST_CHECK_VERSION(1,0,0)
+         auto sample = sink->property("last-sample").get<QGst::SamplePtr>();
+         if (sample)
+             img = extractImage(sample->buffer(), sample->caps(), 160);
+#else
          auto buffer = sink->property("last-buffer").get<QGst::BufferPtr>();
          if (buffer)
-             img = ExtractImage(buffer, 160);
+             img = extractImage(buffer, buffer->caps(), 160);
+#endif
 
          if (!img.isNull())
          {

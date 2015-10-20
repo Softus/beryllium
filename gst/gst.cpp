@@ -20,15 +20,6 @@
 #include "soup/gstsouphttpclientsink.h"
 #include "rtmp/gstrtmpsink.h"
 
-#if GST_CHECK_VERSION(1,0,0)
-
-bool gstApplyFixes()
-{
-    return true;
-}
-
-#else
-
 #define MPEG_SYS_CAPS gst_static_caps_get(&mpeg_sys_caps)
 
 static const gchar *mpeg_sys_exts[] = { "mpe", "mpeg", "mpg", NULL };
@@ -53,4 +44,3 @@ bool gstApplyFixes()
             mpeg_sys_type_find, (gchar **)mpeg_sys_exts, MPEG_SYS_CAPS, NULL, NULL)
         ;
 }
-#endif

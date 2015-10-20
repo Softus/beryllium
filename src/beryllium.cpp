@@ -401,7 +401,9 @@ int main(int argc, char *argv[])
     // QGStreamer stuff
     //
     QGst::init();
+#if !GST_CHECK_VERSION(1,0,0)
     gstApplyFixes();
+#endif
 
     // QT init
     //

@@ -46,13 +46,16 @@
 #include <QGst/Fourcc>
 #include <QGst/Pad>
 #include <QGst/Parse>
+#if GST_CHECK_VERSION(1,0,0)
+#include <QGst/Sample>
+#endif
 #include <QGst/Query>
 #include <QGst/Ui/VideoWidget>
 #include <gst/gstdebugutils.h>
 
 #define SLIDER_SCALE 20000L
 
-extern QImage ExtractImage(const QGst::BufferPtr& buf, int width = 0);
+extern QImage extractImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int width = 0);
 
 static QSize videoSize(352, 258);
 
@@ -484,7 +487,7 @@ bool VideoEditor::exportVideo(QFile* outFile)
 
     if (encoder.isEmpty())
     {
-        auto caps = TypeDetect(filePath);
+        auto caps = typeDetect(filePath);
         if (caps.startsWith("video/x-dv"))
         {
             // Some distros have libav plugins, some ffmpeg plugins
@@ -630,11 +633,15 @@ void VideoEditor::onSnapshotClick()
 {
     QImage img;
 
-    auto frame = pipeline->property("frame");
-    if (frame)
-    {
-        img = ExtractImage(frame.get<QGst::BufferPtr>());
-    }
+#if GST_CHECK_VERSION(1,0,0)
+    auto sample = pipeline->property("sample").get<QGst::SamplePtr>();
+    if (sample)
+        img = extractImage(sample->buffer(), sample->caps(), 160);
+#else
+    auto buffer = pipeline->property("frame").get<QGst::BufferPtr>();
+    if (buffer)
+        img = extractImage(buffer, buffer->caps(), 160);
+#endif
 
     if (!img.isNull())
     {

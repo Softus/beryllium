@@ -117,7 +117,7 @@ unix:SOURCES += \
     src/smartshortcut_x11.cpp
 
 win32:SOURCES += \
-    gst/enumsrc_win.cpp \
+    gst/enumsrc_1_4.cpp \
     src/smartshortcut_win.cpp
 
 HEADERS += \

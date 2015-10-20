@@ -495,7 +495,7 @@ static QString addStatusOverlay(const QString& filePath, QIcon& icon, const QStr
 {
     //qDebug() << filePath;
 
-    auto archiveStatus = GetFileExtAttribute(filePath, attr);
+    auto archiveStatus = getFileExtAttribute(filePath, attr);
     if (!archiveStatus.isEmpty())
     {
         QPixmap pmOverlay;
@@ -558,7 +558,7 @@ void ArchiveWindow::updateList()
         }
         else
         {
-            auto caps = TypeDetect(fi.absoluteFilePath());
+            auto caps = typeDetect(fi.absoluteFilePath());
             if (caps.startsWith("video/"))
             {
                 auto thumbnailList = curr.entryInfoList(QStringList("." + fi.fileName() + ".*"), QDir::Hidden | QDir::Files);
@@ -934,7 +934,7 @@ void ArchiveWindow::copyToFolder(const QString& targetPath)
         if (!QFile::copy(filePath, targetDir.absoluteFilePath(file.fileName())))
         {
             auto error = QString::fromLocal8Bit(strerror(errno));
-            SetFileExtAttribute(filePath, "usb-status", error);
+            setFileExtAttribute(filePath, "usb-status", error);
             if (QMessageBox::Yes != QMessageBox::critical(&pdlg, windowTitle(),
                   tr("Failed to copy '%1' to '%2':\n%3\nContinue?")
                       .arg(file.fileName(), targetDir.absolutePath(), error),
@@ -948,7 +948,7 @@ void ArchiveWindow::copyToFolder(const QString& targetPath)
         }
         else
         {
-            SetFileExtAttribute(filePath, "usb-status", "ok");
+            setFileExtAttribute(filePath, "usb-status", "ok");
         }
     }
     result = result && !pdlg.wasCanceled();
@@ -1114,7 +1114,7 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
     auto isVideo = false;
     stopMedia();
 
-    auto caps = TypeDetect(fi.absoluteFilePath());
+    auto caps = typeDetect(fi.absoluteFilePath());
     if (caps.isEmpty() || caps.startsWith("application/"))
     {
         return;
