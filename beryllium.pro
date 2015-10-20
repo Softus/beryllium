@@ -45,7 +45,8 @@ DEFINES += OS_DISTRO=$$OS_DISTRO OS_REVISION=$$OS_REVISION USERNAME=$$USERNAME
 
 CONFIG += link_pkgconfig
 greaterThan(QT_MAJOR_VERSION, 4) {
-    PKGCONFIG += Qt5GLib-2.0 Qt5GStreamer-1.0 Qt5GStreamerUi-1.0 gstreamer-1.0 gstreamer-base-1.0 gstreamer-pbutils-1.0 libavc1394 libraw1394 gudev-1.0 libv4l2
+    PKGCONFIG += Qt5GLib-2.0 Qt5GStreamer-1.0 Qt5GStreamerUi-1.0 gstreamer-1.0 gstreamer-base-1.0 gstreamer-pbutils-1.0
+    unix:PKGCONFIG += libavc1394 libraw1394 gudev-1.0 libv4l2
 }
 else {
     PKGCONFIG += QtGLib-2.0 QtGStreamer-0.10 QtGStreamerUi-0.10 gstreamer-0.10 gstreamer-base-0.10 gstreamer-interfaces-0.10 gstreamer-pbutils-0.10
@@ -61,22 +62,23 @@ DEFINES += QXT_STATIC
 # Come code backported from 1.6 to 0.10
 lessThan(QT_MAJOR_VERSION, 5) {
 SOURCES += \
+    gst/gst.cpp \
     gst/mpeg_sys_type_find.cpp \
     gst/motioncells/gstmotioncells.cpp \
     gst/motioncells/MotionCells.cpp \
     gst/motioncells/motioncells_wrapper.cpp \
+    gst/rtmp/gstrtmpsink.c \
     gst/soup/gstsouphttpclientsink.c
 
 HEADERS += \
     gst/motioncells/gstmotioncells.h \
     gst/motioncells/MotionCells.h \
     gst/motioncells/motioncells_wrapper.h \
+    gst/rtmp/gstrtmpsink.h \
     gst/soup/gstsouphttpclientsink.h \
 }
 
 SOURCES += \
-    gst/gst.cpp \
-    gst/rtmp/gstrtmpsink.c \
     libqxt/qxtconfirmationmessage.cpp \
     libqxt/qxtlineedit.cpp \
     libqxt/qxtspanslider.cpp \
@@ -108,15 +110,17 @@ SOURCES += \
     src/settings/mandatoryfields.cpp \
     src/settings/hotkeys.cpp \
     src/settings/debug.cpp \
-    src/settings/confirmations.cpp \
-    gst/enumsrc_win.cpp \
-    gst/enumsrc_tux.cpp
+    src/settings/confirmations.cpp
 
-unix: SOURCES += src/smartshortcut_x11.cpp
-win32:SOURCES += src/smartshortcut_win.cpp
+unix:SOURCES += \
+    gst/enumsrc_tux.cpp \
+    src/smartshortcut_x11.cpp
+
+win32:SOURCES += \
+    gst/enumsrc_win.cpp \
+    src/smartshortcut_win.cpp
 
 HEADERS += \
-    gst/rtmp/gstrtmpsink.h \
     libqxt/qxtconfirmationmessage.h \
     libqxt/qxtlineedit.h \
     libqxt/qxtspanslider.h \

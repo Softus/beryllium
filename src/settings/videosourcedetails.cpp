@@ -41,16 +41,16 @@
 #include <QGst/Pad>
 #include <QGst/Parse>
 #include <QGst/Pipeline>
-#if !GST_CHECK_VERSION(1,0,0)
-#include <QGst/PropertyProbe>
-#endif
 #include <QGst/Structure>
 #include <gst/gst.h>
-#if GST_CHECK_VERSION(1,0,0)
-#include <libv4l2.h>
-#include <libv4l2rds.h>
-#else
-#include <gst/interfaces/tuner.h>
+
+#if defined (Q_OS_UNIX)
+  #if GST_CHECK_VERSION(1,0,0)
+  #include <libv4l2.h>
+  #include <libv4l2rds.h>
+  #else
+  #include <gst/interfaces/tuner.h>
+  #endif
 #endif
 
 static QString getPropName(const QString& deviceType)
@@ -205,11 +205,26 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
 {
     int idx = 0;
 
+    auto pipeline = QGst::Pipeline::create();
+    if (!pipeline)
+    {
+        QMessageBox::critical(this, windowTitle(), tr("Failed to create pipeline"));
+        return;
+    }
+
     auto src = QGst::ElementFactory::make(deviceType);
     if (!src)
     {
         QMessageBox::critical(this, windowTitle(), tr("Failed to create element '%1'").arg(deviceType));
         return;
+    }
+    pipeline->add(src);
+
+    auto sink = QGst::ElementFactory::make("fakesink");
+    if (sink)
+    {
+        pipeline->add(sink);
+        src->link(sink);
     }
 
     auto propName = getPropName(deviceType);
@@ -223,20 +238,21 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
             src->setProperty(propName.toUtf8(), device);
         }
 
-        // To query the caps, the device must be in Ready state
+        // To query the caps, the test pipeline must be in Ready state
         //
-        src->setState(QGst::StateReady);
-        src->getState(nullptr, nullptr, GST_SECOND * 10);
+        pipeline->setState(QGst::StateReady);
+        pipeline->getState(nullptr, nullptr, GST_SECOND * 10);
 
 #if GST_CHECK_VERSION(1,0,0)
-        caps = srcPad->padTemplateCaps();
+        caps = srcPad->allowedCaps();
 #else
         caps = srcPad->caps();
 #endif
         qDebug() << caps->toString();
         auto selectedChannelLabel = selectedChannel.toString();
 
-#if GST_CHECK_VERSION(1,0,0)
+#if defined (Q_OS_UNIX)
+  #if GST_CHECK_VERSION(1,0,0)
         int fd = src->property("device-fd").toInt();
         int n = 0;
         struct v4l2_input input;
@@ -256,7 +272,7 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
                 idx = listChannels->count() - 1;
             }
         }
-#else
+  #else
         auto tuner = GST_TUNER(src);
         if (tuner)
         {
@@ -277,6 +293,7 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
             }
         }
         else
+  #endif
 #endif
         {
             if (deviceType == "dv1394src")
@@ -302,10 +319,10 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
             }
         }
 
-        // Now switch the device back to Null state (release resources)
+        // Now switch the pipeline back to Null state (release resources)
         //
-        src->setState(QGst::StateNull);
-        src->getState(nullptr, nullptr, GST_SECOND * 10);
+        pipeline->setState(QGst::StateNull);
+        pipeline->getState(nullptr, nullptr, GST_SECOND * 10);
     }
 
     listChannels->setCurrentIndex(-1);
@@ -317,8 +334,8 @@ static QString valueToString(const QGlib::Value& value)
     return
 #if !GST_CHECK_VERSION(1,0,0)
        GST_TYPE_FOURCC == value.type()? "(fourcc)" + value.toString():
-       G_TYPE_STRING == value.type()?   "(string)" + value.toString():
 #endif
+       G_TYPE_STRING == value.type()?   "(string)" + value.toString():
        value.toString();
 }
 

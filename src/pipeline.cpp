@@ -37,14 +37,14 @@
 //
 #include <gst/gstdebugutils.h>
 
-#if GST_CHECK_VERSION(1,0,0)
-#include <libv4l2.h>
-#include <libv4l2rds.h>
-#else
-#include <gst/interfaces/tuner.h>
-#endif
-
-#ifdef Q_OS_WIN
+#if defined (Q_OS_UNIX)
+  #if GST_CHECK_VERSION(1,0,0)
+  #include <libv4l2.h>
+  #include <libv4l2rds.h>
+  #else
+  #include <gst/interfaces/tuner.h>
+  #endif
+#elif defined (Q_OS_WIN)
   #ifndef FILE_ATTRIBUTE_HIDDEN
     #define FILE_ATTRIBUTE_HIDDEN 0x00000002
     extern "C" __declspec(dllimport) int __stdcall SetFileAttributesW(const wchar_t* lpFileName, quint32 dwFileAttributes);
@@ -503,7 +503,8 @@ bool Pipeline::updatePipeline()
     auto videoInputChannel = settings.value("video-channel").toString();
     if (!videoInputChannel.isEmpty())
     {
-#if GST_CHECK_VERSION(1,0,0)
+#if defined (Q_OS_UNIX)
+  #if GST_CHECK_VERSION(1,0,0)
         auto src = pipeline->getElementByName(videoInputChannel.toUtf8());
         if (src)
         {
@@ -527,7 +528,7 @@ bool Pipeline::updatePipeline()
                 }
             }
         }
-#else
+  #else
         auto tuner = GST_TUNER(gst_bin_get_by_interface(pipeline.staticCast<QGst::Bin>(), GST_TYPE_TUNER));
         if (tuner)
         {
@@ -545,6 +546,7 @@ bool Pipeline::updatePipeline()
 
             g_object_unref(tuner);
         }
+  #endif
 #endif
     }
 
