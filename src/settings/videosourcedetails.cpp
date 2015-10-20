@@ -46,7 +46,10 @@
 #endif
 #include <QGst/Structure>
 #include <gst/gst.h>
-#if !GST_CHECK_VERSION(1,0,0)
+#if GST_CHECK_VERSION(1,0,0)
+#include <libv4l2.h>
+#include <libv4l2rds.h>
+#else
 #include <gst/interfaces/tuner.h>
 #endif
 
@@ -184,7 +187,7 @@ QString VideoSourceDetails::updateGstList(const QVariantMap& parameters, const c
     {
         auto factory = QGst::ElementFactoryPtr::wrap(GST_ELEMENT_FACTORY(curr->data), true);
 #if GST_CHECK_VERSION(1,0,0)
-        cb->addItem(factory->metadata("Long-name"), factory->name());
+        cb->addItem(factory->metadata(GST_ELEMENT_METADATA_LONGNAME), factory->name());
 #else
         cb->addItem(factory->longName(), factory->name());
 #endif
@@ -231,12 +234,32 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
         caps = srcPad->caps();
 #endif
         qDebug() << caps->toString();
+        auto selectedChannelLabel = selectedChannel.toString();
 
-#if !GST_CHECK_VERSION(1,0,0)
+#if GST_CHECK_VERSION(1,0,0)
+        int fd = src->property("device-fd").toInt();
+        int n = 0;
+        struct v4l2_input input;
+
+        for (;;)
+        {
+            memset(&input, 0, sizeof (input));
+            input.index = n++;
+            if (v4l2_ioctl(fd, VIDIOC_ENUMINPUT, &input) < 0)
+            {
+                break;
+            }
+            auto label = QString::fromUtf8((const char*)input.name);
+            listChannels->addItem(label);
+            if (selectedChannelLabel == label)
+            {
+                idx = listChannels->count() - 1;
+            }
+        }
+#else
         auto tuner = GST_TUNER(src);
         if (tuner)
         {
-            auto selectedChannelLabel = selectedChannel.toString();
             // The list is owned by the GstTuner and must not be freed.
             //
             auto channelList = gst_tuner_list_channels(tuner);

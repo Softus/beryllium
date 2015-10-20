@@ -36,7 +36,11 @@
 // From Gstreamer SDK
 //
 #include <gst/gstdebugutils.h>
-#if !GST_CHECK_VERSION(1,0,0)
+
+#if GST_CHECK_VERSION(1,0,0)
+#include <libv4l2.h>
+#include <libv4l2rds.h>
+#else
 #include <gst/interfaces/tuner.h>
 #endif
 
@@ -496,10 +500,34 @@ bool Pipeline::updatePipeline()
     //
     pipeline->setState(QGst::StateReady);
 
-#if !GST_CHECK_VERSION(1,0,0)
     auto videoInputChannel = settings.value("video-channel").toString();
     if (!videoInputChannel.isEmpty())
     {
+#if GST_CHECK_VERSION(1,0,0)
+        auto src = pipeline->getElementByName(videoInputChannel.toUtf8());
+        if (src)
+        {
+            int fd = src->property("device-fd").toInt();
+            int n = 0;
+            struct v4l2_input input;
+
+            for (;;)
+            {
+                memset(&input, 0, sizeof (input));
+                input.index = n++;
+                if (v4l2_ioctl(fd, VIDIOC_ENUMINPUT, &input) < 0)
+                {
+                    break;
+                }
+                auto label = QString::fromUtf8((const char*)input.name);
+                if (0 == videoInputChannel.compare(label))
+                {
+                    v4l2_ioctl(fd, VIDIOC_S_INPUT, &input.index);
+                    break;
+                }
+            }
+        }
+#else
         auto tuner = GST_TUNER(gst_bin_get_by_interface(pipeline.staticCast<QGst::Bin>(), GST_TYPE_TUNER));
         if (tuner)
         {
@@ -517,8 +545,8 @@ bool Pipeline::updatePipeline()
 
             g_object_unref(tuner);
         }
-    }
 #endif
+    }
 
     if (index >= 0)
     {

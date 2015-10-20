@@ -18,6 +18,7 @@
 #include "../defaults.h"
 #include "videosourcedetails.h"
 #include "../gstcompat.h"
+#include "../gst/enumsrc.h"
 
 #include <QApplication>
 #include <QBoxLayout>
@@ -26,9 +27,6 @@
 #include <QPushButton>
 
 #include <QGst/ElementFactory>
-#if !GST_CHECK_VERSION(1,0,0)
-#include <QGst/PropertyProbe>
-#endif
 
 static QTreeWidgetItem*
 newItem(const QString& name, const QString& device, const QVariantMap& parameters, bool enabled)
@@ -169,83 +167,75 @@ void VideoSources::updateDeviceList(const char* elmName, const char* propName)
 
     auto defaultDevice = src->property(propName).toString();
 
-#if !GST_CHECK_VERSION(1,0,0)
     // Look for device-name for windows and "device" for linux/macosx
     //
-    QGst::PropertyProbePtr propertyProbe = src.dynamicCast<QGst::PropertyProbe>();
-    if (propertyProbe && propertyProbe->propertySupportsProbe(propName))
+    auto devices = enumSources(elmName);
+    foreach (auto deviceId, devices)
     {
-        //get a list of devices that the element supports
-        auto devices = propertyProbe->probeAndGetValues(propName);
-        foreach (const QGlib::Value& deviceId, devices)
+        // Switch to the device
+        //
+        src->setProperty(propName, deviceId);
+
+        auto friendlyName = src->property("device-name").toString();
+        auto found = false;
+
+        foreach (auto item, listSources->findItems(deviceId, Qt::MatchStartsWith))
         {
-            // Switch to the device
-            //
-            src->setProperty(propName, deviceId);
+            auto currDeviceName   = item->data(0, Qt::UserRole).toString();
+            auto currFriendlyName = item->data(1, Qt::UserRole).toString();
 
-            auto deviceName   = deviceId.toString();
-            auto friendlyName = src->property("device-name").toString();
-            auto found = false;
-
-            foreach (auto item, listSources->findItems(deviceName, Qt::MatchStartsWith))
+            if (currFriendlyName == friendlyName && currDeviceName == deviceId)
             {
-                auto currDeviceName   = item->data(0, Qt::UserRole).toString();
-                auto currFriendlyName = item->data(1, Qt::UserRole).toString();
-
-                if (currFriendlyName == friendlyName && currDeviceName == deviceName)
-                {
-                    found = true;
-                    break;
-                }
-            }
-
-            // Check for migration from version < 1.2
-            //
-            if (!found && listSources->topLevelItemCount() > 0)
-            {
-                auto item = listSources->topLevelItem(0);
-                auto currDeviceName   = item->data(0, Qt::UserRole).toString();
-                auto currFriendlyName = item->data(1, Qt::UserRole).toString();
-
-                if (currDeviceName.isEmpty())
-                {
-                    currDeviceName = defaultDevice;
-                }
-
-                if ((currFriendlyName.isEmpty() || currFriendlyName == friendlyName) &&
-                    (currDeviceName == deviceName))
-                {
-                    item->setData(1, Qt::UserRole, friendlyName);
-                    item->setData(0, Qt::UserRole, deviceName);
-                    auto title = friendlyName.isEmpty()? deviceName: deviceName + " (" + friendlyName + ")";
-                    item->setText(0, title);
-
-                    auto alias = item->text(2);
-                    if (alias.isEmpty())
-                    {
-                        alias = "src0";
-                        item->setText(2, alias);
-                    }
-
-                    auto parameters = item->data(2, Qt::UserRole).toMap();
-                    parameters["alias"] = alias;
-                    parameters["device-type"] = elmName;
-                    item->setData(2, Qt::UserRole, parameters);
-                    found = true;
-                }
-            }
-
-            if (!found)
-            {
-                auto alias = QString("src%1").arg(listSources->topLevelItemCount());
-                QVariantMap parameters;
-                parameters["alias"] = alias;
-                parameters["device-type"] = elmName;
-                listSources->addTopLevelItem(newItem(friendlyName, deviceName, parameters, false));
+                found = true;
+                break;
             }
         }
+
+        // Check for migration from version < 1.2
+        //
+        if (!found && listSources->topLevelItemCount() > 0)
+        {
+            auto item = listSources->topLevelItem(0);
+            auto currDeviceName   = item->data(0, Qt::UserRole).toString();
+            auto currFriendlyName = item->data(1, Qt::UserRole).toString();
+
+            if (currDeviceName.isEmpty())
+            {
+                currDeviceName = defaultDevice;
+            }
+
+            if ((currFriendlyName.isEmpty() || currFriendlyName == friendlyName) &&
+                (currDeviceName == deviceId))
+            {
+                item->setData(1, Qt::UserRole, friendlyName);
+                item->setData(0, Qt::UserRole, deviceId);
+                auto title = friendlyName.isEmpty()? deviceId: deviceId + " (" + friendlyName + ")";
+                item->setText(0, title);
+
+                auto alias = item->text(2);
+                if (alias.isEmpty())
+                {
+                    alias = "src0";
+                    item->setText(2, alias);
+                }
+
+                auto parameters = item->data(2, Qt::UserRole).toMap();
+                parameters["alias"] = alias;
+                parameters["device-type"] = elmName;
+                item->setData(2, Qt::UserRole, parameters);
+                found = true;
+            }
+        }
+
+        if (!found)
+        {
+            auto alias = QString("src%1").arg(listSources->topLevelItemCount());
+            QVariantMap parameters;
+            parameters["alias"] = alias;
+            parameters["device-type"] = elmName;
+            listSources->addTopLevelItem(newItem(friendlyName, deviceId, parameters, false));
+        }
     }
-#endif
 }
 
 void VideoSources::onTreeItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *)
@@ -262,6 +252,10 @@ void VideoSources::onItemDoubleClicked(QTreeWidgetItem*, int)
 void VideoSources::onEditClicked()
 {
     auto item = listSources->currentItem();
+    if (!item)
+    {
+        return;
+    }
     auto device     = item->data(0, Qt::UserRole).toString();
     auto parameters = item->data(2, Qt::UserRole).toMap();
     auto deviceType = parameters["device-type"].toString();

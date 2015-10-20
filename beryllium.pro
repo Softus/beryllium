@@ -45,7 +45,7 @@ DEFINES += OS_DISTRO=$$OS_DISTRO OS_REVISION=$$OS_REVISION USERNAME=$$USERNAME
 
 CONFIG += link_pkgconfig
 greaterThan(QT_MAJOR_VERSION, 4) {
-    PKGCONFIG += Qt5GLib-2.0 Qt5GStreamer-1.0 Qt5GStreamerUi-1.0 gstreamer-1.0 gstreamer-base-1.0 gstreamer-pbutils-1.0
+    PKGCONFIG += Qt5GLib-2.0 Qt5GStreamer-1.0 Qt5GStreamerUi-1.0 gstreamer-1.0 gstreamer-base-1.0 gstreamer-pbutils-1.0 libavc1394 libraw1394 gudev-1.0 libv4l2
 }
 else {
     PKGCONFIG += QtGLib-2.0 QtGStreamer-0.10 QtGStreamerUi-0.10 gstreamer-0.10 gstreamer-base-0.10 gstreamer-interfaces-0.10 gstreamer-pbutils-0.10
@@ -108,7 +108,9 @@ SOURCES += \
     src/settings/mandatoryfields.cpp \
     src/settings/hotkeys.cpp \
     src/settings/debug.cpp \
-    src/settings/confirmations.cpp
+    src/settings/confirmations.cpp \
+    gst/enumsrc_win.cpp \
+    gst/enumsrc_tux.cpp
 
 unix: SOURCES += src/smartshortcut_x11.cpp
 win32:SOURCES += src/smartshortcut_win.cpp
@@ -152,7 +154,8 @@ HEADERS += \
     src/settings/physicians.h \
     src/settings/storage.h \
     src/settings/studies.h \
-    src/settings/videorecord.h
+    src/settings/videorecord.h \
+    gst/enumsrc.h
 
 FORMS   +=
 

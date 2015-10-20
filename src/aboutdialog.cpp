@@ -24,6 +24,7 @@
 #include <qxtglobal.h>
 #include <gst/gst.h>
 #include <QGlib/Value>
+#include <QGst/Buffer>
 #include <opencv/cv.h>
 
 #ifdef WITH_DICOM
@@ -42,12 +43,16 @@
 #endif
 #endif
 
+// Prior to 1.2. QGst::Buffer has no allocator support
+//
+#if defined(QGST_MEMORY_H)
+  #define QT_GST_VERSION_STR "1.2"
 // Prior to 10.3 the QGlib::Value was not compatible with the QGlib::Error
 //
-#ifdef QGLIB_ERROR_H
+#elif defined(QGLIB_ERROR_H)
   #define QT_GST_VERSION_STR "0.10.3"
 #else
-  #define QT_GST_VERSION_STR "0.10.2"
+  #define QT_GST_VERSION_STR "0.10"
 #endif
 
 AboutDialog::AboutDialog(QWidget *parent) :
