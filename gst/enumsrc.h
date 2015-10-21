@@ -4,7 +4,7 @@
 class QStringList;
 class QString;
 
-QStringList enumSources(const QString& elmName);
+QStringList enumSources(const QString& elmName, const QString& propName);
 
 #endif // ENUMSRC_H
 

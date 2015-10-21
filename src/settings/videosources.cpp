@@ -169,7 +169,7 @@ void VideoSources::updateDeviceList(const char* elmName, const char* propName)
 
     // Look for device-name for windows and "device" for linux/macosx
     //
-    auto devices = enumSources(elmName);
+    auto devices = enumSources(elmName, propName);
     foreach (auto deviceId, devices)
     {
         // Switch to the device

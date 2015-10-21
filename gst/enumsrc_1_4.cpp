@@ -2,7 +2,7 @@
 #include <QStringList>
 #include <gst/gst.h>
 
-QStringList enumSources(const QString&)
+QStringList enumSources(const QString&, const QString&)
 {
     QStringList ret;
     auto monitor = gst_device_monitor_new();

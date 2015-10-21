@@ -112,9 +112,11 @@ SOURCES += \
     src/settings/debug.cpp \
     src/settings/confirmations.cpp
 
-unix:SOURCES += \
-    gst/enumsrc_tux.cpp \
-    src/smartshortcut_x11.cpp
+unix {
+    SOURCES += src/smartshortcut_x11.cpp
+    greaterThan(QT_MAJOR_VERSION, 4): SOURCES += gst/enumsrc_tux.cpp
+    lessThan(QT_MAJOR_VERSION, 5):    SOURCES += gst/enumsrc_0_10.cpp
+}
 
 win32:SOURCES += \
     gst/enumsrc_1_4.cpp \

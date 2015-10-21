@@ -59,7 +59,7 @@ static QStringList enumV4l2Devices()
     return ret;
 }
 
-QStringList enumSources(const QString& elmName)
+QStringList enumSources(const QString& elmName, const QString&)
 {
     return elmName == "dv1394src"? enum1394Devices(): enumV4l2Devices();
 }
