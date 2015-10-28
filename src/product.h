@@ -31,4 +31,7 @@
 
 #define SITE_UID_ROOT           "1.2.643.2.66"
 
+#define AUX_STR_EXP(__A)        #__A
+#define AUX_STR(__A)            AUX_STR_EXP(__A)
+
 #endif // PRODUCT_H

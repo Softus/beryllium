@@ -25,7 +25,9 @@
 #include <gst/gst.h>
 #include <QGlib/Value>
 #include <QGst/Buffer>
-#include <opencv/cv.h>
+#if !GST_CHECK_VERSION(1,0,0)
+  #include <opencv/cv.h>
+#endif
 
 #ifdef WITH_DICOM
 #define HAVE_CONFIG_H
@@ -97,9 +99,11 @@ AboutDialog::AboutDialog(QWidget *parent) :
     lblGstreamer->setOpenExternalLinks(true);
     layoutText->addWidget(lblGstreamer);
 
+#if !GST_CHECK_VERSION(1,0,0)
     auto lblOpencv = new QLabel(tr("<a href=\"http://opencv.org/\">OpenCV ").append(CV_VERSION).append("</a>"));
     lblOpencv->setOpenExternalLinks(true);
     layoutText->addWidget(lblOpencv);
+#endif
 
     auto lblQtGstreamer = new QLabel(tr("<a href=\"http://gstreamer.freedesktop.org/modules/qt-gstreamer.html/\">QtGStreamer ").append(QT_GST_VERSION_STR).append("</a>"));
     lblQtGstreamer->setOpenExternalLinks(true);
@@ -143,8 +147,8 @@ AboutDialog::AboutDialog(QWidget *parent) :
 
     if (qApp->keyboardModifiers().testFlag(Qt::ShiftModifier))
     {
-        auto buildInfo = "Built by " CVAUX_STR(USERNAME) " on " \
-          CVAUX_STR(OS_DISTRO) " " CVAUX_STR(OS_REVISION) " at " __DATE__ " " __TIME__;
+        auto buildInfo = "Built by " AUX_STR(USERNAME) " on " \
+          AUX_STR(OS_DISTRO) " " AUX_STR(OS_REVISION) " at " __DATE__ " " __TIME__;
         layoutText->addWidget(new QLabel(buildInfo));
     }
 

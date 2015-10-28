@@ -25,7 +25,6 @@
 #include "settingsdialog.h"
 #include "smartshortcut.h"
 
-#include <opencv/cv.h>
 #include <signal.h>
 
 #include <QApplication>
@@ -385,8 +384,8 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    qDebug() << "Built by " CVAUX_STR(USERNAME) " on " \
-                CVAUX_STR(OS_DISTRO) " " CVAUX_STR(OS_REVISION) " at " __DATE__ " " __TIME__;
+    qDebug() << "Built by " AUX_STR(USERNAME) " on " \
+                AUX_STR(OS_DISTRO) " " AUX_STR(OS_REVISION) " at " __DATE__ " " __TIME__;
 
     // At this time it is safe to use QSettings
     //

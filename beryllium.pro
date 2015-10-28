@@ -49,9 +49,8 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     unix:PKGCONFIG += libavc1394 libraw1394 gudev-1.0 libv4l2
 }
 else {
-    PKGCONFIG += QtGLib-2.0 QtGStreamer-0.10 QtGStreamerUi-0.10 gstreamer-0.10 gstreamer-base-0.10 gstreamer-interfaces-0.10 gstreamer-pbutils-0.10
+    PKGCONFIG += QtGLib-2.0 QtGStreamer-0.10 QtGStreamerUi-0.10 gstreamer-0.10 gstreamer-base-0.10 gstreamer-interfaces-0.10 gstreamer-pbutils-0.10 gio-2.0 opencv libsoup-2.4 librtmp
 }
-PKGCONFIG += gio-2.0 opencv libsoup-2.4 librtmp
 
 TARGET   = beryllium
 TEMPLATE = app
