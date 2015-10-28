@@ -550,7 +550,7 @@ bool DcmClient::nSetRQ(const char* seriesUID, DcmDataset* patientDs, const QStri
 {
     if (!createAssociation(QSettings().value("dicom/mpps-server").toString()))
     {
-        return nullptr;
+        return false;
     }
 
     DcmDataset nSetDs;
