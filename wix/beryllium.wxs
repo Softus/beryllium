@@ -1,4 +1,4 @@
-D:\work\free\dc\beryllium\wix\beryllium.wxs<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <?define ProductBuild     = "1.3" ?>
 <?define ProductRevision  = "0" ?>
@@ -89,7 +89,7 @@ D:\work\free\dc\beryllium\wix\beryllium.wxs<?xml version="1.0" encoding="UTF-8"?
             <Component Id="Comp_Application32" Guid="B100D0FF-AF56-0101-0314-079500628307" Win64="no">
               <Environment Id="PATH" Name="PATH" Value="[GSTREAMERSDKROOT_X86]\[GSTREAMERSDKVERSION_X86]\x86\bin" Permanent="no" Part="first" Action="set" System="$(var.SysEnv)" />
               <File Id="File_Beryllium_x86" Name="beryllium.exe" KeyPath="yes">
-                <Shortcut Id="Shortcut_Beryllium_x86" Directory="ProgramMenuFolder" Name="Beryllium" Advertise="yes" Icon="beryllium.ico">
+                <Shortcut Id="Shortcut_Beryllium_x86" Directory="ProgramMenuFolder" Name="Beryllium" Advertise="yes" Icon="beryllium.ico" WorkingDirectory="ProductFolder32">
                   <Icon Id="beryllium.ico" SourceFile="../beryllium.ico" />
                 </Shortcut>
               </File>
@@ -97,7 +97,7 @@ D:\work\free\dc\beryllium\wix\beryllium.wxs<?xml version="1.0" encoding="UTF-8"?
                 <File Id="File_Beryllium_pdb_x86" Name="beryllium.pdb" />
               <?endif ?>
             </Component>
-            <?include opencv32.wxi ?>
+
             <Directory Id="Translations32" Name="translations" FileSource="../">
               <Component Id="Comp_Translations32" Guid="B100D0FF-AF56-0102-0314-079500628307" Win64="no">
                 <File Id="File_Beryllium_ru_qm_x86" Name="beryllium_ru.qm"  Source="../beryllium_ru.qm"/>
@@ -111,6 +111,7 @@ D:\work\free\dc\beryllium\wix\beryllium.wxs<?xml version="1.0" encoding="UTF-8"?
             </Directory>
             <?if $(var.QtVersion)=4 ?>
               <?include Qt4Runtime32.wxi ?>
+              <?include opencv32.wxi ?>
             <?else ?>
               <?include Qt5Runtime32.wxi ?>
             <?endif ?>
@@ -157,22 +158,24 @@ D:\work\free\dc\beryllium\wix\beryllium.wxs<?xml version="1.0" encoding="UTF-8"?
       <ComponentRef Id="Comp_QtLibs32" />
       <ComponentRef Id="Comp_QtGstLibs32" />
       <ComponentRef Id="Comp_QtImageFormats32" />
-      <?if $(var.QtVersion)>4 ?>
-      <ComponentRef Id="Comp_QtPlatforms32" />
+      <?if $(var.QtVersion) < 5 ?>
+        <ComponentRef Id="Comp_opencv32" />
+      <?else ?>
+        <ComponentRef Id="Comp_QtPlatforms32" />
       <?endif ?>
       <ComponentRef Id="Comp_DBusService32" />
-      <ComponentRef Id="Comp_opencv32" />
       <?if $(var.Platform)=x64 ?>
-      <ComponentRef Id="Comp_Application64" />
-      <ComponentRef Id="Comp_Translations64" />
-      <ComponentRef Id="Comp_Sound64" />
-      <ComponentRef Id="Comp_QtLibs64" />
-      <ComponentRef Id="Comp_QtGstLibs64" />
-      <ComponentRef Id="Comp_QtImageFormats64" />
-      <?if $(var.QtVersion)>4 ?>
-      <ComponentRef Id="Comp_QtPlatforms64" />
-      <?endif ?>
-      <ComponentRef Id="Comp_opencv64" />
+        <ComponentRef Id="Comp_Application64" />
+        <ComponentRef Id="Comp_Translations64" />
+        <ComponentRef Id="Comp_Sound64" />
+        <ComponentRef Id="Comp_QtLibs64" />
+        <ComponentRef Id="Comp_QtGstLibs64" />
+        <ComponentRef Id="Comp_QtImageFormats64" />
+        <?if $(var.QtVersion) < 5 ?>
+          <ComponentRef Id="Comp_opencv64" />
+        <?else ?>
+          <ComponentRef Id="Comp_QtPlatforms64" />
+        <?endif ?>
       <?endif ?>
     </Feature>
 
