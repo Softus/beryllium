@@ -16,9 +16,9 @@
   </Component>
   <Component Id="Comp_QtGstLibs64" Guid="B100D0FF-AF56-0402-0314-079500628307" Win64="yes">
     <File Id="File_Qt5GLib2_X64" Name="Qt5GLib-2.0.dll" />
-    <File Id="File_Qt5GStreamer010_X64"  Name="Qt5GStreamer-0.10.dll" />
-    <File Id="File_Qt5GStreamerUi010_X64" Name="Qt5GStreamerUi-0.10.dll" />
-    <File Id="File_Qt5GStreamerUtils010_X64" Name="Qt5GStreamerUtils-0.10.dll" />
+    <File Id="File_Qt5GStreamer010_X64"  Name="Qt5GStreamer-1.0.dll" />
+    <File Id="File_Qt5GStreamerUi010_X64" Name="Qt5GStreamerUi-1.0.dll" />
+    <File Id="File_Qt5GStreamerUtils010_X64" Name="Qt5GStreamerUtils-1.0.dll" />
   </Component>
   <Directory Id="ImageFormats64" Name="imageformats" FileSource="$(var.SrcDir64)">
     <Component Id="Comp_QtImageFormats64" Guid="B100D0FF-AF56-0204-0314-079500628307" Win64="yes">
