@@ -11,7 +11,7 @@ Vendor: Beryllium team <beryllium@dc.baikal.ru>
 Packager: Beryllium team <beryllium@dc.baikal.ru>
 
 Requires: opencv
-BuildRequires: boost-devel, make, opencv-devel, libsoup-devel
+BuildRequires: boost-devel, make, opencv-devel, libsoup-devel, librtmp-devel
 
 %if %distro == centos
 BuildRequires: gstreamer-devel, qt-devel
