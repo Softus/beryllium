@@ -20,7 +20,7 @@ for arg in "$@"; do
   esac
 done
 
-if [ $dicom == 0 ]; then
+if [ $dicom = 0 ]; then
 rm -fr src/dicom*
   # Remove all non-free code
   for f in $(grep -l WITH_DICOM src)
@@ -34,7 +34,7 @@ else
   ' beryllium.pro
 fi
 
-if [ $debug == 1 ]; then
+if [ $debug = 1 ]; then
   sed -i '1 i CONFIG+=debug
   ' beryllium.pro
 fi

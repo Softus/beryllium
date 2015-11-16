@@ -16,10 +16,6 @@
 
 #include "smartshortcut.h"
 
-#include <QDebug>
-#include <qt_windows.h>
-
-
 bool ungrabKey(int key)
 {
     Q_UNUSED(key);
