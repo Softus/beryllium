@@ -627,7 +627,17 @@ void MainWindow::applySettings()
 
     QSettings settings;
 
-    btnStart->setEnabled(activePipeline && activePipeline->pipeline);
+    bool allPipelinesAreReady = false;
+    foreach (auto p, pipelines)
+    {
+        allPipelinesAreReady = p->pipeline;
+        if (!allPipelinesAreReady)
+        {
+            break;
+        }
+    }
+
+    btnStart->setEnabled(activePipeline && allPipelinesAreReady);
 
     if (archiveWindow != nullptr)
     {
@@ -937,26 +947,41 @@ bool MainWindow::takeSnapshot(Pipeline* pipeline, const QString& imageTemplate)
         return false;
     }
 
-    if (!pipeline)
-    {
-        pipeline = activePipeline;
-    }
-
     QSettings settings;
-    auto imageExt = getExt(settings.value("gst/image-encoder", DEFAULT_IMAGE_ENCODER).toString());
     auto actualImageTemplate = !imageTemplate.isEmpty()? imageTemplate:
             settings.value("storage/image-template", DEFAULT_IMAGE_TEMPLATE).toString();
-    auto imageFileName = replace(actualImageTemplate, ++imageNo).append(imageExt);
+    auto imageFileName = replace(actualImageTemplate, ++imageNo);
 
     playSound("shutter");
 
-    pipeline->setImageLocation(outputPath.absoluteFilePath(imageFileName));
+    settings.beginReadArray("gst/src");
+    if (pipeline)
+    {
+        settings.setArrayIndex(pipeline->index);
+        auto imageExt = getExt(settings.value("image-encoder", DEFAULT_IMAGE_ENCODER).toString());
+        pipeline->takeSnapshot(outputPath.absoluteFilePath(imageFileName).append(imageExt));
+    }
+    else
+    {
+        // If no pipeline given, use all available
+        //
+        foreach (auto p, pipelines)
+        {
+            settings.setArrayIndex(p->index);
+            if (p != activePipeline && settings.value("log-only").toBool())
+            {
+                // This source is for full video log only
+                //
+                continue;
+            }
+            auto imageExt = getExt(settings.value("image-encoder", DEFAULT_IMAGE_ENCODER).toString());
+            p->takeSnapshot(outputPath.absoluteFilePath(imageFileName).append(imageExt));
+        }
+    }
+    settings.endArray();
 
-    // Turn the valve on for a while.
-    //
-    pipeline->imageValve->setProperty("drop-probability", 0.0);
-    //
     // Once the image will be ready, the valve will be turned off again.
+    //
     btnSnapshot->setEnabled(false);
     return true;
 }
@@ -978,28 +1003,57 @@ bool MainWindow::startRecord(int duration, Pipeline* pipeline, const QString &cl
         return false;
     }
 
-    if (!pipeline)
-    {
-        pipeline = activePipeline;
-    }
-
     QSettings settings;
     auto actualTemplate = !clipFileTemplate.isEmpty()? clipFileTemplate:
         settings.value("storage/clip-template", DEFAULT_CLIP_TEMPLATE).toString();
+    actualTemplate = replace(actualTemplate, ++clipNo);
 
     settings.beginGroup("gst");
-    pipeline->recordLimit = duration > 0? duration:
+    auto saveThumbnails = settings.value("save-clip-thumbnails", DEFAULT_SAVE_CLIP_THUMBNAILS).toBool();
+
+    auto recordLimit = duration > 0? duration:
         settings.value("clip-limit", DEFAULT_CLIP_LIMIT).toBool()?
             settings.value("clip-countdown", DEFAULT_CLIP_COUNTDOWN).toInt(): 0;
 
+    if (pipeline)
+    {
+        doRecord(recordLimit, saveThumbnails, pipeline, actualTemplate);
+    }
+    else
+    {
+        // If no pipeline given, use all available
+        //
+        settings.beginReadArray("src");
+        foreach (auto p, pipelines)
+        {
+            settings.setArrayIndex(p->index);
+            if (p != activePipeline && settings.value("log-only").toBool())
+            {
+                // This source is for full video log only
+                //
+                continue;
+            }
+            doRecord(recordLimit, saveThumbnails, p, actualTemplate);
+        }
+        settings.endArray();
+    }
+
+    playSound("record");
+    return true;
+}
+
+void MainWindow::doRecord(int recordLimit, bool saveThumbnails, Pipeline* pipeline, const QString &actualTemplate)
+{
+    pipeline->recordLimit = recordLimit;
+
     if (!pipeline->recording)
     {
-        auto clipFileName = pipeline->appendVideoTail(outputPath, "clip", replace(actualTemplate, ++clipNo), false);
+        auto clipFileName = pipeline->appendVideoTail(outputPath, "clip", actualTemplate, false);
         qDebug() << clipFileName;
 
         if (!clipFileName.isEmpty())
         {
-            if (!settings.value("save-clip-thumbnails", DEFAULT_SAVE_CLIP_THUMBNAILS).toBool())
+            if (!saveThumbnails)
             {
                 auto item = new QListWidgetItem(QFileInfo(clipFileName).baseName(), listImagesAndClips);
                 item->setToolTip(clipFileName);
@@ -1027,19 +1081,23 @@ bool MainWindow::startRecord(int duration, Pipeline* pipeline, const QString &cl
         //
         pipeline->countdown = pipeline->recordLimit;
     }
-
-    playSound("record");
-    return true;
 }
 
 void MainWindow::stopRecord(Pipeline* pipeline)
 {
-    if (!pipeline)
+    if (pipeline)
     {
-        pipeline = activePipeline;
+        pipeline->stopRecordingVideoClip();
     }
-
-    pipeline->stopRecordingVideoClip();
+    else
+    {
+        // If no pipeline given, use all available
+        //
+        foreach (auto p, pipelines)
+        {
+            p->stopRecordingVideoClip();
+        }
+    }
 }
 
 void MainWindow::onClipRecordComplete()

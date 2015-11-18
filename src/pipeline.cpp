@@ -895,6 +895,14 @@ void Pipeline::enableVideo(bool enable)
         enable && (!motionStart || motionDetected)? 0.0: 1.0);
 }
 
+void Pipeline::takeSnapshot(const QString &filename)
+{
+    setImageLocation(QString(filename));
+    // Turn the valve on for a while.
+    //
+    imageValve->setProperty("drop-probability", 0.0);
+}
+
 void Pipeline::setImageLocation(QString filename)
 {
     if (!imageSink)
