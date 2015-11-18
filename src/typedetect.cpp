@@ -229,10 +229,16 @@ QImage extractImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int w
                 QGlib::emit<void>(src, "push-buffer", buf);
 #if GST_CHECK_VERSION(1,0,0)
                 auto rgbSample = QGlib::emit<QGst::SamplePtr>(sink, "pull-preroll");
-                img = extractRgbImage(rgbSample->buffer(), rgbSample->caps(), width);
+                if (rgbSample)
+                {
+                    img = extractRgbImage(rgbSample->buffer(), rgbSample->caps(), width);
+                }
 #else
                 auto rgbBuf = QGlib::emit<QGst::BufferPtr>(sink, "pull-preroll");
-                img = extractRgbImage(rgbBuf, rgbBuf->caps(), width);
+                if (rgbBuf)
+                {
+                    img = extractRgbImage(rgbBuf, rgbBuf->caps(), width);
+                }
 #endif
             }
             pipeline->setState(QGst::StateNull);
