@@ -24,6 +24,7 @@
 #include "videoeditor.h"
 #include "settingsdialog.h"
 #include "smartshortcut.h"
+#include "dbusconnect.h"
 
 #include <signal.h>
 
@@ -485,7 +486,7 @@ int main(int argc, char *argv[])
                 auto dbusService = settings.value("connect-to-dbus-service").toStringList();
                 if (dbusService.length() >= 4)
                 {
-                    if (!adapter->connectToService(0 == dbusService.at(0).compare("system", Qt::CaseInsensitive)
+                    if (!connectToDbusService(adapter, 0 == dbusService.at(0).compare("system", Qt::CaseInsensitive)
                         , dbusService.at(1), dbusService.at(2), dbusService.at(3)))
                     {
                         qDebug() << "Failed to connect to" << dbusService;

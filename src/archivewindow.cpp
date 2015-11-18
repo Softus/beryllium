@@ -22,6 +22,7 @@
 #include "thumbnaillist.h"
 #include "typedetect.h"
 #include "gstcompat.h"
+#include "dbusconnect.h"
 
 #ifdef WITH_DICOM
 #include "dicom/dcmclient.h"
@@ -309,15 +310,7 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
 
     updateHotkeys(settings);
 
-    QDBusConnection::systemBus().connect("org.freedesktop.UDisks", "/org/freedesktop/UDisks",
-                                         "org.freedesktop.UDisks", "DeviceAdded",
-                                         this, SLOT(onUsbDiskChanged()));
-    QDBusConnection::systemBus().connect("org.freedesktop.UDisks", "/org/freedesktop/UDisks",
-                                         "org.freedesktop.UDisks", "DeviceRemoved",
-                                         this, SLOT(onUsbDiskChanged()));
-    QDBusConnection::systemBus().connect("org.freedesktop.UDisks", "/org/freedesktop/UDisks",
-                                         "org.freedesktop.UDisks", "DeviceChanged",
-                                         this, SLOT(onUsbDiskChanged()));
+    connectToDbusService(this, true, "org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks");
 }
 
 void ArchiveWindow::updateHotkeys(QSettings& settings)
@@ -851,6 +844,21 @@ void ArchiveWindow::onDeleteClick()
         queueFileDeletion(item);
     }
     actionRestore->setEnabled(true);
+}
+
+void ArchiveWindow::DeviceAdded(QDBusObjectPath)
+{
+    onUsbDiskChanged();
+}
+
+void ArchiveWindow::DeviceRemoved(QDBusObjectPath)
+{
+    onUsbDiskChanged();
+}
+
+void ArchiveWindow::DeviceChanged(QDBusObjectPath)
+{
+    onUsbDiskChanged();
 }
 
 void ArchiveWindow::onUsbDiskChanged()

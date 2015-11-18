@@ -17,6 +17,7 @@
 #ifndef ARCHIVEWINDOW_H
 #define ARCHIVEWINDOW_H
 
+#include <QDBusObjectPath>
 #include <QDialog>
 #include <QDir>
 #include <QListView>
@@ -90,6 +91,10 @@ protected:
 signals:
     
 public slots:
+    void DeviceAdded(QDBusObjectPath);
+    void DeviceRemoved(QDBusObjectPath);
+    void DeviceChanged(QDBusObjectPath);
+
     void updateUsbStoreButton();
     void updateRoot();
     void updateHotkeys(QSettings &settings);

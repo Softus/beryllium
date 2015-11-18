@@ -111,7 +111,8 @@ SOURCES += \
     src/settings/mandatoryfields.cpp \
     src/settings/hotkeys.cpp \
     src/settings/debug.cpp \
-    src/settings/confirmations.cpp
+    src/settings/confirmations.cpp \
+    src/dbusconnect.cpp
 
 unix {
     SOURCES += src/smartshortcut_x11.cpp
@@ -162,7 +163,8 @@ HEADERS += \
     src/settings/storage.h \
     src/settings/studies.h \
     src/settings/videorecord.h \
-    gst/enumsrc.h
+    gst/enumsrc.h \
+    src/dbusconnect.h
 
 FORMS   +=
 
