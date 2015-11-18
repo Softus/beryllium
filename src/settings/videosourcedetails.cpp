@@ -115,6 +115,8 @@ VideoSourceDetails::VideoSourceDetails(const QVariantMap& parameters, QWidget *p
 
     layoutMain->addRow(nullptr, checkDeinterlace = new QCheckBox(tr("De&interlace")));
     checkDeinterlace->setChecked(parameters.value("video-deinterlace").toBool());
+    layoutMain->addRow(nullptr, checkLogOnly = new QCheckBox(tr("Use this source for video log &only")));
+    checkLogOnly->setChecked(parameters.value("log-only").toBool());
 
     layoutMain->addRow(tr("Video m&uxer"), listVideoMuxers = new QComboBox());
     layoutMain->addRow(tr("Ima&ge codec"), listImageCodecs = new QComboBox());
@@ -526,10 +528,11 @@ void VideoSourceDetails::updateParameters(QVariantMap& settings)
     settings["rtmp-push-url"]     = editRtmpPushUrl->text();
     settings["bitrate"]           = spinBitrate->value();
     settings["video-deinterlace"] = checkDeinterlace->isChecked();
+    settings["log-only"]          = checkLogOnly->isChecked();
 
     if (spinFps)
     {
         settings["limit-video-fps"] = checkFps->isChecked();
-        settings["video-max-fps"] = spinFps->value() > 0? spinFps->value(): QVariant();
+        settings["video-max-fps"]   = spinFps->value() > 0? spinFps->value(): QVariant();
     }
 }
