@@ -50,7 +50,9 @@ StorageSettings::StorageSettings(QWidget *parent)
     layoutImages->addRow(tr("&Folder template"), textFolderTemplate);
 
     layoutImages->addRow(tr("&Pictures template"), textImageTemplate = new QLineEdit(settings.value("image-template", DEFAULT_IMAGE_TEMPLATE).toString()));
+    connect(textImageTemplate, SIGNAL(textChanged(QString)), this, SLOT(checkForSerialNo(QString)));
     layoutImages->addRow(tr("&Clips template"), textClipTemplate = new QLineEdit(settings.value("clip-template", DEFAULT_CLIP_TEMPLATE).toString()));
+    connect(textClipTemplate, SIGNAL(textChanged(QString)), this, SLOT(checkForSerialNo(QString)));
 
     grpImages->setLayout(layoutImages);
     layoutMain->addWidget(grpImages);
@@ -88,10 +90,16 @@ StorageSettings::StorageSettings(QWidget *parent)
 
     grpLegend->setLayout(layoutLegend);
     layoutMain->addWidget(grpLegend);
+    layoutMain->addWidget(lblWarning = new QLabel);
+
+    // Accent to the warning, if it visible
+    //
+    lblWarning->setStyleSheet("color:red");
 
     layoutMain->addStretch(1); // For really huge displays we need this
 
     setLayout(layoutMain);
+    checkForSerialNo(QString());
 }
 
 void StorageSettings::onClickBrowse()
@@ -115,6 +123,22 @@ void StorageSettings::onClickVideoBrowse()
     if (dlg.exec())
     {
         textVideoOutputPath->setText(dlg.selectedFiles().first());
+    }
+}
+
+void StorageSettings::checkForSerialNo(const QString &)
+{
+    auto invalidField = !textImageTemplate->text().contains("%nn%")? tr("Pictures template"):
+            !textClipTemplate->text().contains("%nn%")? tr("Clips template"): nullptr;
+
+    if (invalidField != nullptr)
+    {
+        lblWarning->setText(tr("The field \"%1\" does not contain a serial number (template %nn%).\n"\
+                               "This may lead to overwriting of files.").arg(invalidField));
+    }
+    else
+    {
+        lblWarning->clear();
     }
 }
 

@@ -22,6 +22,7 @@
 
 QT_BEGIN_NAMESPACE
 class QCheckBox;
+class QLabel;
 class QLineEdit;
 class QxtLineEdit;
 class QSpinBox;
@@ -37,6 +38,7 @@ class StorageSettings : public QWidget
     QLineEdit   *textImageTemplate;
     QLineEdit   *textClipTemplate;
     QLineEdit   *textVideoTemplate;
+    QLabel      *lblWarning;
 
 public:
     Q_INVOKABLE explicit StorageSettings(QWidget *parent = 0);
@@ -45,6 +47,7 @@ signals:
     
 public slots:
     void save(QSettings& settings);
+    void checkForSerialNo(const QString &);
 
 private slots:
     void onClickBrowse();
