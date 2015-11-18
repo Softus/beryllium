@@ -110,6 +110,7 @@ class MainWindow : public QWidget
     bool confirmStopStudy();
     bool takeSnapshot(Pipeline* pipeline = nullptr, const QString& imageTemplate = QString());
     bool startRecord(int duration = 0, Pipeline* pipeline = nullptr, const QString &clipFileTemplate = QString());
+    void doRecord(int recordLimit, bool saveThumbnails, Pipeline* pipeline, const QString &actualTemplate);
     void stopRecord(Pipeline* pipeline = nullptr);
     Pipeline* findPipeline(const QString& alias);
 

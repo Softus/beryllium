@@ -58,6 +58,7 @@ class VideoSourceDetails : public QDialog
     QLineEdit *editRtmpPushUrl;
     QCheckBox *checkEnableRtmp;
     QCheckBox *checkDeinterlace;
+    QCheckBox *checkLogOnly;
     QGst::CapsPtr caps;
 
     QVariant selectedChannel;

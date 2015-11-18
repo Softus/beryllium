@@ -52,6 +52,7 @@ class Pipeline : public QObject
     void setElementProperty(QGst::ElementPtr& elm, const char* prop = nullptr,
                             const QGlib::Value& value = nullptr,
                             QGst::State minimumState = QGst::StatePlaying);
+    void setImageLocation(QString filename);
 
 public:
     Pipeline(int index, QObject *parent = 0);
@@ -63,7 +64,7 @@ public:
     void enableEncoder(bool enable);
     void enableClip(bool enable);
     void enableVideo(bool enable);
-    void setImageLocation(QString filename);
+    void takeSnapshot(const QString &filename);
     void stopRecordingVideoClip();
     void updateOverlayText();
 
