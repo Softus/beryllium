@@ -308,8 +308,14 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
     }
 
     auto colorConverter = QString(" ! ").append(settings.value("color-converter", DEFAULT_VIDEO_CONVERTER).toString());
-    auto videoCodec     = settings.value("video-encoder",  DEFAULT_VIDEO_ENCODER).toString();
+    auto videoCodec     = settings.value("video-encoder").toString();
     auto bitrate        = settings.value("bitrate").toString();
+
+    if (videoCodec.isEmpty())
+    {
+        bool useAv = QGst::ElementFactory::find("avenc_mpeg2video");
+        videoCodec = useAv? "avenc_mpeg2video": "ffenc_mpeg2video";
+    }
 
     pipe.append(deviceType);
 

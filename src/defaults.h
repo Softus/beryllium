@@ -51,7 +51,7 @@
 #define DEFAULT_HOTKEY_PLAY           (int)(Qt::Key_Space)
 #define DEFAULT_HOTKEY_SELECT         (int)(Qt::Key_Return)
 #define DEFAULT_OUTPUT_PATH           "/video"
-#define DEFAULT_OUTPUT_UNIQUE         false
+#define DEFAULT_OUTPUT_UNIQUE         true
 #define DEFAULT_RTP_PAYLOADER         "rtpmp2tpay"
 #define DEFAULT_RTP_SINK              "udpsink"
 #define DEFAULT_RTMP_SINK             "rtmpsink"
@@ -68,14 +68,12 @@
 #define DEFAULT_MOTION_THRESHOLD      0.02
 #define DEFAULT_MOTION_MIN_FRAMES     1
 #define DEFAULT_MOTION_GAP            5
-#define DEFAULT_IMAGE_TEMPLATE        "image-%study%-%nn%"
-#define DEFAULT_CLIP_TEMPLATE         "clip-%study%-%nn%"
-#define DEFAULT_VIDEO_TEMPLATE        "video-%study%-%nn%"
-#define DEFAULT_VIDEO_OUTPUT_UNIQUE   false
+#define DEFAULT_IMAGE_TEMPLATE        "image-%src%-%study%-%nn%"
+#define DEFAULT_CLIP_TEMPLATE         "clip-%src%-%study%-%nn%"
+#define DEFAULT_VIDEO_TEMPLATE        "video-%src%-%study%-%nn%"
 #define DEFAULT_IMAGE_ENCODER         "jpegenc"
 #define DEFAULT_SAVE_CLIP_THUMBNAILS  true
 #define DEFAULT_IMAGE_SINK            "multifilesink"
-#define DEFAULT_VIDEO_ENCODER         "ffenc_mpeg2video"
 #define DEFAULT_VIDEO_MUXER           "mpegpsmux"
 #define DEFAULT_LIMIT_VIDEO_FPS       false
 #define DEFAULT_VIDEO_MAX_FPS         30
@@ -113,7 +111,7 @@
 #ifdef QT_DEBUG
   #define DEFAULT_TIMEOUT 3 // 3 seconds for test builds
 #else
-  #define DEFAULT_TIMEOUT 30 // 30 seconds for prodaction builds
+  #define DEFAULT_TIMEOUT 30 // 30 seconds for production builds
 #endif
 #endif
 

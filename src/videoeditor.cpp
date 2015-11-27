@@ -478,7 +478,7 @@ bool VideoEditor::exportVideo(QFile* outFile)
 {
     QSettings settings;
     settings.beginGroup("gst");
-    auto encoder         = settings.value("video-encoder", DEFAULT_VIDEO_ENCODER).toString();
+    auto encoder         = settings.value("video-encoder").toString();
     auto colorConverter =  settings.value("color-converter", DEFAULT_VIDEO_CONVERTER).toString();
     auto fixColor        = settings.value(encoder + "-colorspace").toBool()? colorConverter + " ! ": "";
     auto encoderParams   = settings.value(encoder + "-parameters").toString();
@@ -487,25 +487,18 @@ bool VideoEditor::exportVideo(QFile* outFile)
 
     if (encoder.isEmpty())
     {
+        bool useAv = QGst::ElementFactory::find("avenc_mpeg2video");
         auto caps = typeDetect(filePath);
         if (caps.startsWith("video/x-dv"))
         {
             // Some distros have libav plugins, some ffmpeg plugins
             //
-            if (QGst::ElementFactory::find("avenc_dvvideo"))
-            {
-                encoder = "avenc_dvvideo";
-                muxer = "avmux_dv";
-            }
-            else
-            {
-                encoder = "ffenc_dvvideo";
-                muxer = "ffmux_dv";
-            }
+            encoder = useAv? "avenc_dvvideo": "ffenc_dvvideo";
+            muxer   = useAv? "avmux_dv":      "ffmux_dv";
         }
         else
         {
-            encoder = DEFAULT_VIDEO_ENCODER;
+            encoder = useAv? "avenc_mpeg2video": "ffenc_mpeg2video";
             muxer = DEFAULT_VIDEO_MUXER;
         }
     }

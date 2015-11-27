@@ -739,7 +739,7 @@ QDir MainWindow::checkPath(const QString tpl, bool needUnique)
     return dir;
 }
 
-void MainWindow::updateOutputPath(bool needUnique)
+void MainWindow::updateOutputPath()
 {
     QSettings settings;
     settings.beginGroup("storage");
@@ -747,7 +747,8 @@ void MainWindow::updateOutputPath(bool needUnique)
     auto root = settings.value("output-path", DEFAULT_OUTPUT_PATH).toString();
     auto tpl = settings.value("folder-template", DEFAULT_FOLDER_TEMPLATE).toString();
     auto path = replace(root + tpl, studyNo);
-    outputPath = checkPath(path, needUnique && settings.value("output-unique", DEFAULT_OUTPUT_UNIQUE).toBool());
+    auto unique = settings.value("output-unique", DEFAULT_OUTPUT_UNIQUE).toBool();
+    outputPath = checkPath(path, unique);
 
     auto videoRoot = settings.value("video-output-path").toString();
     if (videoRoot.isEmpty())
@@ -765,8 +766,7 @@ void MainWindow::updateOutputPath(bool needUnique)
     // If video path is same as images path, omit checkPath,
     // since it is already checked.
     //
-    videoOutputPath = (videoPath == path)? outputPath:
-        checkPath(videoPath, needUnique && settings.value("video-output-unique", DEFAULT_VIDEO_OUTPUT_UNIQUE).toBool());
+    videoOutputPath = (videoPath == path)? outputPath: checkPath(videoPath, unique);
 }
 
 void MainWindow::onClipFrameReady()
@@ -1259,7 +1259,7 @@ void MainWindow::onStartStudy()
     studyName        = fixFileName(dlgPatient->studyDescription());
 
     settings.setValue("study-no", ++studyNo);
-    updateOutputPath(true);
+    updateOutputPath();
     if (archiveWindow)
     {
         archiveWindow->setPath(outputPath.absolutePath());

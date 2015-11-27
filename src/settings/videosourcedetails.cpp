@@ -161,9 +161,12 @@ VideoSourceDetails::VideoSourceDetails(const QVariantMap& parameters, QWidget *p
 
     setLayout(layoutMain);
 
+    bool useAv = QGst::ElementFactory::find("avenc_mpeg2video");
+    auto defaultEncoder = useAv? "avenc_mpeg2video": "ffenc_mpeg2video";
+
     // Refill the boxes every time the page is shown
     //
-    auto selectedCodec = updateGstList(parameters, "video-encoder", DEFAULT_VIDEO_ENCODER, GST_ELEMENT_FACTORY_TYPE_ENCODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, listVideoCodecs);
+    auto selectedCodec = updateGstList(parameters, "video-encoder", defaultEncoder, GST_ELEMENT_FACTORY_TYPE_ENCODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, listVideoCodecs);
     listVideoCodecs->insertItem(0, tr("(none)"));
     if (selectedCodec.isEmpty())
     {

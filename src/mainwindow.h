@@ -100,7 +100,7 @@ class MainWindow : public QWidget
     QString replace(QString str, int seqNo = 0);
     void updateWindowTitle();
     QDir checkPath(const QString tpl, bool needUnique);
-    void updateOutputPath(bool needUnique);
+    void updateOutputPath();
     bool checkPipelines();
     void rebuildPipelines();
     void createPipeline(int index, int order);
