@@ -747,6 +747,11 @@ bool DcmClient::sendToServer(QWidget *parent, DcmDataset *dsPatient, const QFile
     QSettings settings;
     settings.beginGroup("dicom");
 
+    // Force send files to the server, even if they have been sent already (yes to all)
+    // or force to avoid sending files to the server, if they have been sent already (no to all)
+    //
+    int userChoice = 0;
+
     bool result = true;
     auto translate  = settings.value("translate-cyrillic", DEFAULT_TRANSLATE_CYRILLIC).toBool();
     auto allowClips = settings.value("export-clips", DEFAULT_EXPORT_CLIPS_TO_DICOM).toBool();
@@ -824,6 +829,31 @@ bool DcmClient::sendToServer(QWidget *parent, DcmDataset *dsPatient, const QFile
             pdlg.setValue(i);
             pdlg.setLabelText(tr("Storing '%1' to '%2'").arg(file.fileName(), server));
             qApp->processEvents();
+
+            // Do not bother user any more once she decided to send them all
+            //
+            if (userChoice != QMessageBox::YesToAll && getFileExtAttribute(filePath, "dicom-status") == "ok")
+            {
+                // Silently skip the file
+                //
+                if (userChoice == QMessageBox::NoToAll)
+                {
+                    qDebug() << "File" << filePath << "skipped by the user";
+                    continue;
+                }
+
+                // Ask user for directions
+                //
+                userChoice = QMessageBox::question(&pdlg, parent->windowTitle(),
+                    tr ("The file %1 has been already sent to a DICOM server.\n\nSend again?").arg(filePath),
+                    QMessageBox::No | QMessageBox::Yes | QMessageBox::NoToAll | QMessageBox::YesToAll);
+
+                if (userChoice == QMessageBox::No || userChoice == QMessageBox::NoToAll)
+                {
+                    qDebug() << "File" << filePath << "skipped by the user";
+                    continue;
+                }
+            }
 
             seriesUID[idx] = '0' + seriesNo;
             if (!sendToServer(server, dsPatient, seriesUID, seriesNo, filePath, mimeType, i))
