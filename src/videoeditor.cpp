@@ -515,9 +515,16 @@ bool VideoEditor::exportVideo(QFile* outFile)
 
     try
     {
-        auto pipeDef = QString("gnlfilesource location=\"%1\" media-start=%2 media-duration=%3 start=0 duration=%3 !"
-            " %4 %5 name=videoencoder %6 ! %7 ! filesink location=\"%8\"")
-            .arg(filePath).arg(start).arg(len).arg(fixColor, encoder, encoderParams, muxer).arg(outFile->fileName());
+        QString pipeDef;
+#if GST_CHECK_VERSION(1,0,0)
+        pipeDef.append("gnlurisource uri=\"").append(QUrl::fromLocalFile(filePath).toEncoded()).append("\" ");
+#else
+        pipeDef.append("gnlfilesource location=\"").append(filePath).append("\" ");
+#endif
+        pipeDef.append("media-start=").append(QString::number(start))
+            .append(" media-duration=").append(QString::number(len)).append(" start=0 duration=").append(QString::number(len))
+            .append(" ! ").append(fixColor).append(encoder).append(" name=videoencoder ").append(encoderParams)
+            .append(" ! ").append(muxer).append(" ! filesink location=\"").append(outFile->fileName()).append("\"");
         qDebug() << pipeDef;
         auto pipelineExport = QGst::Parse::launch(pipeDef).dynamicCast<QGst::Pipeline>();
 
