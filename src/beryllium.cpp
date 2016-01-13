@@ -504,11 +504,18 @@ int main(int argc, char *argv[])
 
     if (wnd)
     {
-        new ClickFilter(wnd);
-        wnd->grabGesture(Qt::TapAndHoldGesture);
-        new SmartShortcut(wnd);
-        fullScreen? wnd->showFullScreen(): wnd->show();
-        errCode = app.exec();
+        if (settings.value("long-tap-to-click").toBool())
+        {
+            new ClickFilter(wnd);
+            wnd->grabGesture(Qt::TapAndHoldGesture);
+        }
+
+        // SmartShortcut scope
+        {
+            new SmartShortcut(wnd);
+            fullScreen? wnd->showFullScreen(): wnd->show();
+            errCode = app.exec();
+        }
         delete wnd;
         QDBusConnection::sessionBus().unregisterObject("/ru/baikal/dc/Beryllium/Main");
     }
