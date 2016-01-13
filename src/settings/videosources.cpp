@@ -165,7 +165,8 @@ void VideoSources::updateDeviceList(const char* elmName, const char* propName)
         return;
     }
 
-    auto defaultDevice = src->property(propName).toString();
+    auto prop = src->property(propName);
+    auto defaultDevice = prop.toString();
 
     // Look for device-name for windows and "device" for linux/macosx
     //
@@ -174,7 +175,7 @@ void VideoSources::updateDeviceList(const char* elmName, const char* propName)
     {
         // Switch to the device
         //
-        src->setProperty(propName, deviceId);
+        src->setProperty(propName, QGlib::Value(deviceId).transformTo(prop.type()));
 
         auto friendlyName = src->property("device-name").toString();
         auto found = false;
