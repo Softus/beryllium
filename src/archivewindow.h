@@ -93,7 +93,8 @@ signals:
 public slots:
     void DeviceAdded(QDBusObjectPath);
     void DeviceRemoved(QDBusObjectPath);
-    void DeviceChanged(QDBusObjectPath);
+    void DeviceChanged(QDBusObjectPath, QVariantMap);
+    void InterfacesRemoved(QDBusObjectPath, QStringList);
 
     void updateUsbStoreButton();
     void updateRoot();

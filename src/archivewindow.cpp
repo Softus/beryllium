@@ -37,6 +37,7 @@
 #include <QBoxLayout>
 #include <QDBusInterface>
 #include <QDBusObjectPath>
+#include <QDBusMetaType>
 #include <QDBusReply>
 #include <QDebug>
 #include <QDesktopServices>
@@ -83,23 +84,75 @@
 
 static QSize videoSize(352, 258);
 
+typedef QMap<QString, QVariantMap> QVariantMapMap;
+Q_DECLARE_METATYPE(QVariantMapMap)
+
+typedef QMap<QDBusObjectPath, QVariantMapMap> QDBusObjectMap;
+Q_DECLARE_METATYPE(QDBusObjectMap)
+
+static auto reg = qDBusRegisterMetaType<QVariantMapMap>() | qDBusRegisterMetaType<QDBusObjectMap>();
+
 static QStringList collectRemovableDrives()
 {
+    auto bus = QDBusConnection::systemBus();
     QStringList ret;
-    QList<QDBusObjectPath> removableDrives;
-    QDBusReply<QList<QDBusObjectPath> > reply = QDBusConnection::systemBus().call(
-        QDBusMessage::createMethodCall("org.freedesktop.UDisks", "/org/freedesktop/UDisks",
-                                       "org.freedesktop.UDisks", "EnumerateDevices"));
+    QDBusReply<QDBusObjectMap> objectsReply = bus.call(
+        QDBusMessage::createMethodCall("org.freedesktop.UDisks2", "/org/freedesktop/UDisks2",
+                                       "org.freedesktop.DBus.ObjectManager", "GetManagedObjects"));
+    if (objectsReply.isValid())
+    {
+        auto objects = objectsReply.value();
+        for (auto i = objects.cbegin(); i != objects.end(); ++i)
+        {
+            auto udi = i.key().path();
+            auto map = i.value();
+
+            if (!udi.startsWith("/org/freedesktop/UDisks2/block_devices"))
+                 continue;
+
+            auto block = map["org.freedesktop.UDisks2.Block"];
+            if (block.isEmpty())
+                continue;
+
+            if (block["ReadOnly"].toBool())
+                continue;
+
+            auto drivePath = block["Drive"].value<QDBusObjectPath>();
+            auto drive = objects[drivePath]["org.freedesktop.UDisks2.Drive"];
+            if (drive.isEmpty())
+                continue;
+
+            if (!drive["Removable"].toBool())
+                continue;
+
+            auto fs = map["org.freedesktop.UDisks2.Filesystem"];
+            if (fs.isEmpty())
+                continue;
+
+            QList<QByteArray> list;
+            fs["MountPoints"].value<QDBusArgument>() >> list;
+
+            if (list.isEmpty())
+                continue;
+
+            ret << QString::fromLocal8Bit(list.first());
+        }
+        return ret;
+    }
+
+    QDBusReply<QList<QDBusObjectPath> > reply = bus.call(
+            QDBusMessage::createMethodCall("org.freedesktop.UDisks", "/org/freedesktop/UDisks",
+                                           "org.freedesktop.UDisks", "EnumerateDevices"));
     if (reply.isValid())
     {
+        QList<QDBusObjectPath> removableDrives;
         auto paths = reply.value();
 
         // Collect all removable drives
         //
         foreach (auto path, paths)
         {
-            QDBusInterface iface("org.freedesktop.UDisks", path.path(),
-                                     "org.freedesktop.DBus.Properties", QDBusConnection::systemBus());
+            QDBusInterface iface("org.freedesktop.UDisks", path.path(), "org.freedesktop.DBus.Properties", bus);
             if (!iface.isValid())
                 continue;
 
@@ -114,8 +167,7 @@ static QStringList collectRemovableDrives()
         //
         foreach (auto path, paths)
         {
-            QDBusInterface iface("org.freedesktop.UDisks", path.path(),
-                                     "org.freedesktop.DBus.Properties", QDBusConnection::systemBus());
+            QDBusInterface iface("org.freedesktop.UDisks", path.path(), "org.freedesktop.DBus.Properties", bus);
 
             if (!iface.isValid())
                 continue;
@@ -310,7 +362,16 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
 
     updateHotkeys(settings);
 
-    connectToDbusService(this, true, "org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks");
+    auto conn = connectToDbusService(this, true, "org.freedesktop.UDisks2", "/org/freedesktop/UDisks2", "org.freedesktop.DBus.ObjectManager");
+    if (conn <= 0)
+    {
+        qDebug() << "Connect to org.freedesktop.UDisks2";
+        conn = connectToDbusService(this, true, "org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks");
+        if (conn <= 0)
+        {
+            qDebug() << "Connect to org.freedesktop.UDisks";
+        }
+    }
 }
 
 void ArchiveWindow::updateHotkeys(QSettings& settings)
@@ -856,7 +917,12 @@ void ArchiveWindow::DeviceRemoved(QDBusObjectPath)
     onUsbDiskChanged();
 }
 
-void ArchiveWindow::DeviceChanged(QDBusObjectPath)
+void ArchiveWindow::DeviceChanged(QDBusObjectPath, QVariantMap)
+{
+    onUsbDiskChanged();
+}
+
+void ArchiveWindow::InterfacesRemoved(QDBusObjectPath, QStringList)
 {
     onUsbDiskChanged();
 }
