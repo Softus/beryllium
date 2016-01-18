@@ -112,7 +112,7 @@ static QStringList collectRemovableDrives()
 
             auto drivePath = block["Drive"].value<QDBusObjectPath>();
             auto drive = objects[drivePath]["org.freedesktop.UDisks2.Drive"];
-            if (drive.isEmpty() || !drive["Removable"].toBool())
+            if (drive.isEmpty() || !drive["Ejectable"].toBool())
                 continue;
 
             auto fs = map["org.freedesktop.UDisks2.Filesystem"];
