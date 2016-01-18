@@ -83,63 +83,61 @@
 #define GALLERY_MODE 2
 
 static QSize videoSize(352, 258);
-
-typedef QMap<QString, QVariantMap> QVariantMapMap;
-Q_DECLARE_METATYPE(QVariantMapMap)
-
-typedef QMap<QDBusObjectPath, QVariantMapMap> QDBusObjectMap;
-Q_DECLARE_METATYPE(QDBusObjectMap)
-
 static auto reg = qDBusRegisterMetaType<QVariantMapMap>() | qDBusRegisterMetaType<QDBusObjectMap>();
 
 static QStringList collectRemovableDrives()
 {
     auto bus = QDBusConnection::systemBus();
     QStringList ret;
+
+    //
+    // UDisks2 interface
+    //
     QDBusReply<QDBusObjectMap> objectsReply = bus.call(
         QDBusMessage::createMethodCall("org.freedesktop.UDisks2", "/org/freedesktop/UDisks2",
                                        "org.freedesktop.DBus.ObjectManager", "GetManagedObjects"));
     if (objectsReply.isValid())
     {
         auto objects = objectsReply.value();
-        for (auto i = objects.cbegin(); i != objects.end(); ++i)
+        for (auto i = objects.begin(); i != objects.end(); ++i)
         {
             auto udi = i.key().path();
-            auto map = i.value();
-
             if (!udi.startsWith("/org/freedesktop/UDisks2/block_devices"))
                  continue;
 
+            auto map = i.value();
             auto block = map["org.freedesktop.UDisks2.Block"];
-            if (block.isEmpty())
-                continue;
-
-            if (block["ReadOnly"].toBool())
+            if (block.isEmpty() || block["ReadOnly"].toBool())
                 continue;
 
             auto drivePath = block["Drive"].value<QDBusObjectPath>();
             auto drive = objects[drivePath]["org.freedesktop.UDisks2.Drive"];
-            if (drive.isEmpty())
-                continue;
-
-            if (!drive["Removable"].toBool())
+            if (drive.isEmpty() || !drive["Removable"].toBool())
                 continue;
 
             auto fs = map["org.freedesktop.UDisks2.Filesystem"];
             if (fs.isEmpty())
                 continue;
 
+            // For some unknown reason, the "MountPoints" property is not
+            // an array of strings. It's an array of array of bytes
+            //
             QList<QByteArray> list;
             fs["MountPoints"].value<QDBusArgument>() >> list;
 
             if (list.isEmpty())
                 continue;
 
+            // Use the first one if multiple mount points are present
+            //
             ret << QString::fromLocal8Bit(list.first());
         }
         return ret;
     }
 
+    //
+    // UDisks interface
+    //
     QDBusReply<QList<QDBusObjectPath> > reply = bus.call(
             QDBusMessage::createMethodCall("org.freedesktop.UDisks", "/org/freedesktop/UDisks",
                                            "org.freedesktop.UDisks", "EnumerateDevices"));
@@ -196,24 +194,25 @@ static QStringList collectRemovableDrives()
                 ret.append(reply.value().toString());
             }
         }
+        return ret;
     }
 #ifdef Q_OS_WIN
-    else
+    //
+    // Native windows interface
+    //
+    DWORD dummy = 0, drives = GetLogicalDrives();
+    wchar_t drvPath[] = {'0', ':', '\\', '\x0'};
+
+    for (int i = 0; i < 26; ++i)
     {
-        DWORD dummy = 0, drives = GetLogicalDrives();
-        wchar_t drvPath[] = {'0', ':', '\\', '\x0'};
+        if (!(drives & (1 << i)))
+            continue;
 
-        for (int i = 0; i < 26; ++i)
+        drvPath[0] = 'A' + i;
+        if (GetDriveTypeW(drvPath) == DRIVE_REMOVABLE &&
+            GetDiskFreeSpaceW(drvPath, &dummy, &dummy, &dummy, &dummy))
         {
-            if (!(drives & (1 << i)))
-                continue;
-
-            drvPath[0] = 'A' + i;
-            if (GetDriveTypeW(drvPath) == DRIVE_REMOVABLE &&
-                GetDiskFreeSpaceW(drvPath, &dummy, &dummy, &dummy, &dummy))
-            {
-                ret.append(QString::fromWCharArray(drvPath));
-            }
+            ret.append(QString::fromWCharArray(drvPath));
         }
     }
 #endif
@@ -907,22 +906,27 @@ void ArchiveWindow::onDeleteClick()
     actionRestore->setEnabled(true);
 }
 
-void ArchiveWindow::DeviceAdded(QDBusObjectPath)
+void ArchiveWindow::DeviceAdded(const QDBusObjectPath &)
 {
     onUsbDiskChanged();
 }
 
-void ArchiveWindow::DeviceRemoved(QDBusObjectPath)
+void ArchiveWindow::DeviceRemoved(const QDBusObjectPath&)
 {
     onUsbDiskChanged();
 }
 
-void ArchiveWindow::DeviceChanged(QDBusObjectPath, QVariantMap)
+void ArchiveWindow::DeviceChanged(const QDBusObjectPath&, const QVariantMap&)
 {
     onUsbDiskChanged();
 }
 
-void ArchiveWindow::InterfacesRemoved(QDBusObjectPath, QStringList)
+void ArchiveWindow::InterfacesAdded(const QDBusObjectPath&, const QVariantMapMap&)
+{
+    onUsbDiskChanged();
+}
+
+void ArchiveWindow::InterfacesRemoved(const QDBusObjectPath&, const QStringList&)
 {
     onUsbDiskChanged();
 }
@@ -930,7 +934,7 @@ void ArchiveWindow::InterfacesRemoved(QDBusObjectPath, QStringList)
 void ArchiveWindow::onUsbDiskChanged()
 {
     killTimer(updateUsbTimerId);
-    updateUsbTimerId = startTimer(200);
+    updateUsbTimerId = startTimer(500);
 }
 
 void ArchiveWindow::updateUsbStoreButton()

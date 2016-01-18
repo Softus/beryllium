@@ -35,6 +35,11 @@ class QToolBar;
 class QToolButton;
 QT_END_NAMESPACE
 
+typedef QMap<QString, QVariantMap> QVariantMapMap;
+Q_DECLARE_METATYPE(QVariantMapMap)
+typedef QMap<QDBusObjectPath, QVariantMapMap> QDBusObjectMap;
+Q_DECLARE_METATYPE(QDBusObjectMap)
+
 class ArchiveWindow : public QWidget
 {
     Q_OBJECT
@@ -91,10 +96,14 @@ protected:
 signals:
     
 public slots:
-    void DeviceAdded(QDBusObjectPath);
-    void DeviceRemoved(QDBusObjectPath);
-    void DeviceChanged(QDBusObjectPath, QVariantMap);
-    void InterfacesRemoved(QDBusObjectPath, QStringList);
+    // Udisks slots
+    void DeviceAdded(const QDBusObjectPath&);
+    void DeviceRemoved(const QDBusObjectPath &);
+    void DeviceChanged(const QDBusObjectPath &, const QVariantMap &);
+
+    // Udisks2 slots
+    void InterfacesAdded(const QDBusObjectPath&, const QVariantMapMap&);
+    void InterfacesRemoved(const QDBusObjectPath&, const QStringList&);
 
     void updateUsbStoreButton();
     void updateRoot();
