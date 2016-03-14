@@ -311,7 +311,9 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
             }
             else if (deviceType == "videotestsrc")
             {
-#if GST_CHECK_VERSION(1,0,0)
+#if GST_CHECK_VERSION(1,6,0)
+                auto numPatterns = 24;
+#elif GST_CHECK_VERSION(1,0,0)
                 auto numPatterns = 22;
 #else
                 auto numPatterns = 20;
@@ -415,25 +417,29 @@ void VideoSourceDetails::formatChanged(int index)
     listSizes->clear();
     listSizes->addItem(tr("(default)"));
 
-    auto selectedFormat = listFormats->itemData(index).toString();
-    if (index < 0 || !caps || selectedFormat.isEmpty())
+    auto selectedFormatStr = listFormats->itemData(index).toString();
+    if (index < 0 || !caps || selectedFormatStr.isEmpty())
     {
         return;
     }
 
+    // It is difficult to store QGst::Caps in QVariant, so we are using string serialization.
+    //
+    auto selectedFormat = QGst::Caps::fromString(selectedFormatStr);
+
     QList<QSize> sizes;
     for (uint i = 0; i < caps->size(); ++i)
     {
-        auto s = caps->internalStructure(i);
-        auto format = s->value("format");
-        auto formatName = !format.isValid()? s->name(): s->name().append(",format=").append(valueToString(format));
-        if (selectedFormat != formatName)
+        // Format may be an array on strings, so silly strcmp may not work
+        //
+        if (!selectedFormat->canIntersect(caps->copyNth(i)))
         {
             continue;
         }
 
-        QGst::IntRange widthRange = getRange(s->value("width"));
-        QGst::IntRange heightRange = getRange(s->value("height"));
+        auto s = caps->internalStructure(i);
+        auto widthRange = getRange(s->value("width"));
+        auto heightRange = getRange(s->value("height"));
 
         if (widthRange.end <= 0 || heightRange.end <= 0)
         {
@@ -483,7 +489,7 @@ void VideoSourceDetails::formatChanged(int index)
 
     // And remove duplicates
     //
-    sizes.erase(std::unique (sizes.begin(), sizes.end()), sizes.end());
+    sizes.erase(std::unique(sizes.begin(), sizes.end()), sizes.end());
 
     foreach (auto size, sizes)
     {
