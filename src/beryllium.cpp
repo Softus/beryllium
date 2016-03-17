@@ -405,6 +405,16 @@ int main(int argc, char *argv[])
     gstApplyFixes();
 #endif
 
+    // Get rid of vaapisink until somebody get it fixed
+    //
+    auto registry = gst_registry_get();
+    auto feature = gst_registry_lookup_feature(registry, "vaapisink");
+    if (feature)
+    {
+        gst_plugin_feature_set_rank(feature, GST_RANK_NONE);
+        gst_object_unref(feature);
+    }
+
     // QT init
     //
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
