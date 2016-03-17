@@ -813,7 +813,7 @@ void MainWindow::onImageSaved(const QString& filename, const QString &tooltip, c
 
 bool MainWindow::startVideoRecord()
 {
-    if (!activePipeline->pipeline)
+    if (!activePipeline || !activePipeline->pipeline)
     {
         // How we get here?
         //
@@ -867,7 +867,15 @@ void MainWindow::onStartClick()
 {
     if (!running)
     {
-        onStartStudy();
+        if (activePipeline)
+        {
+            onStartStudy();
+        }
+        else
+        {
+            QMessageBox::critical(this, windowTitle(),
+                tr("Failed to start recording.\nPlease, adjust the video source settings."), QMessageBox::Ok);
+        }
     }
     else
     {
