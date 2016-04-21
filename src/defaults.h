@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 Irkutsk Diagnostic Center.
+ * Copyright (C) 2013-2016 Irkutsk Diagnostic Center.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -61,7 +61,7 @@
 #define DEFAULT_CLIP_LIMIT            true
 #define DEFAULT_MANDATORY_FIELD_COLOR "red"
 #define DEFAULT_MANDATORY_FIELDS      (QStringList() << "PatientID" << "Name")
-#define DEFAULT_MOTION_DETECTION      true
+#define DEFAULT_MOTION_DETECTION      false
 #define DEFAULT_MOTION_START          true
 #define DEFAULT_MOTION_STOP           true
 #define DEFAULT_MOTION_SENSITIVITY    0.75
