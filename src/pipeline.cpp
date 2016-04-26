@@ -389,7 +389,7 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
         pipe.append(" ! dvdemux ! dvdec");
     }
 
-    pipe.append(colorConverter).append(srcDeinterlace? " ! deinterlace mode=1 method=4": "");
+    pipe.append(colorConverter).append(srcDeinterlace? " ! deinterlace": "");
 
     // v4l2src ... ! tee name=splitter [! colorspace ! motioncells] ! colorspace ! autovideosink");
     //
