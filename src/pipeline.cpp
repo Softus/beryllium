@@ -51,6 +51,15 @@
   #endif
 #endif
 
+static void ensurePathExist(const QString& filePath)
+{
+    auto dir = QFileInfo(filePath).dir();
+    if (!dir.mkpath("."))
+    {
+        qDebug() << "Failed to create folder" << dir.absolutePath() << errno;
+    }
+}
+
 Pipeline::Pipeline(int index, QObject *parent) :
     QObject(parent),
     index(index),
@@ -767,6 +776,8 @@ QString Pipeline::appendVideoTail(const QDir& dir, const QString& prefix, QStrin
     //
     clipFileName.replace("%src%", alias).append(split? "%02d": "").append(videoExt);
     auto absPath = dir.absoluteFilePath(clipFileName);
+    ensurePathExist(absPath);
+
     sink->setProperty("location", absPath);
     if (split)
     {
@@ -920,6 +931,7 @@ void Pipeline::setImageLocation(QString filename)
     // Pay attention to %src% macro, which can not be evaluated till now.
     //
     filename.replace("%src%", alias);
+    ensurePathExist(filename);
 
     // Do not bother the pipeline, if the location is the same.
     //

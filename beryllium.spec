@@ -1,7 +1,7 @@
 Summary: Beryllium DICOM edition.
 Name: beryllium
 Provides: beryllium
-Version: 1.3.4
+Version: 1.3.6
 Release: 1
 License: LGPL-2.1+
 Source: %{name}.tar.gz
@@ -10,8 +10,14 @@ URL: http://dc.baikal.ru/products/beryllium
 Vendor: Beryllium team <beryllium@dc.baikal.ru>
 Packager: Beryllium team <beryllium@dc.baikal.ru>
 
-Requires: opencv
-BuildRequires: boost-devel, make, opencv-devel, libsoup-devel, librtmp-devel
+BuildRequires: make
+
+%if %distro == fedora
+BuildRequires: gstreamer1-devel, qt-devel, qt5-gstreamer-devel
+Requires: gstreamer1, qt5
+Requires: gstreamer1-plugins-base, gstreamer1-plugins-good
+Requires: gstreamer1-plugins-bad-free, gnonlin
+%endif
 
 %if %distro == centos
 BuildRequires: gstreamer-devel, qt-devel
@@ -19,22 +25,25 @@ Requires: gstreamer >= 0.10.35, qt4 >= 4.6.0
 Requires: gstreamer-plugins-base >= 0.10.31, gstreamer-plugins-good >= 0.10.23
 Requires: gstreamer-plugins-bad >= 0.10.19, gstreamer-plugins-ugly >= 0.10.18
 Requires: gstreamer-ffmpeg, gnonlin
-%else
-BuildRequires: gstreamer-0_10-devel, libqt4-devel
-Requires: gstreamer-0_10-plugins-base >= 0.10.31, gstreamer-0_10-plugins-good >= 0.10.23
-Requires: gstreamer-0_10-plugins-bad >= 0.10.19, gstreamer-0_10-plugins-ugly >= 0.10.18
-Requires: gstreamer-0_10-plugins-ffmpeg, gstreamer-0_10-plugin-gnonlin
-Requires: libgstreamer-0_10-0 >= 0.10.35, libqt4 >= 4.6.0
+%endif
+
+%if %distro == opensuse
+BuildRequires: gstreamer-devel, libqt5-qtbase-devel, gstreamer-plugins-qt5-devel
+Requires: gstreamer-plugins-base, gstreamer-plugins-good
+Requires: gstreamer-plugins-bad, gstreamer-plugins-ugly
+Requires: gstreamer-plugin-gnonlin
 %endif
 
 %if %dicom == 1
-BuildRequires: libmediainfo-devel, dcmtk-devel, tcp_wrappers-devel
+BuildRequires: libmediainfo-devel, dcmtk-devel, tcp_wrappers-devel, openssl-devel
+
 %if %distro == centos
 Requires: dcmtk, openssl, libmediainfo, libzen
 BuildRequires: openssl-devel
-%else
-Requires: libdcmtk3_6, libopenssl1_0_0, libmediainfo0, libzen0
-BuildRequires: libopenssl-devel
+%endif
+
+%if %distro == opensuse
+Requires: dcmtk, openssl, libmediainfo0, libzen0
 %endif
 
 %endif

@@ -3,14 +3,14 @@ Section: contrib/misc
 Priority: optional
 Maintainer: Beryllium team <beryllium@dc.baikal.ru>
 Standards-Version: 3.2.1
-Build-Depends: libboost-dev, libgstreamer0.10-dev | libgstreamer1.0-dev,
-  libgstreamer-plugins-base0.10-dev | libgstreamer-plugins-base1.0-dev,
-  libqt5opengl5-dev | libqt4-opengl-dev,
-  libdcmtk2-dev, libmediainfo-dev, libssl-dev, libwrap0-dev
+Build-Depends: libboost-dev, libgstreamer1.0-dev, libqt5gstreamer-dev,
+  libgstreamer-plugins-base1.0-dev, libqt5opengl5-dev, libdcmtk2-dev, 
+  libmediainfo-dev, libssl-dev, libwrap0-dev, libgudev-1.0-dev,
+  libavc1394-dev, libraw1394-dev, libgudev-1.0-dev, libv4l-dev
 
 Package: beryllium
 Architecture: i386 amd64
 Pre-Depends: debconf (>= 1.1) | debconf-2.0
-Depends: ${shlibs:Depends}, gstreamer0.10-gnonlin | gstreamer1.0-gnonlin
+Depends: ${shlibs:Depends}, gstreamer1.0-gnonlin
 Description: Beryllium DICOM edition
   Video and image capturing for medicine.

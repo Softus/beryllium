@@ -976,9 +976,21 @@ void ArchiveWindow::onUsbStoreClick()
     copyToFolder(sender()->property("disk").toString());
 }
 
+static QFileInfoList addFilesRecursively(const QDir& folder)
+{
+    auto list = folder.entryInfoList(QDir::Files);
+
+    foreach (auto subFolder, folder.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot))
+    {
+        list += addFilesRecursively(QDir(subFolder.absoluteFilePath()));
+    }
+
+    return list;
+}
+
 void ArchiveWindow::copyToFolder(const QString& targetPath)
 {
-    QFileInfoList files = curr.entryInfoList(QDir::Files);
+    auto files = addFilesRecursively(curr);
 
     if (files.empty())
     {
@@ -1009,13 +1021,14 @@ void ArchiveWindow::copyToFolder(const QString& targetPath)
         pdlg.setValue(i);
         pdlg.setLabelText(tr("Copying '%1' to '%2'").arg(file.fileName(), targetDir.absolutePath()));
         qApp->processEvents();
-        if (!QFile::copy(filePath, targetDir.absoluteFilePath(file.fileName())))
+        auto targetFileName = targetDir.absoluteFilePath(curr.relativeFilePath(file.absoluteFilePath()));
+        if (!QFileInfo(targetFileName).dir().mkpath(".") ||  !QFile::copy(filePath, targetFileName))
         {
             auto error = QString::fromLocal8Bit(strerror(errno));
             setFileExtAttribute(filePath, "usb-status", error);
             if (QMessageBox::Yes != QMessageBox::critical(&pdlg, windowTitle(),
                   tr("Failed to copy '%1' to '%2':\n%3\nContinue?")
-                      .arg(file.fileName(), targetDir.absolutePath(), error),
+                      .arg(file.fileName(), targetFileName, error),
                   QMessageBox::Yes, QMessageBox::No))
             {
                 // The user choose to cancel
@@ -1034,11 +1047,19 @@ void ArchiveWindow::copyToFolder(const QString& targetPath)
 
     if (result)
     {
-        int userChoice = QMessageBox::information(this, windowTitle(),
-            tr("All files were successfully copied."), QMessageBox::Close | QMessageBox::Ok, QMessageBox::Close);
-        if (QMessageBox::Close == userChoice)
+        QMessageBox box(QMessageBox::Information, windowTitle(),
+                        tr("All files were successfully copied."), QMessageBox::Close, this);
+        box.addButton(tr("C&apture"), QMessageBox::AcceptRole);
+        box.addButton(tr("&Browser"), QMessageBox::ApplyRole);
+
+        int userChoice = box.exec();
+        if (0 == userChoice)
         {
             onBackToMainWindowClick();
+        }
+        else if (1 == userChoice)
+        {
+            QDesktopServices::openUrl(QUrl::fromLocalFile(targetDir.absolutePath()));
         }
     }
 }

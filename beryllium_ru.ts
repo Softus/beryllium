@@ -92,34 +92,34 @@ MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
 <context>
     <name>ArchiveWindow</name>
     <message>
-        <location filename="src/archivewindow.cpp" line="185"/>
-        <location filename="src/archivewindow.cpp" line="1038"/>
+        <location filename="src/archivewindow.cpp" line="236"/>
+        <location filename="src/archivewindow.cpp" line="1129"/>
         <source>Archive</source>
         <oldsource>archive</oldsource>
         <translation>Архив</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="189"/>
+        <location filename="src/archivewindow.cpp" line="240"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="195"/>
+        <location filename="src/archivewindow.cpp" line="246"/>
         <source>Upload</source>
         <translation>В хранилище</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="230"/>
+        <location filename="src/archivewindow.cpp" line="281"/>
         <source>File browser</source>
         <translation>Проводник</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="220"/>
+        <location filename="src/archivewindow.cpp" line="271"/>
         <source>List</source>
         <translation>Список</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="187"/>
+        <location filename="src/archivewindow.cpp" line="238"/>
         <source>Back</source>
         <translation>Обратно</translation>
     </message>
@@ -133,99 +133,117 @@ MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
         <translation type="obsolete">Выбрать все</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="206"/>
+        <location filename="src/archivewindow.cpp" line="257"/>
         <source>Edit</source>
         <translation>Правка</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="208"/>
+        <location filename="src/archivewindow.cpp" line="259"/>
         <source>Up</source>
         <translation>Вверх</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="191"/>
+        <location filename="src/archivewindow.cpp" line="242"/>
         <source>Restore</source>
         <translation>Вернуть</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="199"/>
+        <location filename="src/archivewindow.cpp" line="250"/>
         <source>to USB</source>
         <translation>на USB</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="222"/>
+        <location filename="src/archivewindow.cpp" line="273"/>
         <source>Icons</source>
         <translation>Значки</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="224"/>
+        <location filename="src/archivewindow.cpp" line="275"/>
         <source>Gallery</source>
         <translation>Галерея</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="233"/>
+        <location filename="src/archivewindow.cpp" line="284"/>
         <source>Path</source>
         <oldsource>path</oldsource>
         <translation>Путь</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="244"/>
-        <location filename="src/archivewindow.cpp" line="247"/>
+        <location filename="src/archivewindow.cpp" line="295"/>
+        <location filename="src/archivewindow.cpp" line="298"/>
         <source>Previous</source>
         <oldsource>Prev</oldsource>
         <translation>Предыдущий</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="266"/>
-        <location filename="src/archivewindow.cpp" line="269"/>
+        <location filename="src/archivewindow.cpp" line="317"/>
+        <location filename="src/archivewindow.cpp" line="320"/>
         <source>Next</source>
         <oldsource>next</oldsource>
         <translation>Следующий</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="279"/>
+        <location filename="src/archivewindow.cpp" line="330"/>
         <source>Media</source>
         <oldsource>media</oldsource>
         <translation>Медия</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="280"/>
+        <location filename="src/archivewindow.cpp" line="331"/>
         <source>Rewing</source>
         <translation>Отмотать назад</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="283"/>
-        <location filename="src/archivewindow.cpp" line="1319"/>
+        <location filename="src/archivewindow.cpp" line="334"/>
+        <location filename="src/archivewindow.cpp" line="1410"/>
         <source>Play</source>
         <translation>Воспроизвести</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="285"/>
+        <location filename="src/archivewindow.cpp" line="336"/>
         <source>Forward</source>
         <translation>Перемотать вперёд</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="591"/>
+        <location filename="src/archivewindow.cpp" line="651"/>
         <source>The file was uploaded to a storage server</source>
         <oldsource>The file was uploaded to a DICOM server</oldsource>
         <translation>Файл был загружен в хранилище</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="603"/>
+        <location filename="src/archivewindow.cpp" line="663"/>
         <source>The file was copied to an usb drive</source>
         <translation>Файл был скопирован на USB диск</translation>
+    </message>
+    <message>
+        <location filename="src/archivewindow.cpp" line="1052"/>
+        <source>C&amp;apture</source>
+        <translation>&amp;Захват</translation>
+    </message>
+    <message>
+        <location filename="src/archivewindow.cpp" line="1053"/>
+        <source>&amp;Browser</source>
+        <translation>&amp;Проводник</translation>
+    </message>
+    <message>
+        <source>&amp;Return to capture</source>
+        <translation>&amp;Вернуться к захвату</translation>
+    </message>
+    <message>
+        <source>&amp;Show in files</source>
+        <translation>&amp;Показать в проводнике</translation>
     </message>
     <message>
         <source>No removable drives found.</source>
         <translation type="obsolete">Съёмные диски не найдены.</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="940"/>
+        <location filename="src/archivewindow.cpp" line="1022"/>
         <source>Copying &apos;%1&apos; to &apos;%2&apos;</source>
         <translation>Копирование &apos;%1&apos; в &apos;%2&apos; </translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="947"/>
+        <location filename="src/archivewindow.cpp" line="1030"/>
         <source>Failed to copy &apos;%1&apos; to &apos;%2&apos;:
 %3
 Continue?</source>
@@ -234,7 +252,7 @@ Continue?</source>
 Продолжить?</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="968"/>
+        <location filename="src/archivewindow.cpp" line="1051"/>
         <source>All files were successfully copied.</source>
         <translation>Все файлы были успешно скопированы.</translation>
     </message>
@@ -259,7 +277,7 @@ Continue?</source>
         <translation type="obsolete">Вы действительно хотите отправить результат в хранилище?</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1007"/>
+        <location filename="src/archivewindow.cpp" line="1098"/>
         <source>All files were successfully stored.</source>
         <translation>Все файлы были успешно сохранены.</translation>
     </message>
@@ -272,7 +290,7 @@ Continue?</source>
         <translation type="obsolete">Вы действительно хотите отправить выбранные объекты в хранилище?</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1033"/>
+        <location filename="src/archivewindow.cpp" line="1124"/>
         <source>Failed to launch </source>
         <translation>Ошибка при выполнении </translation>
     </message>
@@ -281,7 +299,7 @@ Continue?</source>
         <translation type="obsolete">Архив - %1</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1319"/>
+        <location filename="src/archivewindow.cpp" line="1410"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
@@ -992,6 +1010,7 @@ Continue?</source>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="821"/>
+        <location filename="src/mainwindow.cpp" line="877"/>
         <source>Failed to start recording.
 Please, adjust the video source settings.</source>
         <translation>Невозможно начать запись.
@@ -999,14 +1018,14 @@ Please, adjust the video source settings.</source>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="840"/>
-        <location filename="src/mainwindow.cpp" line="1075"/>
+        <location filename="src/mainwindow.cpp" line="1083"/>
         <source>Failed to start recording.
 Check the error log for details.</source>
         <translation>Невозможно начать запись.
 Проверьте журнал ожибок.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1215"/>
+        <location filename="src/mainwindow.cpp" line="1223"/>
         <source>Failed to start a study.
 Another study is in progress.</source>
         <translation>Невозможно начать исследование.
@@ -1029,17 +1048,17 @@ Another study is in progress.</source>
         <translation type="obsolete">Отправить</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="881"/>
+        <location filename="src/mainwindow.cpp" line="889"/>
         <source>End the study?</source>
         <translation>Завершить исследование?</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1111"/>
+        <location filename="src/mainwindow.cpp" line="1119"/>
         <source>End study</source>
         <translation>Завершить исследование</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1111"/>
+        <location filename="src/mainwindow.cpp" line="1119"/>
         <source>Start study</source>
         <translation>Начать исследование</translation>
     </message>
@@ -1335,7 +1354,7 @@ Another study is in progress.</source>
 <context>
     <name>Pipeline</name>
     <message>
-        <location filename="src/pipeline.cpp" line="1015"/>
+        <location filename="src/pipeline.cpp" line="1027"/>
         <source>Failed to load image %1</source>
         <translation>Не удалось загрузить снимок %1</translation>
     </message>
@@ -1909,7 +1928,7 @@ This may lead to overwriting of files.</source>
         <translation>Затереть %1?</translation>
     </message>
     <message>
-        <location filename="src/videoeditor.cpp" line="542"/>
+        <location filename="src/videoeditor.cpp" line="549"/>
         <source>Saving %1</source>
         <translation>Сохранение %1</translation>
     </message>
@@ -2061,8 +2080,8 @@ Are you want to continue?</source>
     <message>
         <location filename="src/settings/videosourcedetails.cpp" line="86"/>
         <location filename="src/settings/videosourcedetails.cpp" line="91"/>
-        <location filename="src/settings/videosourcedetails.cpp" line="370"/>
-        <location filename="src/settings/videosourcedetails.cpp" line="416"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="372"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="418"/>
         <source>(default)</source>
         <translation>(по умолчанию)</translation>
     </message>
@@ -2182,7 +2201,7 @@ Are you want to continue?</source>
         <translation>Не удалось создать элемент &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="src/settings/videosourcedetails.cpp" line="490"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="496"/>
         <source>%1x%2</source>
         <translation>%1х%2</translation>
     </message>
