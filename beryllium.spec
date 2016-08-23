@@ -11,6 +11,7 @@ Vendor: Beryllium team <beryllium@dc.baikal.ru>
 Packager: Beryllium team <beryllium@dc.baikal.ru>
 
 BuildRequires: make
+BuildRequires: libavc-1394-devel, libgudev-devel, libv4l-devel
 
 %if %distro == fedora
 BuildRequires: gstreamer1-devel, qt-devel, qt5-gstreamer-devel
@@ -39,11 +40,10 @@ BuildRequires: libmediainfo-devel, dcmtk-devel, tcp_wrappers-devel, openssl-deve
 
 %if %distro == centos
 Requires: dcmtk, openssl, libmediainfo, libzen
-BuildRequires: openssl-devel
 %endif
 
 %if %distro == opensuse
-Requires: dcmtk, openssl, libmediainfo0, libzen0
+Requires: dcmtk, libmediainfo0, libzen0
 %endif
 
 %endif

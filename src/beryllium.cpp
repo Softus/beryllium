@@ -403,8 +403,7 @@ int main(int argc, char *argv[])
     QGst::init();
 #if !GST_CHECK_VERSION(1,0,0)
     gstApplyFixes();
-#endif
-
+#else
     // Get rid of vaapisink until somebody get it fixed
     //
     auto registry = gst_registry_get();
@@ -414,6 +413,7 @@ int main(int argc, char *argv[])
         gst_plugin_feature_set_rank(feature, GST_RANK_NONE);
         gst_object_unref(feature);
     }
+#endif
 
     // QT init
     //
