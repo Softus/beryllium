@@ -10,11 +10,11 @@ URL: http://dc.baikal.ru/products/beryllium
 Vendor: Beryllium team <beryllium@dc.baikal.ru>
 Packager: Beryllium team <beryllium@dc.baikal.ru>
 
-BuildRequires: make
-BuildRequires: libavc-1394-devel, libgudev-devel, libv4l-devel
+BuildRequires: make, libv4l-devel
 
 %if %distro == fedora
 BuildRequires: gstreamer1-devel, qt-devel, qt5-gstreamer-devel
+BuildRequires: libgudev-devel, libavc1394-devel
 Requires: gstreamer1, qt5
 Requires: gstreamer1-plugins-base, gstreamer1-plugins-good
 Requires: gstreamer1-plugins-bad-free, gnonlin
@@ -22,6 +22,7 @@ Requires: gstreamer1-plugins-bad-free, gnonlin
 
 %if %distro == centos
 BuildRequires: gstreamer-devel, qt-devel
+BuildRequires: libgudev1-devel, libavc1394-devel
 Requires: gstreamer >= 0.10.35, qt4 >= 4.6.0
 Requires: gstreamer-plugins-base >= 0.10.31, gstreamer-plugins-good >= 0.10.23
 Requires: gstreamer-plugins-bad >= 0.10.19, gstreamer-plugins-ugly >= 0.10.18
@@ -30,6 +31,7 @@ Requires: gstreamer-ffmpeg, gnonlin
 
 %if %distro == opensuse
 BuildRequires: gstreamer-devel, libqt5-qtbase-devel, gstreamer-plugins-qt5-devel
+BuildRequires: libgudev-devel, libavc-1394-devel
 Requires: gstreamer-plugins-base, gstreamer-plugins-good
 Requires: gstreamer-plugins-bad, gstreamer-plugins-ugly
 Requires: gstreamer-plugin-gnonlin
