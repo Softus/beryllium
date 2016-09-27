@@ -31,14 +31,18 @@ Requires: gstreamer-ffmpeg, gnonlin
 
 %if %distro == opensuse
 BuildRequires: gstreamer-devel, libqt5-qtbase-devel, gstreamer-plugins-qt5-devel
-BuildRequires: libgudev-devel, libavc-1394-devel
+BuildRequires: libgudev-devel, libavc-1394-devel, opencv-devel, libsoup-devel
 Requires: gstreamer-plugins-base, gstreamer-plugins-good
 Requires: gstreamer-plugins-bad, gstreamer-plugins-ugly
 Requires: gstreamer-plugin-gnonlin
 %endif
 
 %if %dicom == 1
-BuildRequires: libmediainfo-devel, dcmtk-devel, tcp_wrappers-devel, openssl-devel
+BuildRequires: libmediainfo-devel, dcmtk-devel, openssl-devel
+
+%if %distro == fedora
+Requires: dcmtk, openssl, libmediainfo, libzen
+%endif
 
 %if %distro == centos
 Requires: dcmtk, openssl, libmediainfo, libzen

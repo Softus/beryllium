@@ -45,10 +45,7 @@
   #include <gst/interfaces/tuner.h>
   #endif
 #elif defined (Q_OS_WIN)
-  #ifndef FILE_ATTRIBUTE_HIDDEN
-    #define FILE_ATTRIBUTE_HIDDEN 0x00000002
-    extern "C" __declspec(dllimport) int __stdcall SetFileAttributesW(const wchar_t* lpFileName, quint32 dwFileAttributes);
-  #endif
+#include <qt_windows.h>
 #endif
 
 static void ensurePathExist(const QString& filePath)

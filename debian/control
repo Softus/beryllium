@@ -9,7 +9,7 @@ Build-Depends: libdcmtk2-dev, libboost-dev,
   libqtgstreamer-dev | libqt5gstreamer-dev,
   libgstreamer-plugins-base0.10-dev | libgstreamer-plugins-base1.0-dev,
   libqt4-opengl-dev | libqt5opengl5-dev,
-  libavc1394-dev, libv4l-dev
+  libavc1394-dev, libraw1394-dev, libv4l-dev
 
 Package: beryllium
 Architecture: i386 amd64
