@@ -190,7 +190,7 @@ void setupGstDebug(const QSettings& settings)
     {
 #if GST_CHECK_VERSION(1,2,0)
         gst_debug_set_threshold_from_string(gstDebug.toLocal8Bit(), true);
-#elif
+#else
         qputenv("GST_DEBUG", gstDebug.toLocal8Bit());
 #endif
     }
