@@ -41,6 +41,7 @@
 #include <X11/Xlib.h>
 #endif
 
+#include <glib/gstdio.h>
 #include <gst/gst.h>
 #include <QGst/Init>
 
@@ -160,7 +161,9 @@ setModeCallback(const gchar *name, const gchar *value, gpointer, GError **)
     return true;
 }
 
+#if !GST_CHECK_VERSION(1,0,0)
 extern void _gst_debug_init(void);
+#endif
 
 void setupGstDebug(const QSettings& settings)
 {
@@ -172,26 +175,46 @@ void setupGstDebug(const QSettings& settings)
     }
 
     gst_debug_set_active(true);
+
+#if !GST_CHECK_VERSION(1,2,0)
     auto debugDotDir = settings.value("gst-debug-dot-dir", DEFAULT_GST_DEBUG_DOT_DIR).toString();
     if (!debugDotDir.isEmpty())
     {
         QDir(debugDotDir).mkpath(".");
         qputenv("GST_DEBUG_DUMP_DOT_DIR", debugDotDir.toLocal8Bit());
     }
-    auto debugLogFile = settings.value("gst-debug-log-file", DEFAULT_GST_DEBUG_LOG_FILE).toString();
+#endif
+
     auto gstDebug = settings.value("gst-debug", DEFAULT_GST_DEBUG).toString();
     if (!gstDebug.isEmpty())
     {
+#if GST_CHECK_VERSION(1,2,0)
+        gst_debug_set_threshold_from_string(gstDebug.toLocal8Bit(), true);
+#elif
         qputenv("GST_DEBUG", gstDebug.toLocal8Bit());
+#endif
     }
+
+    auto debugLogFile = settings.value("gst-debug-log-file", DEFAULT_GST_DEBUG_LOG_FILE).toString();
     if (!debugLogFile.isEmpty())
     {
         QFileInfo(debugLogFile).absoluteDir().mkpath(".");
+#if GST_CHECK_VERSION(1,2,0)
+        gst_debug_remove_log_function (gst_debug_log_default);
+        gst_debug_add_log_function (gst_debug_log_default, g_fopen (debugLogFile.toLocal8Bit(), "w"), nullptr);
+#else
         qputenv("GST_DEBUG_FILE", debugLogFile.toLocal8Bit());
-#if !GST_CHECK_VERSION(1,0,0)
         _gst_debug_init();
 #endif
     }
+#if GST_CHECK_VERSION(1,2,0)
+    else
+    {
+        gst_debug_remove_log_function (gst_debug_log_default);
+        gst_debug_add_log_function (gst_debug_log_default, stderr, nullptr);
+    }
+#endif
+
     gst_debug_set_colored(!settings.value("gst-debug-no-color", DEFAULT_GST_DEBUG_NO_COLOR).toBool());
     auto gstDebugLevel = (GstDebugLevel)settings.value("gst-debug-level", DEFAULT_GST_DEBUG_LEVEL).toInt();
     gst_debug_set_default_threshold(gstDebugLevel);
