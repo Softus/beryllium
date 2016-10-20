@@ -1,8 +1,13 @@
 language: c++
+sudo: required
+dist: trusty
+
 addons:
  apt:
    sources:
-   - xenial
+   - trusty
+   - sourceline 'ppa:ppettina/gstreamer1.6.0+trusty'
+   - sourceline 'deb http://repos.dc.baikal.ru/projects beryllium main'
    packages:
    - libdcmtk2-dev
    - libboost-dev
@@ -18,6 +23,7 @@ addons:
    - libavc1394-dev
    - libraw1394-dev
    - libv4l-dev
+
 script:
    - cp docs/* debian/
    - dpkg-buildpackage -I.git -I*.sh -rfakeroot
