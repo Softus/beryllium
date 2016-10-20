@@ -1,6 +1,8 @@
 Beryllium
 =========
 
+[![Build Status](https://api.travis-ci.org/Softus/beryllium.svg?branch=master)](https://travis-ci.org/Softus/beryllium)
+
 Introduction
 ============
 
@@ -28,9 +30,10 @@ Debian/Ubuntu/Mint
 1. Install build dependecies
 
         sudo apt install libdcmtk2-dev libboost-dev libmediainfo-dev \
-        libssl-dev libwrap0-dev libgudev-1.0-dev libgstreamer1.0-dev \
-        libqt5gstreamer-dev libgstreamer-plugins-base1.0-dev \
-        libqt5opengl5-dev libavc1394-dev libraw1394-dev libv4l-dev
+        libwrap0-dev libgudev-1.0-dev libgstreamer1.0-dev libv4l-dev \
+        libgstreamer-plugins-base1.0-dev libavc1394-dev libraw1394-dev \
+        libqt5x11extras5-dev libqt5gstreamer-1.0-0 libqt5gstreamer-dev \
+        qttools5-dev-tools libqt5opengl5-dev qt5-default
 
 2. Make Makefile
 
@@ -38,6 +41,7 @@ Debian/Ubuntu/Mint
   
 3. Make Beryllium
 
+        lrelease *.ts
         make
 
 4. Install Beryllium
