@@ -3,9 +3,9 @@ sudo: required
 dist: trusty
 before_install:
   - sudo add-apt-repository ppa:ppettina/gstreamer1.6.0+trusty -y
-  - echo "deb http://repos.dc.baikal.ru/projects beryllium main" | sudo tee -a /etc/apt/sources.list  
+  - echo "deb http://repos.dc.baikal.ru/projects trusty main" | sudo tee -a /etc/apt/sources.list  
   - sudo apt-get update -q
-  - sudo apt-get install --force-yes -y libdcmtk2-dev libboost-dev libmediainfo-dev libwrap0-dev libgudev-1.0-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libqt5opengl5-dev libqt5gstreamer-dev libavc1394-dev libraw1394-dev libv4l-dev
+  - sudo apt-get install --force-yes -y libdcmtk2-dev libboost-dev libmediainfo-dev libwrap0-dev libgudev-1.0-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libqt5opengl5-dev libqt5gstreamer-1.0-0 libqt5gstreamer-dev libavc1394-dev libraw1394-dev libv4l-dev
 script:
    - cp docs/* debian/
    - dpkg-buildpackage -I.git -I*.sh -rfakeroot
