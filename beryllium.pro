@@ -26,7 +26,7 @@ win32 {
 
     INCLUDEPATH += c:/usr/include
     QMAKE_LIBDIR += c:/usr/lib
-    LIBS += advapi32.lib netapi32.lib wsock32.lib user32.lib
+    LIBS += -ladvapi32 -lnetapi32 -lwsock32 -luser32
 
     USERNAME    = $$(USERNAME)
     OS_DISTRO   = windows

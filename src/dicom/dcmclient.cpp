@@ -38,10 +38,6 @@
 #include <QProgressDialog>
 #include <QSettings>
 
-#ifdef _MSC_VER
-#pragma comment(lib, "ws2_32.lib")
-#endif
-
 static void CopyPatientData(/*const*/ DcmDataset* src, DcmDataset* dst)
 {
     src->findAndInsertCopyOfElement(DCM_AccessionNumber, dst);
