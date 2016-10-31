@@ -40,7 +40,9 @@
 
 #include <QListWidget>
 #include <QBoxLayout>
+#ifdef WITH_QT_DBUS
 #include <QDBusInterface>
+#endif
 #include <QDebug>
 #include <QDesktopServices>
 #include <QFileDialog>
@@ -254,11 +256,13 @@ void SettingsDialog::resizeEvent(QResizeEvent *evt)
 void SettingsDialog::showEvent(QShowEvent *evt)
 {
     QSettings settings;
+#ifdef WITH_QT_DBUS
     if (settings.value("show-onboard").toBool())
     {
         QDBusInterface("org.onboard.Onboard", "/org/onboard/Onboard/Keyboard",
                        "org.onboard.Onboard.Keyboard").call( "Show");
     }
+#endif
     QDialog::showEvent(evt);
 }
 
@@ -274,11 +278,13 @@ void SettingsDialog::hideEvent(QHideEvent *evt)
     settings.setValue("settings-page", listWidget->currentItem()->text());
     settings.endGroup();
 
+#ifdef WITH_QT_DBUS
     if (settings.value("show-onboard").toBool())
     {
         QDBusInterface("org.onboard.Onboard", "/org/onboard/Onboard/Keyboard",
                        "org.onboard.Onboard.Keyboard").call( "Hide");
     }
+#endif
     QDialog::hideEvent(evt);
 }
 

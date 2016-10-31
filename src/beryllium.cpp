@@ -20,24 +20,30 @@
 #include "archivewindow.h"
 #include "defaults.h"
 #include "mainwindow.h"
+#ifdef WITH_QT_DBUS
+#include "dbusconnect.h"
 #include "mainwindowdbusadaptor.h"
+#endif
 #include "videoeditor.h"
 #include "settingsdialog.h"
 #include "smartshortcut.h"
-#include "dbusconnect.h"
 
 #include <signal.h>
 
 #include <QApplication>
+#ifdef WITH_QT_DBUS
 #include <QDBusConnection>
 #include <QDBusInterface>
+#endif
 #include <QIcon>
 #include <QLocale>
 #include <QSettings>
 #include <QTranslator>
 
 #ifdef Q_OS_LINUX
+#ifdef WITH_QT_X11EXTRAS
 #include <QX11Info>
+#endif
 #include <X11/Xlib.h>
 #endif
 
@@ -141,6 +147,7 @@ setValueCallback(const gchar *name, const gchar *value, gpointer, GError **err)
     return true;
 }
 
+#ifdef WITH_QT_X11EXTRAS
 static gboolean
 xSyncCallback(const gchar *, const gchar *, gpointer, GError **)
 {
@@ -149,6 +156,7 @@ xSyncCallback(const gchar *, const gchar *, gpointer, GError **)
 #endif
     return true;
 }
+#endif
 
 static gchar   windowType = '\x0';
 static QString windowArg;
@@ -299,8 +307,10 @@ static GOptionEntry options[] = {
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Show the settings window."), QT_TRANSLATE_NOOP_UTF8("cmdline", "PAGE")},
     {"safe-mode", '\x0', G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK, (gpointer)setValueCallback,
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Run the program in safe mode."), nullptr},
+#ifdef WITH_QT_X11EXTRAS
     {"sync", '\x0', G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK, (gpointer)xSyncCallback,
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Run the program in X synchronous mode."), nullptr},
+#endif
     {"config-path", 'c', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_CALLBACK, (gpointer)cfgPathCallback,
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Set root path to the settings file."), QT_TRANSLATE_NOOP_UTF8("cmdline", "PATH")},
 
@@ -329,6 +339,7 @@ static GOptionEntry options[] = {
         nullptr, nullptr},
 };
 
+#ifdef WITH_QT_DBUS
 bool switchToRunningInstance()
 {
     auto msg = QDBusInterface(PRODUCT_NAMESPACE, "/ru/baikal/dc/Beryllium/Main", "ru.baikal.dc.beryllium.Main")
@@ -345,6 +356,7 @@ bool switchToRunningInstance()
     //qDebug() << msg;
     return msg.type() == QDBusMessage::ReplyMessage && msg.arguments().first().toBool();
 }
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -494,8 +506,9 @@ int main(int argc, char *argv[])
         break;
     default:
         {
-            auto bus = QDBusConnection::sessionBus();
             auto wndMain = new MainWindow;
+#ifdef WITH_QT_DBUS
+            auto bus = QDBusConnection::sessionBus();
 
             // connect to DBus and register as an object
             //
@@ -531,6 +544,9 @@ int main(int argc, char *argv[])
             {
                 delete wndMain;
             }
+#else
+            wnd = wndMain;
+#endif
         }
         break;
     }
@@ -550,7 +566,9 @@ int main(int argc, char *argv[])
             errCode = app.exec();
         }
         delete wnd;
+#ifdef WITH_QT_DBUS
         QDBusConnection::sessionBus().unregisterObject("/ru/baikal/dc/Beryllium/Main");
+#endif
     }
 
     QGst::cleanup();

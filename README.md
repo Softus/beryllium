@@ -64,6 +64,7 @@ SUSE/Open SUSE
 
 3. Make Beryllium
 
+        lrelease *.ts
         make
 
 4. Install Beryllium
@@ -87,6 +88,7 @@ SUSE/Open SUSE
 
 3. Make Beryllium
 
+        lrelease *.ts
         make
 
 4. Install Beryllium
@@ -108,6 +110,7 @@ CentOS
 
 3. Make Beryllium
 
+        lrelease *.ts
         make
 
 4. Install Beryllium
@@ -130,8 +133,65 @@ Fedora
 
 3. Make Beryllium
 
+        lrelease *.ts
         make
 
 4. Install Beryllium
 
         sudo make install
+
+
+Windows (Visual Studio)
+--------------
+
+1. Install build dependecies
+
+  * [pkg-config](http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/)
+  * [gstreamer, sgtreamer-sdk](https://gstreamer.freedesktop.org/data/pkg/windows/)
+  * [boost](https://sourceforge.net/projects/boost/files/boost/)
+
+2. Build 3-rd party libraries
+  * [QtGStreamer](https://github.com/detrout/qt-gstreamer.git)
+
+        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5  -DBoost_INCLUDE_DIR=<path to boost> -G "Visual Studio <version>"
+        cmake --build . --target install
+
+3. Make Makefile
+
+        qmake-qt5 -set INCLUDEDIR %BOOSTDIR% beryllium.pro
+
+4. Make Beryllium
+
+        lrelease *.ts
+        nmake -f Makefile.Release
+
+Note that both the GStreamer & Qt must be built with exactly the same
+version of the MSVC. For example, if GStreamer is build with MSVC 2010,
+the Qt version should must be any from 5.0 till 5.5.
+
+Windows (MinGW)
+--------------
+
+1. Install build dependecies
+
+  * [gstreamer, sgtreamer-sdk](https://gstreamer.freedesktop.org/data/pkg/windows/)
+  * [boost](https://sourceforge.net/projects/boost/files/boost/)
+
+2. Build 3-rd party libraries
+  * [QtGStreamer](https://github.com/detrout/qt-gstreamer.git)
+
+        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5  -DBoost_INCLUDE_DIR=<path to boost> -G "MinGW Makefiles"
+        cmake --build . --target install
+
+3. Make Makefile
+
+        qmake-qt5 -set INCLUDEDIR %BOOSTDIR% beryllium.pro
+
+4. Make Beryllium
+
+        lrelease *.ts
+        min32gw-make -f Makefile.Release
+
+Note that both the GStreamer & Qt must be built with exactly the same
+version of the GCC. For example, if GStreamer is build with GCC 4.7.3,
+the Qt version should must be 5.0.

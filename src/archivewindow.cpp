@@ -35,10 +35,12 @@
 #include <QAction>
 #include <QApplication>
 #include <QBoxLayout>
+#ifdef WITH_QT_DBUS
 #include <QDBusInterface>
 #include <QDBusObjectPath>
 #include <QDBusMetaType>
 #include <QDBusReply>
+#endif
 #include <QDebug>
 #include <QDesktopServices>
 #include <QDir>
@@ -83,13 +85,16 @@
 #define GALLERY_MODE 2
 
 static QSize videoSize(352, 258);
+#ifdef WITH_QT_DBUS
 static auto reg = qDBusRegisterMetaType<QVariantMapMap>() | qDBusRegisterMetaType<QDBusObjectMap>();
+#endif
 
 static QStringList collectRemovableDrives()
 {
-    auto bus = QDBusConnection::systemBus();
     QStringList ret;
 
+#ifdef WITH_QT_DBUS
+    auto bus = QDBusConnection::systemBus();
     //
     // UDisks2 interface
     //
@@ -196,6 +201,8 @@ static QStringList collectRemovableDrives()
         }
         return ret;
     }
+#endif
+
 #ifdef Q_OS_WIN
     //
     // Native windows interface
@@ -361,6 +368,7 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
 
     updateHotkeys(settings);
 
+#ifdef WITH_QT_DBUS
     auto conn = connectToDbusService(this, true, "org.freedesktop.UDisks2", "/org/freedesktop/UDisks2", "org.freedesktop.DBus.ObjectManager");
     if (conn <= 0)
     {
@@ -371,6 +379,7 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
             qDebug() << "Connect to org.freedesktop.UDisks";
         }
     }
+#endif
 }
 
 void ArchiveWindow::updateHotkeys(QSettings& settings)
@@ -906,6 +915,7 @@ void ArchiveWindow::onDeleteClick()
     actionRestore->setEnabled(true);
 }
 
+#ifdef WITH_QT_DBUS
 void ArchiveWindow::DeviceAdded(const QDBusObjectPath &)
 {
     onUsbDiskChanged();
@@ -930,6 +940,7 @@ void ArchiveWindow::InterfacesRemoved(const QDBusObjectPath&, const QStringList&
 {
     onUsbDiskChanged();
 }
+#endif
 
 void ArchiveWindow::onUsbDiskChanged()
 {

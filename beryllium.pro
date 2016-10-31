@@ -15,14 +15,17 @@
 isEmpty(PREFIX): PREFIX   = /usr/local
 DEFINES += PREFIX=$$PREFIX
 
-QT += core gui dbus opengl
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+OPTIONAL_MODULES = dbus opengl widgets x11extras
+for (mod, OPTIONAL_MODULES): qtHaveModule($$mod) {
+  QT += $$mod
+  DEFINES += WITH_QT_$$upper($$mod)
+}
 
 # GCC tuning
 *-g++*:QMAKE_CXXFLAGS += -std=c++0x -Wno-multichar
 
 win32 {
-    greaterThan(QT_MAJOR_VERSION, 4): QT += gui-private
+    qtHaveModule(gui-private): QT += gui-private
 
     INCLUDEPATH += c:/usr/include
     QMAKE_LIBDIR += c:/usr/lib
@@ -30,20 +33,23 @@ win32 {
 
     USERNAME    = $$(USERNAME)
     OS_DISTRO   = windows
-    OS_REVISION = $$system($$quote("cmd.exe /c ver | gawk 'match($0,/[0-9]\.[0-9]/){print substr($0,RSTART,RLENGTH)}'"))
+    OS_REVISION = $$system($$quote("cmd.exe /c ver | gawk 'match($0,/[0-9]+\.[0-9]/){print substr($0,RSTART,RLENGTH)}'"))
 }
-unix {
-    !lessThan(QT_VERSION, 5.1): QT += x11extras
 
+unix {
     LIBS += -lX11
 
     USERNAME    = $$(USER)
     OS_DISTRO   = $$system(lsb_release -is | awk \'\{print \$1\}\')
     OS_REVISION = $$system(lsb_release -rs)
 }
+
 DEFINES += OS_DISTRO=$$OS_DISTRO OS_REVISION=$$OS_REVISION USERNAME=$$USERNAME
 
+# Tell qmake to use pkg-config to find QtGStreamer.
 CONFIG += link_pkgconfig
+PKGCONFIG += gio-2.0
+
 greaterThan(QT_MAJOR_VERSION, 4) {
     PKGCONFIG += Qt5GLib-2.0 Qt5GStreamer-1.0 Qt5GStreamerUi-1.0 gstreamer-1.0 gstreamer-base-1.0 gstreamer-pbutils-1.0
     unix:PKGCONFIG += libavc1394 libraw1394 gudev-1.0 libv4l2
@@ -52,15 +58,17 @@ else {
     PKGCONFIG += QtGLib-2.0 QtGStreamer-0.10 QtGStreamerUi-0.10 gstreamer-0.10 gstreamer-base-0.10 gstreamer-interfaces-0.10 gstreamer-pbutils-0.10 opencv libsoup-2.4 librtmp
 }
 
-PKGCONFIG += gio-2.0
-
 TARGET   = beryllium
 TEMPLATE = app
 
+# Qxt library
 INCLUDEPATH += libqxt
 DEFINES += QXT_STATIC
 
-# Come code backported from 1.6 to 0.10
+# Produce nice compilation output
+# CONFIG += silent
+
+# Some code backported from 1.6 to 0.10
 lessThan(QT_MAJOR_VERSION, 5) {
 SOURCES += \
     gst/gst.cpp \
@@ -88,7 +96,6 @@ SOURCES += \
     src/beryllium.cpp \
     src/hotkeyedit.cpp \
     src/mainwindow.cpp \
-    src/mainwindowdbusadaptor.cpp \
     src/mandatoryfieldgroup.cpp \
     src/patientdatadialog.cpp \
     src/smartshortcut.cpp \
@@ -111,8 +118,7 @@ SOURCES += \
     src/settings/mandatoryfields.cpp \
     src/settings/hotkeys.cpp \
     src/settings/debug.cpp \
-    src/settings/confirmations.cpp \
-    src/dbusconnect.cpp
+    src/settings/confirmations.cpp
 
 unix {
     SOURCES += src/smartshortcut_x11.cpp
@@ -123,6 +129,15 @@ unix {
 win32:SOURCES += \
     gst/enumsrc_1_4.cpp \
     src/smartshortcut_win.cpp
+
+contains(QT, dbus): {
+    SOURCES += \
+        src/dbusconnect.cpp \
+        src/mainwindowdbusadaptor.cpp
+    HEADERS += \
+        src/dbusconnect.h \
+        src/mainwindowdbusadaptor.h
+}
 
 HEADERS += \
     libqxt/qxtconfirmationmessage.h \
@@ -135,7 +150,6 @@ HEADERS += \
     src/gstcompat.h \
     src/defaults.h \
     src/hotkeyedit.h \
-    src/mainwindowdbusadaptor.h \
     src/mainwindow.h \
     src/mandatoryfieldgroup.h \
     src/patientdatadialog.h \
@@ -163,8 +177,7 @@ HEADERS += \
     src/settings/storage.h \
     src/settings/studies.h \
     src/settings/videorecord.h \
-    gst/enumsrc.h \
-    src/dbusconnect.h
+    gst/enumsrc.h
 
 FORMS   +=
 

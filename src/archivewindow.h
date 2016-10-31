@@ -17,7 +17,9 @@
 #ifndef ARCHIVEWINDOW_H
 #define ARCHIVEWINDOW_H
 
+#ifdef WITH_QT_DBUS
 #include <QDBusObjectPath>
+#endif
 #include <QDialog>
 #include <QDir>
 #include <QListView>
@@ -35,10 +37,12 @@ class QToolBar;
 class QToolButton;
 QT_END_NAMESPACE
 
+#ifdef WITH_QT_DBUS
 typedef QMap<QString, QVariantMap> QVariantMapMap;
 Q_DECLARE_METATYPE(QVariantMapMap)
 typedef QMap<QDBusObjectPath, QVariantMapMap> QDBusObjectMap;
 Q_DECLARE_METATYPE(QDBusObjectMap)
+#endif
 
 class ArchiveWindow : public QWidget
 {
@@ -96,6 +100,7 @@ protected:
 signals:
     
 public slots:
+#ifdef WITH_QT_DBUS
     // Udisks slots
     void DeviceAdded(const QDBusObjectPath&);
     void DeviceRemoved(const QDBusObjectPath &);
@@ -104,7 +109,7 @@ public slots:
     // Udisks2 slots
     void InterfacesAdded(const QDBusObjectPath&, const QVariantMapMap&);
     void InterfacesRemoved(const QDBusObjectPath&, const QStringList&);
-
+#endif
     void updateUsbStoreButton();
     void updateRoot();
     void updateHotkeys(QSettings &settings);

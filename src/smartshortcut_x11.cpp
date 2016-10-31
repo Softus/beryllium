@@ -21,7 +21,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
 
-#if QT_VERSION < QT_VERSION_CHECK(5,0,0) || QT_VERSION >= QT_VERSION_CHECK(5,1,0)
+#ifdef WITH_QT_X11EXTRAS
 #include <QX11Info>
 #else
 class QX11Info
@@ -32,7 +32,7 @@ public:
         return XOpenDisplay(0);
     }
 
-    static Qt::HANDLE appRootWindow()
+    static unsigned long appRootWindow()
     {
         return DefaultRootWindow(display());
     }

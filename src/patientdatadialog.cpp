@@ -34,7 +34,9 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDateEdit>
+#ifdef WITH_QT_DBUS
 #include <QDBusInterface>
+#endif
 #include <QDebug>
 #include <QFormLayout>
 #include <QLabel>
@@ -172,11 +174,13 @@ void PatientDataDialog::resizeEvent(QResizeEvent *evt)
 void PatientDataDialog::showEvent(QShowEvent *evt)
 {
     QSettings settings;
+#ifdef WITH_QT_DBUS
     if (settings.value("show-onboard").toBool())
     {
         QDBusInterface("org.onboard.Onboard", "/org/onboard/Onboard/Keyboard",
                        "org.onboard.Onboard.Keyboard").call( "Show");
     }
+#endif
     QDialog::showEvent(evt);
 }
 
@@ -189,11 +193,13 @@ void PatientDataDialog::hideEvent(QHideEvent *evt)
     }
     settings.setValue("ui/patient-data-state", (int)windowState() & ~Qt::WindowMinimized);
 
+#ifdef WITH_QT_DBUS
     if (settings.value("show-onboard").toBool())
     {
         QDBusInterface("org.onboard.Onboard", "/org/onboard/Onboard/Keyboard",
                        "org.onboard.Onboard.Keyboard").call( "Hide");
     }
+#endif
     QDialog::hideEvent(evt);
 }
 
