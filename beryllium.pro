@@ -25,7 +25,7 @@ for (mod, OPTIONAL_MODULES): qtHaveModule($$mod) {
 *-g++*:QMAKE_CXXFLAGS += -std=c++0x -Wno-multichar
 
 win32 {
-    qtHaveModule(gui-private): QT += gui-private
+    greaterThan(QT_MAJOR_VERSION, 4): QT += gui-private
 
     INCLUDEPATH += c:/usr/include
     QMAKE_LIBDIR += c:/usr/lib
