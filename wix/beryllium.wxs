@@ -11,7 +11,6 @@
 <?define SrcDir64        = "../$(var.Configuration)\" ?>
 
 <?define RequiresAdmin    = "True" ?>
-<?define QtRuntime        = "qt-5.0.2_mingw-4.7.wxi" ?>
 
 <?if $(var.Platform)=x64?>
 <?define Win64   = "yes" ?>
@@ -109,7 +108,7 @@
                 <File Id="File_shutter_ac3_x86" Name="shutter.ac3" />
               </Component>
             </Directory>
-            <?include $(var.QtRuntime) ?>
+            <?include $(env.Qt_Runtime) ?>
           </Directory>
 
           <?if $(var.Platform)=x64?>
@@ -136,7 +135,7 @@
                 </Component>
               </Directory>
             </Directory>
-            <?include $(var.QtRuntime) ?>
+            <?include $(env.Qt_Runtime) ?>
           <?endif ?>
         </Directory>
         </Directory>

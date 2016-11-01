@@ -2,6 +2,7 @@ Beryllium
 =========
 
 [![Build Status](https://api.travis-ci.org/Softus/beryllium.svg?branch=master)](https://travis-ci.org/Softus/beryllium)
+[![Build status](https://ci.appveyor.com/api/projects/status/ae09iex64d3bfgar?svg=true)](https://ci.appveyor.com/project/pbludov/beryllium)
 
 Introduction
 ============
@@ -15,7 +16,7 @@ servers; basic video editing.
 Requirements
 ============
 
-* [Qt](http://qt-project.org/) 5.2 or higher;
+* [Qt](http://qt-project.org/) 5.0.2 or higher;
 * [GStreamer](http://gstreamer.freedesktop.org/) 1.6 or higher;
 * [QtGstreamer](http://gstreamer.freedesktop.org/modules/qt-gstreamer.html) 1.2 or higher;
 * [DCMTK](http://dcmtk.org/) 3.6.0 or higher;
@@ -48,29 +49,10 @@ Debian/Ubuntu/Mint
 
         sudo make install
 
-SUSE/Open SUSE
---------------
+5. Create Package
 
-1. Install build dependecies
-
-        sudo zypper install make rpm-build qt-devel qt-gstreamer-devel \
-        libQtGlib-devel dcmtk-devel tcp_wrappers-devel libgudev-devel \
-        mediainfo-devel gstreamer-devel gstreamer-plugins-qt5-devel \
-        libqt5-qtbase-devel libavc-1394-devel  
-
-2. Make Makefile
-
-        qmake-qt5 CONFIG+=dicom beryllium.pro
-
-3. Make Beryllium
-
-        lrelease *.ts
-        make
-
-4. Install Beryllium
-
-        sudo make install
-
+        cp docs/* debian/
+        dpkg-buildpackage -us -uc -I.git -I*.sh -rfakeroot
 
 SUSE/Open SUSE
 --------------
@@ -95,8 +77,14 @@ SUSE/Open SUSE
 
         sudo make install
 
+5. Create Package
+
+        distro=$( lsb_release -is | awk '{print tolower($1)}' )
+        rev=$( lsb_release -rs )
+        tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1 -D"distro $distro" -D"rev $rev" -ta ../beryllium.tar.gz
+
 CentOS
---------------
+------
 
 1. Install build dependecies
 
@@ -117,15 +105,20 @@ CentOS
 
         sudo make install
 
+5. Create Package
+
+        distro=$( lsb_release -is | awk '{print tolower($1)}' )
+        rev=$( lsb_release -rs )
+        tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1 -D"distro $distro" -D"rev $rev" -ta ../beryllium.tar.gz
+
 Fedora
---------------
+------
 
 1. Install build dependecies
 
         sudo dnf install make rpm-build gstreamer-devel libv4l-devel \
         qt-devel qt5-gstreamer-devel libgudev-devel libavc1394-devel \
         libmediainfo-devel dcmtk-devel openssl-devel
-
 
 2. Make Makefile
 
@@ -140,57 +133,85 @@ Fedora
 
         sudo make install
 
+5. Create Package
+
+        distro=$( lsb_release -is | awk '{print tolower($1)}' )
+        rev=$( lsb_release -rs )
+        tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1 -D"distro $distro" -D"rev $rev" -ta ../beryllium.tar.gz
 
 Windows (Visual Studio)
---------------
+-----------------------
 
 1. Install build dependecies
 
   * [pkg-config](http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/)
-  * [gstreamer, sgtreamer-sdk](https://gstreamer.freedesktop.org/data/pkg/windows/)
-  * [boost](https://sourceforge.net/projects/boost/files/boost/)
+  * [GStreamer, GStreamer-sdk](https://gstreamer.freedesktop.org/data/pkg/windows/)
+  * [Boost](https://sourceforge.net/projects/boost/files/boost/)
+  * [Qt 5.5 MSVC](https://download.qt.io/archive/qt/5.5/)
 
 2. Build 3-rd party libraries
   * [QtGStreamer](https://github.com/detrout/qt-gstreamer.git)
 
-        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5  -DBoost_INCLUDE_DIR=<path to boost> -G "Visual Studio <version>"
+        set BOOST_DIR=<the path to boost headers>
+        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5  -DBoost_INCLUDE_DIR=%BOOST_DIR% -G "Visual Studio <version>"
         cmake --build . --target install
 
 3. Make Makefile
 
-        qmake-qt5 -set INCLUDEDIR %BOOSTDIR% beryllium.pro
+        qmake-qt5 INCLUDEDIR+=%BOOST_DIR%
 
 4. Make Beryllium
 
         lrelease *.ts
         nmake -f Makefile.Release
 
+5. Create Package
+
+        copy \usr\bin\*.dll release\
+        copy C:\Qt\Qt5.5.1\5.5.1\msvc2010\bin\*.dll Release\
+        xcopy /s C:\Qt5.5.1\5.5.1\msvc2010\plugins Release\
+
+        set QT_RUNTIME=QtRuntime32.wxi
+        wix\build.cmd
+
 Note that both the GStreamer & Qt must be built with exactly the same
 version of the MSVC. For example, if GStreamer is build with MSVC 2010,
 the Qt version should must be any from 5.0 till 5.5.
 
 Windows (MinGW)
---------------
+---------------
 
 1. Install build dependecies
 
-  * [gstreamer, sgtreamer-sdk](https://gstreamer.freedesktop.org/data/pkg/windows/)
-  * [boost](https://sourceforge.net/projects/boost/files/boost/)
+  * [GStreamer, GStreamer-sdk](https://gstreamer.freedesktop.org/data/pkg/windows/)
+  * [Boost](https://sourceforge.net/projects/boost/files/boost/)
+  * [Qt 5.0.2 MinGW](https://download.qt.io/archive/qt/5.0/5.0.2/)
 
 2. Build 3-rd party libraries
   * [QtGStreamer](https://github.com/detrout/qt-gstreamer.git)
 
-        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5  -DBoost_INCLUDE_DIR=<path to boost> -G "MinGW Makefiles"
+        set BOOST_DIR=<the path to boost headers>
+        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5  -DBoost_INCLUDE_DIR=%BOOST_DIR% -G "MinGW Makefiles"
         cmake --build . --target install
 
 3. Make Makefile
 
-        qmake-qt5 -set INCLUDEDIR %BOOSTDIR% beryllium.pro
+        qmake-qt5 INCLUDEDIR+=%BOOST_DIR%
 
 4. Make Beryllium
 
         lrelease *.ts
         min32gw-make -f Makefile.Release
+
+5. Create Package
+
+        copy \usr\bin\*.dll release\
+        copy C:\Qt\Qt5.0.2\5.0.2\mingw47_32\bin\*.dll Release\
+        xcopy /s C:\Qt\Qt5.0.2\5.0.2\mingw47_32\plugins Release\
+
+        set QT_RUNTIME=qt-5.0.2_mingw-4.7.wxi
+        wix\build.cmd
+
 
 Note that both the GStreamer & Qt must be built with exactly the same
 version of the GCC. For example, if GStreamer is build with GCC 4.7.3,
