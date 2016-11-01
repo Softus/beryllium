@@ -11,7 +11,7 @@
 <?define SrcDir64        = "../$(var.Configuration)\" ?>
 
 <?define RequiresAdmin    = "True" ?>
-<?define QtVersion        = "5" ?>
+<?define QtRuntime        = "qt-5.0.2_mingw-4.7.wxi" ?>
 
 <?if $(var.Platform)=x64?>
 <?define Win64   = "yes" ?>
@@ -109,12 +109,7 @@
                 <File Id="File_shutter_ac3_x86" Name="shutter.ac3" />
               </Component>
             </Directory>
-            <?if $(var.QtVersion)=4 ?>
-              <?include Qt4Runtime32.wxi ?>
-              <?include opencv32.wxi ?>
-            <?else ?>
-              <?include Qt5Runtime32.wxi ?>
-            <?endif ?>
+            <?include $(var.QtRuntime32) ?>
           </Directory>
 
           <?if $(var.Platform)=x64?>
@@ -141,11 +136,7 @@
                 </Component>
               </Directory>
             </Directory>
-            <?if $(var.QtVersion)=4 ?>
-              <?include Qt4Runtime64.wxi ?>
-            <?else ?>
-              <?include Qt5Runtime64.wxi ?>
-            <?endif ?>
+            <?include $(var.QtRuntime64) ?>
           <?endif ?>
         </Directory>
         </Directory>
@@ -158,11 +149,7 @@
       <ComponentRef Id="Comp_QtLibs32" />
       <ComponentRef Id="Comp_QtGstLibs32" />
       <ComponentRef Id="Comp_QtImageFormats32" />
-      <?if $(var.QtVersion) < 5 ?>
-        <ComponentRef Id="Comp_opencv32" />
-      <?else ?>
-        <ComponentRef Id="Comp_QtPlatforms32" />
-      <?endif ?>
+      <ComponentRef Id="Comp_QtPlatforms32" />
       <ComponentRef Id="Comp_DBusService32" />
       <?if $(var.Platform)=x64 ?>
         <ComponentRef Id="Comp_Application64" />
@@ -171,11 +158,7 @@
         <ComponentRef Id="Comp_QtLibs64" />
         <ComponentRef Id="Comp_QtGstLibs64" />
         <ComponentRef Id="Comp_QtImageFormats64" />
-        <?if $(var.QtVersion) < 5 ?>
-          <ComponentRef Id="Comp_opencv64" />
-        <?else ?>
-          <ComponentRef Id="Comp_QtPlatforms64" />
-        <?endif ?>
+        <ComponentRef Id="Comp_QtPlatforms64" />
       <?endif ?>
     </Feature>
 
