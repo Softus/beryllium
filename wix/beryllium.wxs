@@ -109,7 +109,7 @@
                 <File Id="File_shutter_ac3_x86" Name="shutter.ac3" />
               </Component>
             </Directory>
-            <?include $(var.QtRuntime32) ?>
+            <?include $(var.QtRuntime) ?>
           </Directory>
 
           <?if $(var.Platform)=x64?>
@@ -136,7 +136,7 @@
                 </Component>
               </Directory>
             </Directory>
-            <?include $(var.QtRuntime64) ?>
+            <?include $(var.QtRuntime) ?>
           <?endif ?>
         </Directory>
         </Directory>
