@@ -8,6 +8,7 @@
     <File Id="File_Qt5Network_x86" Name="Qt5Network.dll" />
     <File Id="File_Qt5OpenGL_x86" Name="Qt5OpenGL.dll" />
       <File Id="File_libGLESv2_x86" Name="libGLESv2.dll" />
+      <File Id="File_libEGL_x86" Name="libEGL.dll" />
     <File Id="File_Qt5Svg_x86" Name="Qt5Svg.dll" />
     <File Id="File_Qt5Qml_x86" Name="Qt5Qml.dll" />
     <File Id="File_Qt5Quick_x86" Name="Qt5Quick.dll" />
@@ -15,10 +16,10 @@
     <File Id="File_Qt5Widgets_x86" Name="Qt5Widgets.dll" />
   </Component>
   <Component Id="Comp_QtGstLibs32" Guid="B100D0FF-AF56-0302-0314-079500628307" Win64="no">
-    <File Id="File_Qt5GLib2_x86" Name="Qt5GLib-2.0.dll" />
-    <File Id="File_Qt5GStreamer10_x86"  Name="Qt5GStreamer-1.0.dll" />
-    <File Id="File_Qt5GStreamerUi10_x86" Name="Qt5GStreamerUi-1.0.dll" />
-    <File Id="File_Qt5GStreamerUtils10_x86" Name="Qt5GStreamerUtils-1.0.dll" />
+    <File Id="File_Qt5GLib2_x86" Name="libQt5GLib-2.0.dll" />
+    <File Id="File_Qt5GStreamer10_x86"  Name="libQt5GStreamer-1.0.dll" />
+    <File Id="File_Qt5GStreamerUi10_x86" Name="libQt5GStreamerUi-1.0.dll" />
+    <File Id="File_Qt5GStreamerUtils10_x86" Name="libQt5GStreamerUtils-1.0.dll" />
   </Component>
   <Directory Id="ImageFormats32" Name="imageformats" FileSource="$(var.SrcDir32)/imageformats">
     <Component Id="Comp_QtImageFormats32" Guid="B100D0FF-AF56-0303-0314-079500628307" Win64="no">
