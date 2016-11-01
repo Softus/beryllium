@@ -21,40 +21,38 @@ init:
 - git config --global core.autocrlf true
 
 install:
-- cmd: >-
-    curl -kL %QT_URI% -o qt-installer.exe && start /wait qt-installer.exe --no-force-installations --script appveyor\unattended-qt-install.qs
-    set PATH=%MINGW_DIR%\bin;%QT_DIR%\bin;c:\usr\bin;c:\msys64\mingw32\bin;%GSTREAMER_DIR%\bin;%PATH%
-    mkdir c:\usr
-    mkdir c:\usr\bin && mkdir c:\usr\include && mkdir c:\usr\lib
+- curl -kL %QT_URI% -o qt-installer.exe && start /wait qt-installer.exe --no-force-installations --script appveyor\unattended-qt-install.qs
+- set PATH=%MINGW_DIR%\bin;%QT_DIR%\bin;c:\usr\bin;c:\msys64\mingw32\bin;%GSTREAMER_DIR%\bin;%PATH%
+- mkdir c:\usr
+- mkdir c:\usr\bin && mkdir c:\usr\include && mkdir c:\usr\lib
 
-    curl -kLO https://gstreamer.freedesktop.org/data/pkg/windows/%GSTREAMER_VER%/gstreamer-1.0-x86-%GSTREAMER_VER%.msi && msiexec /quiet /i gstreamer-1.0-x86-%GSTREAMER_VER%.msi
-    curl -kLO https://gstreamer.freedesktop.org/data/pkg/windows/%GSTREAMER_VER%/gstreamer-1.0-devel-x86-%GSTREAMER_VER%.msi && msiexec /quiet /i gstreamer-1.0-devel-x86-%GSTREAMER_VER%.msi
-    del *.msi
+- curl -kLO https://gstreamer.freedesktop.org/data/pkg/windows/%GSTREAMER_VER%/gstreamer-1.0-x86-%GSTREAMER_VER%.msi && msiexec /quiet /i gstreamer-1.0-x86-%GSTREAMER_VER%.msi
+- curl -kLO https://gstreamer.freedesktop.org/data/pkg/windows/%GSTREAMER_VER%/gstreamer-1.0-devel-x86-%GSTREAMER_VER%.msi && msiexec /quiet /i gstreamer-1.0-devel-x86-%GSTREAMER_VER%.msi
+- del *.msi
 
-    curl -kL http://mediaarea.net/download/binary/libmediainfo0/%MEDIAINFO_VER%/MediaInfo_DLL_%MEDIAINFO_VER%_Windows_i386_WithoutInstaller.7z -o mediainfo.7z && 7z x mediainfo.7z && del mediainfo.7z
-    mkdir c:\usr\include\MediaInfo
-    move Developers\Source\MediaInfoDLL\MediaInfoDLL.h c:\usr\include\MediaInfo\MediaInfo.h
-    move MediaInfo.dll c:\usr\bin\MediaInfo.dll
+- curl -kL http://mediaarea.net/download/binary/libmediainfo0/%MEDIAINFO_VER%/MediaInfo_DLL_%MEDIAINFO_VER%_Windows_i386_WithoutInstaller.7z -o mediainfo.7z && 7z x mediainfo.7z && del mediainfo.7z
+- mkdir c:\usr\include\MediaInfo
+- move Developers\Source\MediaInfoDLL\MediaInfoDLL.h c:\usr\include\MediaInfo\MediaInfo.h
+- move MediaInfo.dll c:\usr\bin\MediaInfo.dll
 
-    git clone -q %QTGSTREAMER_URI% && cd qt-gstreamer
-    mkdir build && cd build
-    set PATH=%PATH:C:\Program Files\Git\usr\bin=%
-    cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5  -DBoost_INCLUDE_DIR=%BOOST_DIR% -G "MinGW Makefiles"
-    cmake --build . --target install
-    set PATH=%PATH%;C:\Program Files\Git\usr\bin
-    cd ..\..
+- git clone -q %QTGSTREAMER_URI% && cd qt-gstreamer
+- mkdir build && cd build
+- set PATH=%PATH:C:\Program Files\Git\usr\bin=%
+- cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5  -DBoost_INCLUDE_DIR=%BOOST_DIR% -G "MinGW Makefiles"
+- cmake --build . --target install
+- set PATH=%PATH%;C:\Program Files\Git\usr\bin
+- cd ..\..
 
 build_script:
-- cmd: >-
-    lrelease *.ts
-    qmake INCLUDEPATH+=%BOOST_DIR%
-    mingw32-make
+- lrelease *.ts
+- qmake INCLUDEPATH+=%BOOST_DIR%
+- mingw32-make
 
-    copy \usr\bin\*.dll release\
-    copy %QT_DIR%\bin\*.dll Release\
-    xcopy /s %QT_DIR%\plugins Release\
+- copy \usr\bin\*.dll release\
+- copy %QT_DIR%\bin\*.dll Release\
+- xcopy /s %QT_DIR%\plugins Release\
 
-    wix\build.cmd
+- wix\build.cmd
 
 artifacts:
 - path: dist\Releasex86\en-US\*.msi
