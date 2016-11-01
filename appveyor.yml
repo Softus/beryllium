@@ -16,6 +16,10 @@ environment:
   GSTREAMER_DIR: c:\gstreamer\1.0\x86
   QT_RUNTIME: qt-5.0.2_mingw-4.7.wxi
 
+# Fix line endings on Windows
+init:
+- git config --global core.autocrlf true
+
 install:
 - cmd: >-
     curl -kL %QT_URI% -o qt-installer.exe && start /wait qt-installer.exe --no-force-installations --script appveyor\unattended-qt-install.qs
