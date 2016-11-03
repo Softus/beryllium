@@ -144,15 +144,33 @@ Windows (Visual Studio)
 
 1. Install build dependecies
 
+  * [CMake](https://cmake.org/download/)
+  * [WiX Toolset](http://wixtoolset.org/releases/)
   * [pkg-config](http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/)
   * [GStreamer, GStreamer-sdk](https://gstreamer.freedesktop.org/data/pkg/windows/)
   * [Boost](https://sourceforge.net/projects/boost/files/boost/)
   * [Qt 5.5 MSVC](https://download.qt.io/archive/qt/5.5/)
-
-2. Build 3-rd party libraries
+  * [DCMTK](http://dcmtk.org/dcmtk.php.en)
+  * [MediaInfo](http://mediaarea.net/ru/MediaInfo/Download/Source)
   * [QtGStreamer](https://github.com/detrout/qt-gstreamer.git)
 
+2. Build 3-rd party libraries
+
+        # MediaInfo
+        cd libmediainfo/mediainfolib/project/cmake
+        mkdir build && cd build
+        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "Visual Studio <version>"
+        cmake --build . --target install
+
+        # DCMTK
+        cd dcmtk
+        mkdir build && cd build
+        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "Visual Studio <version>"
+        cmake --build . --target install
+
+        # QtGStreamer
         set BOOST_DIR=<the path to boost headers>
+        mkdir build && cd build
         cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5  -DBoost_INCLUDE_DIR=%BOOST_DIR% -G "Visual Studio <version>"
         cmake --build . --target install
 
@@ -183,13 +201,30 @@ Windows (MinGW)
 
 1. Install build dependecies
 
+  * [CMake](https://cmake.org/download/)
+  * [WiX Toolset](http://wixtoolset.org/releases/)
   * [GStreamer, GStreamer-sdk](https://gstreamer.freedesktop.org/data/pkg/windows/)
   * [Boost](https://sourceforge.net/projects/boost/files/boost/)
   * [Qt 5.0.2 MinGW](https://download.qt.io/archive/qt/5.0/5.0.2/)
-
-2. Build 3-rd party libraries
+  * [DCMTK](http://dcmtk.org/dcmtk.php.en)
+  * [MediaInfo](http://mediaarea.net/ru/MediaInfo/Download/Source)
   * [QtGStreamer](https://github.com/detrout/qt-gstreamer.git)
 
+2. Build 3-rd party libraries
+
+        # MediaInfo
+        cd libmediainfo/mediainfolib/project/cmake
+        mkdir build && cd build
+        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "MinGW Makefiles"
+        cmake --build . --target install
+
+        # DCMTK
+        cd dcmtk
+        mkdir build && cd build
+        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "MinGW Makefiles"
+        cmake --build . --target install
+
+        # QtGStreamer
         set BOOST_DIR=<the path to boost headers>
         cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5  -DBoost_INCLUDE_DIR=%BOOST_DIR% -G "MinGW Makefiles"
         cmake --build . --target install
