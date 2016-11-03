@@ -150,19 +150,19 @@ Windows (Visual Studio)
   * [GStreamer, GStreamer-sdk](https://gstreamer.freedesktop.org/data/pkg/windows/)
   * [Boost](https://sourceforge.net/projects/boost/files/boost/)
   * [Qt 5.5 MSVC](https://download.qt.io/archive/qt/5.5/)
-  * [DCMTK](http://dcmtk.org/dcmtk.php.en)
-  * [MediaInfo](http://mediaarea.net/ru/MediaInfo/Download/Source)
   * [QtGStreamer](https://github.com/detrout/qt-gstreamer.git)
+  * [DCMTK (optional)](http://dcmtk.org/dcmtk.php.en)
+  * [MediaInfo (optional)](http://mediaarea.net/ru/MediaInfo/Download/Source)
 
 2. Build 3-rd party libraries
 
-        # MediaInfo
+        # MediaInfo (optional)
         cd libmediainfo/mediainfolib/project/cmake
         mkdir build && cd build
         cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "Visual Studio <version>"
         cmake --build . --target install
 
-        # DCMTK
+        # DCMTK (optional)
         cd dcmtk
         mkdir build && cd build
         cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "Visual Studio <version>"
@@ -176,7 +176,8 @@ Windows (Visual Studio)
 
 3. Make Makefile
 
-        qmake-qt5 INCLUDEDIR+=%BOOST_DIR%
+        # 'CONFIG+=dicom ' is optional.
+        qmake-qt5 INCLUDEDIR+=%BOOST_DIR% CONFIG+=dicom
 
 4. Make Beryllium
 
@@ -207,18 +208,18 @@ Windows (MinGW)
   * [Boost](https://sourceforge.net/projects/boost/files/boost/)
   * [Qt 5.0.2 MinGW](https://download.qt.io/archive/qt/5.0/5.0.2/)
   * [DCMTK](http://dcmtk.org/dcmtk.php.en)
-  * [MediaInfo](http://mediaarea.net/ru/MediaInfo/Download/Source)
-  * [QtGStreamer](https://github.com/detrout/qt-gstreamer.git)
+  * [MediaInfo (optional)](http://mediaarea.net/ru/MediaInfo/Download/Source)
+  * [QtGStreamer (optional)](https://github.com/detrout/qt-gstreamer.git)
 
 2. Build 3-rd party libraries
 
-        # MediaInfo
+        # MediaInfo (optional)
         cd libmediainfo/mediainfolib/project/cmake
         mkdir build && cd build
         cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "MinGW Makefiles"
         cmake --build . --target install
 
-        # DCMTK
+        # DCMTK (optional)
         cd dcmtk
         mkdir build && cd build
         cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "MinGW Makefiles"
@@ -231,7 +232,8 @@ Windows (MinGW)
 
 3. Make Makefile
 
-        qmake-qt5 INCLUDEDIR+=%BOOST_DIR%
+        # 'CONFIG+=dicom ' is optional.
+        qmake-qt5 INCLUDEDIR+=%BOOST_DIR% CONFIG+=dicom
 
 4. Make Beryllium
 
