@@ -25,9 +25,19 @@
 #include "dbusconnect.h"
 
 #ifdef WITH_DICOM
+#ifdef UNICODE
+#define DCMTK_UNICODE_BUG_WORKAROUND
+#undef UNICODE
+#endif
+
 #include "dicom/dcmclient.h"
 #include <dcmtk/dcmdata/dcdatset.h>
 #include <dcmtk/dcmdata/dcuid.h>
+
+#ifdef DCMTK_UNICODE_BUG_WORKAROUND
+#define UNICODE
+#undef DCMTK_UNICODE_BUG_WORKAROUND
+#endif
 #endif
 
 #include "touch/slidingstackedwidget.h"

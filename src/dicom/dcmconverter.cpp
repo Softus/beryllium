@@ -16,12 +16,13 @@
 
 #include "../product.h"
 #include "../defaults.h"
-#include "dcmconverter.h"
 
-#include <QDebug>
-#include <QFile>
-#include <QFileInfo>
-#include <QSettings>
+#ifdef UNICODE
+#define DCMTK_UNICODE_BUG_WORKAROUND
+#undef UNICODE
+#endif
+
+#include "dcmconverter.h"
 
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
@@ -31,11 +32,21 @@
 #include <dcmtk/dcmdata/dcpixseq.h>  /* for DcmPixelSequence */
 #include <dcmtk/dcmdata/dcpxitem.h>  /* for DcmPixelItem */
 
+#ifdef DCMTK_UNICODE_BUG_WORKAROUND
+#define UNICODE
+#undef DCMTK_UNICODE_BUG_WORKAROUND
+#endif
+
 #ifdef DCDEFINE_H
 #define OFFIS_DCMTK_VER 0x030601
 #else
 #define OFFIS_DCMTK_VER 0x030600
 #endif
+
+#include <QDebug>
+#include <QFile>
+#include <QFileInfo>
+#include <QSettings>
 
 #if defined(UNICODE) || defined (_UNICODE)
 #include <MediaInfo/MediaInfo.h>

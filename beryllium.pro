@@ -30,6 +30,7 @@ win32 {
     INCLUDEPATH += c:/usr/include
     QMAKE_LIBDIR += c:/usr/lib
     LIBS += -ladvapi32 -lnetapi32 -lwsock32 -luser32
+    dicom:LIBS += -lnetapi32 -lzlibstatic
 
     USERNAME    = $$(USERNAME)
     OS_DISTRO   = windows

@@ -18,11 +18,25 @@
 #include "../defaults.h"
 #include "../smartshortcut.h"
 #include "../qwaitcursor.h"
+#include "../touch/slidingstackedwidget.h"
 #include "detailsdialog.h"
-#include "dcmclient.h"
 #include "transcyrillic.h"
 
-#include "../touch/slidingstackedwidget.h"
+#ifdef UNICODE
+#define DCMTK_UNICODE_BUG_WORKAROUND
+#undef UNICODE
+#endif
+#include "dcmclient.h"
+
+#include <dcmtk/dcmdata/dcdatset.h>
+#include <dcmtk/dcmdata/dcdeftag.h>
+#include <dcmtk/dcmdata/dcitem.h>
+#include <dcmtk/dcmdata/dcuid.h>
+
+#ifdef DCMTK_UNICODE_BUG_WORKAROUND
+#define UNICODE
+#undef DCMTK_UNICODE_BUG_WORKAROUND
+#endif
 
 #include <QAction>
 #include <QApplication>
@@ -37,11 +51,6 @@
 #include <QTableWidget>
 #include <QTimer>
 #include <QToolBar>
-
-#include <dcmtk/dcmdata/dcdatset.h>
-#include <dcmtk/dcmdata/dcdeftag.h>
-#include <dcmtk/dcmdata/dcitem.h>
-#include <dcmtk/dcmdata/dcuid.h>
 
 Q_DECLARE_METATYPE(DcmDataset)
 static int DcmDatasetMetaType = qRegisterMetaType<DcmDataset>();

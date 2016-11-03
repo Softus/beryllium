@@ -17,10 +17,16 @@
 #include "../defaults.h"
 #include "../product.h"
 #include "../typedetect.h"
-#include "dcmclient.h"
-#include "dcmconverter.h"
 #include "transcyrillic.h"
 #include "qxtglobal.h" // for _countof
+
+#ifdef UNICODE
+#define DCMTK_UNICODE_BUG_WORKAROUND
+#undef UNICODE
+#endif
+
+#include "dcmclient.h"
+#include "dcmconverter.h"
 
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcdicent.h>
@@ -30,6 +36,11 @@
 #include <dcmtk/dcmnet/assoc.h>
 #include <dcmtk/dcmnet/dimse.h>
 #include <dcmtk/dcmnet/diutil.h>
+
+#ifdef DCMTK_UNICODE_BUG_WORKAROUND
+#define UNICODE
+#undef DCMTK_UNICODE_BUG_WORKAROUND
+#endif
 
 #include <QApplication>
 #include <QDebug>

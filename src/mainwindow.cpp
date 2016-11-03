@@ -28,6 +28,11 @@
 #include "thumbnaillist.h"
 
 #ifdef WITH_DICOM
+#ifdef UNICODE
+#define DCMTK_UNICODE_BUG_WORKAROUND
+#undef UNICODE
+#endif
+
 #include "dicom/worklist.h"
 #include "dicom/dcmclient.h"
 #include "dicom/transcyrillic.h"
@@ -43,6 +48,10 @@
 
 static DcmTagKey DCM_ImageNo(0x5000, 0x8001);
 static DcmTagKey DCM_ClipNo(0x5000,  0x8002);
+#ifdef DCMTK_UNICODE_BUG_WORKAROUND
+#define UNICODE
+#undef DCMTK_UNICODE_BUG_WORKAROUND
+#endif
 #endif
 
 #include "touch/slidingstackedwidget.h"
@@ -247,7 +256,8 @@ void MainWindow::showEvent(QShowEvent *evt)
 #ifdef Q_OS_WIN
     // Archive window need this, but only the top level window may receive this message
     //
-    DEV_BROADCAST_DEVICEINTERFACE dbd = {0,};
+    DEV_BROADCAST_DEVICEINTERFACE dbd;
+    ZeroMemory(&dbd, sizeof(DEV_BROADCAST_DEVICEINTERFACE));
     dbd.dbcc_size = sizeof(DEV_BROADCAST_DEVICEINTERFACE);
     dbd.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
     dbd.dbcc_classguid = GUID_DEVINTERFACE_USBSTOR;
