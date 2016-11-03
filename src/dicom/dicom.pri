@@ -1,13 +1,15 @@
 dicom {
-    QT        += network
-    LIBS      += -ldcmnet -ldcmdata -loflog -lofstd -lz
-    unix:LIBS += -lwrap -lssl
-    win32:LIBS += -lws2_32
-    DEFINES   += WITH_DICOM
+    QT         += network
+    DEFINES    += WITH_DICOM
 
     # libmediainfo.pc adds UNICODE, but dcmtk isn't compatible with wchar,
-    # so we can't use pkgconfig for this library
-    LIBS += -lmediainfo -lzen
+    # so we can't use pkgconfig for this library.
+    LIBS       += -lmediainfo -lzen
+
+    # DCMTK isn't pgk-config compatible at all.
+    LIBS       += -ldcmnet -ldcmdata -loflog -lofstd
+    unix:LIBS  += -lwrap -lssl -lz
+    win32:LIBS += -lws2_32 -lzlibstatic -lnetapi32
 
     SOURCES   += \
         src/dicom/dcmclient.cpp \

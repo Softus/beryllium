@@ -27,10 +27,10 @@ for (mod, OPTIONAL_MODULES): qtHaveModule($$mod) {
 win32 {
     greaterThan(QT_MAJOR_VERSION, 4): QT += gui-private
 
+    LIBS += -ladvapi32 -lnetapi32 -lwsock32 -luser32
+
     INCLUDEPATH += c:/usr/include
     QMAKE_LIBDIR += c:/usr/lib
-    LIBS += -ladvapi32 -lnetapi32 -lwsock32 -luser32
-    dicom:LIBS += -lnetapi32 -lzlibstatic
 
     USERNAME    = $$(USERNAME)
     OS_DISTRO   = windows
