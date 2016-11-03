@@ -9,6 +9,7 @@
     <File Id="File_Qt5OpenGL_x86" Name="Qt5OpenGL.dll" />
       <File Id="File_libGLESv2_x86" Name="libGLESv2.dll" />
       <File Id="File_libEGL_x86" Name="libEGL.dll" />
+      <File Id="File_D3DCompiler_43_x86" Name="D3DCompiler_43.dll" />
     <File Id="File_Qt5Svg_x86" Name="Qt5Svg.dll" />
     <File Id="File_Qt5Qml_x86" Name="Qt5Qml.dll" />
     <File Id="File_Qt5Quick_x86" Name="Qt5Quick.dll" />
