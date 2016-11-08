@@ -15,12 +15,6 @@
 isEmpty(PREFIX): PREFIX   = /usr/local
 DEFINES += PREFIX=$$PREFIX
 
-OPTIONAL_MODULES = dbus opengl widgets x11extras
-for (mod, OPTIONAL_MODULES): qtHaveModule($$mod) {
-  QT += $$mod
-  DEFINES += WITH_QT_$$upper($$mod)
-}
-
 # GCC tuning
 *-g++*:QMAKE_CXXFLAGS += -std=c++0x -Wno-multichar
 
@@ -52,10 +46,18 @@ CONFIG += link_pkgconfig
 PKGCONFIG += gio-2.0
 
 greaterThan(QT_MAJOR_VERSION, 4) {
+    OPTIONAL_MODULES = dbus opengl widgets x11extras
+    for (mod, OPTIONAL_MODULES): qtHaveModule($$mod) {
+        QT += $$mod
+        DEFINES += WITH_QT_$$upper($$mod)
+    }
+
     PKGCONFIG += Qt5GLib-2.0 Qt5GStreamer-1.0 Qt5GStreamerUi-1.0 gstreamer-1.0 gstreamer-base-1.0 gstreamer-pbutils-1.0
     unix:PKGCONFIG += libavc1394 libraw1394 gudev-1.0 libv4l2
 }
 else {
+    QT += dbus opengl
+    DEFINES += WITH_QT_DBUS WITH_QT_OPENGL
     PKGCONFIG += QtGLib-2.0 QtGStreamer-0.10 QtGStreamerUi-0.10 gstreamer-0.10 gstreamer-base-0.10 gstreamer-interfaces-0.10 gstreamer-pbutils-0.10 opencv libsoup-2.4 librtmp
 }
 
