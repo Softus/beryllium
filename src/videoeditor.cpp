@@ -517,7 +517,7 @@ bool VideoEditor::exportVideo(QFile* outFile)
     {
         QString pipeDef;
 #if GST_CHECK_VERSION(1,0,0)
-        pipeDef.append("gnlurisource uri=\"").append(QUrl::fromLocalFile(filePath).toEncoded()).append("\" ");
+        pipeDef.append("nleurisource uri=\"").append(QUrl::fromLocalFile(filePath).toEncoded()).append("\" ");
 #else
         pipeDef.append("gnlfilesource location=\"").append(filePath).append("\" ");
 #endif
