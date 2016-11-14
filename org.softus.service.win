@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.softus.beryllium
+Exec=%ProgramFiles%/Softus/Beryllium/Beryllium.exe
