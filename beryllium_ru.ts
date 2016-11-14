@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ru_RU">
+<TS version="2.0" language="ru_RU">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -65,8 +65,8 @@
     </message>
     <message>
         <location filename="src/aboutdialog.cpp" line="134"/>
-        <source>Irkutsk Diagnostic Center</source>
-        <translation>Иркутский Диагостический Центр</translation>
+        <source>Softus Inc.</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="src/aboutdialog.cpp" line="139"/>
@@ -205,11 +205,11 @@ MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
     </message>
     <message>
         <source>&amp;Return to capture</source>
-        <translation type="vanished">&amp;Вернуться к захвату</translation>
+        <translation>&amp;Вернуться к захвату</translation>
     </message>
     <message>
         <source>&amp;Show in files</source>
-        <translation type="vanished">&amp;Показать в проводнике</translation>
+        <translation>&amp;Показать в проводнике</translation>
     </message>
     <message>
         <location filename="src/archivewindow.cpp" line="1043"/>
