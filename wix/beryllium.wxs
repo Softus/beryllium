@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?define ProductBuild     = "1.3" ?>
-<?define ProductRevision  = "7" ?>
+<?define ProductRevision  = "8" ?>
 <?define ProductName      = "Beryllium" ?>
 
-<?define Manufacturer    = "dc.baikal.ru" ?>
+<?define Manufacturer    = "softus.org" ?>
 <?define ProductVersion  = "$(var.ProductBuild).$(var.ProductRevision)" ?>
 <?define UpgradeCode     = "{B100D0FF-AF56-0000-0314-079500628307}" ?>
 <?define SrcDir32        = "../$(var.Configuration)\" ?>
@@ -77,7 +77,7 @@
             <Directory Id='DBusFolder' Name='dbus-1'>
               <Directory Id='ServicesFolder' Name='services'>
                 <Component Id="Comp_DBusService32" Guid="B100D0FF-AF56-0107-0314-079500628307" Win64="no">
-                  <File Id="File_com_irk_dc_beryllium_service" Name="ru.baikal.dc.beryllium.service" Source="../ru.baikal.dc.beryllium.service.win" />
+                  <File Id="File_org_softus_beryllium_service" Name="org.softus.beryllium.service" Source="../org.softus.beryllium.service.win" />
                 </Component>
               </Directory>
             </Directory>

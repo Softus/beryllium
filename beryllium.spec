@@ -6,9 +6,9 @@ Release: 1
 License: LGPL-2.1+
 Source: %{name}.tar.gz
 #Source: %{name}-%{version}.tar.bz2
-URL: http://dc.baikal.ru/products/beryllium
-Vendor: Beryllium team <beryllium@dc.baikal.ru>
-Packager: Beryllium team <beryllium@dc.baikal.ru>
+URL: http://softus.org/products/beryllium
+Vendor: Softus Inc. <contact@softus.org>
+Packager: Softus Inc. <contact@softus.org>
 
 BuildRequires: make, libv4l-devel
 

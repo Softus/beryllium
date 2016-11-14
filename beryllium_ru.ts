@@ -85,121 +85,121 @@ MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
 <context>
     <name>ArchiveWindow</name>
     <message>
-        <location filename="src/archivewindow.cpp" line="236"/>
-        <location filename="src/archivewindow.cpp" line="1129"/>
+        <location filename="src/archivewindow.cpp" line="253"/>
+        <location filename="src/archivewindow.cpp" line="1150"/>
         <source>Archive</source>
         <translation>Архив</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="240"/>
+        <location filename="src/archivewindow.cpp" line="257"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="246"/>
+        <location filename="src/archivewindow.cpp" line="263"/>
         <source>Upload</source>
         <translation>В хранилище</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="281"/>
+        <location filename="src/archivewindow.cpp" line="298"/>
         <source>File browser</source>
         <translation>Проводник</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="271"/>
+        <location filename="src/archivewindow.cpp" line="288"/>
         <source>List</source>
         <translation>Список</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="238"/>
+        <location filename="src/archivewindow.cpp" line="255"/>
         <source>Back</source>
         <translation>Обратно</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="257"/>
+        <location filename="src/archivewindow.cpp" line="274"/>
         <source>Edit</source>
         <translation>Правка</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="259"/>
+        <location filename="src/archivewindow.cpp" line="276"/>
         <source>Up</source>
         <translation>Вверх</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="242"/>
+        <location filename="src/archivewindow.cpp" line="259"/>
         <source>Restore</source>
         <translation>Вернуть</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="250"/>
+        <location filename="src/archivewindow.cpp" line="267"/>
         <source>to USB</source>
         <translation>на USB</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="273"/>
+        <location filename="src/archivewindow.cpp" line="290"/>
         <source>Icons</source>
         <translation>Значки</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="275"/>
+        <location filename="src/archivewindow.cpp" line="292"/>
         <source>Gallery</source>
         <translation>Галерея</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="284"/>
+        <location filename="src/archivewindow.cpp" line="301"/>
         <source>Path</source>
         <translation>Путь</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="295"/>
-        <location filename="src/archivewindow.cpp" line="298"/>
+        <location filename="src/archivewindow.cpp" line="312"/>
+        <location filename="src/archivewindow.cpp" line="315"/>
         <source>Previous</source>
         <translation>Предыдущий</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="317"/>
-        <location filename="src/archivewindow.cpp" line="320"/>
+        <location filename="src/archivewindow.cpp" line="334"/>
+        <location filename="src/archivewindow.cpp" line="337"/>
         <source>Next</source>
         <translation>Следующий</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="330"/>
+        <location filename="src/archivewindow.cpp" line="347"/>
         <source>Media</source>
         <translation>Медия</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="331"/>
+        <location filename="src/archivewindow.cpp" line="348"/>
         <source>Rewing</source>
         <translation>Отмотать назад</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="334"/>
-        <location filename="src/archivewindow.cpp" line="1410"/>
+        <location filename="src/archivewindow.cpp" line="351"/>
+        <location filename="src/archivewindow.cpp" line="1431"/>
         <source>Play</source>
         <translation>Воспроизвести</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="336"/>
+        <location filename="src/archivewindow.cpp" line="353"/>
         <source>Forward</source>
         <translation>Перемотать вперёд</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="651"/>
+        <location filename="src/archivewindow.cpp" line="670"/>
         <source>The file was uploaded to a storage server</source>
         <translation>Файл был загружен в хранилище</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="663"/>
+        <location filename="src/archivewindow.cpp" line="682"/>
         <source>The file was copied to an usb drive</source>
         <translation>Файл был скопирован на USB диск</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1052"/>
+        <location filename="src/archivewindow.cpp" line="1073"/>
         <source>C&amp;apture</source>
         <translation>&amp;Захват</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1053"/>
+        <location filename="src/archivewindow.cpp" line="1074"/>
         <source>&amp;Browser</source>
         <translation>&amp;Проводник</translation>
     </message>
@@ -212,12 +212,12 @@ MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
         <translation type="vanished">&amp;Показать в проводнике</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1022"/>
+        <location filename="src/archivewindow.cpp" line="1043"/>
         <source>Copying &apos;%1&apos; to &apos;%2&apos;</source>
         <translation>Копирование &apos;%1&apos; в &apos;%2&apos; </translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1030"/>
+        <location filename="src/archivewindow.cpp" line="1051"/>
         <source>Failed to copy &apos;%1&apos; to &apos;%2&apos;:
 %3
 Continue?</source>
@@ -226,22 +226,22 @@ Continue?</source>
 Продолжить?</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1051"/>
+        <location filename="src/archivewindow.cpp" line="1072"/>
         <source>All files were successfully copied.</source>
         <translation>Все файлы были успешно скопированы.</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1098"/>
+        <location filename="src/archivewindow.cpp" line="1119"/>
         <source>All files were successfully stored.</source>
         <translation>Все файлы были успешно сохранены.</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1124"/>
+        <location filename="src/archivewindow.cpp" line="1145"/>
         <source>Failed to launch </source>
         <translation>Ошибка при выполнении </translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1410"/>
+        <location filename="src/archivewindow.cpp" line="1431"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
@@ -277,22 +277,22 @@ Continue?</source>
 <context>
     <name>DcmClient</name>
     <message>
-        <location filename="src/dicom/dcmclient.cpp" line="300"/>
+        <location filename="src/dicom/dcmclient.cpp" line="307"/>
         <source>Required settings parameter %1 is missing</source>
         <translation>Необходимый параметр %1 не задан в настройках</translation>
     </message>
     <message>
-        <location filename="src/dicom/dcmclient.cpp" line="414"/>
+        <location filename="src/dicom/dcmclient.cpp" line="421"/>
         <source>Accepted presentation context ID not found</source>
         <translation>Принятый ID контекста представления не найден</translation>
     </message>
     <message>
-        <location filename="src/dicom/dcmclient.cpp" line="830"/>
+        <location filename="src/dicom/dcmclient.cpp" line="837"/>
         <source>Storing &apos;%1&apos; to &apos;%2&apos;</source>
         <translation>Отправка &apos;%1&apos; на &apos;%2&apos; </translation>
     </message>
     <message>
-        <location filename="src/dicom/dcmclient.cpp" line="848"/>
+        <location filename="src/dicom/dcmclient.cpp" line="855"/>
         <source>The file %1 has been already sent to a DICOM server.
 
 Send again?</source>
@@ -301,7 +301,7 @@ Send again?</source>
 Отправить ещё раз?</translation>
     </message>
     <message>
-        <location filename="src/dicom/dcmclient.cpp" line="864"/>
+        <location filename="src/dicom/dcmclient.cpp" line="871"/>
         <source>Failed to send &apos;%1&apos; to &apos;%2&apos;:
 %3
 Continue?</source>
@@ -376,27 +376,27 @@ Continue?</source>
 <context>
     <name>DetailsDialog</name>
     <message>
-        <location filename="src/dicom/detailsdialog.cpp" line="60"/>
+        <location filename="src/dicom/detailsdialog.cpp" line="70"/>
         <source>Details</source>
         <translation>Детали</translation>
     </message>
     <message>
-        <location filename="src/dicom/detailsdialog.cpp" line="65"/>
+        <location filename="src/dicom/detailsdialog.cpp" line="75"/>
         <source>Tag name</source>
         <translation>Имя тега</translation>
     </message>
     <message>
-        <location filename="src/dicom/detailsdialog.cpp" line="65"/>
+        <location filename="src/dicom/detailsdialog.cpp" line="75"/>
         <source>Code</source>
         <translation>Код</translation>
     </message>
     <message>
-        <location filename="src/dicom/detailsdialog.cpp" line="65"/>
+        <location filename="src/dicom/detailsdialog.cpp" line="75"/>
         <source>VR</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="src/dicom/detailsdialog.cpp" line="65"/>
+        <location filename="src/dicom/detailsdialog.cpp" line="75"/>
         <source>Value</source>
         <translation>Значение</translation>
     </message>
@@ -778,128 +778,128 @@ Continue?</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="src/mainwindow.cpp" line="395"/>
+        <location filename="src/mainwindow.cpp" line="405"/>
         <source>&amp;Archive</source>
         <translation>&amp;Архив</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="391"/>
+        <location filename="src/mainwindow.cpp" line="401"/>
         <source>&amp;Worlkist</source>
         <translation>&amp;Рабочий лист</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="398"/>
+        <location filename="src/mainwindow.cpp" line="408"/>
         <source>&amp;Preferences</source>
         <translation>&amp;Настройки</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="349"/>
+        <location filename="src/mainwindow.cpp" line="359"/>
         <source>Main</source>
         <translation>Главная</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="396"/>
+        <location filename="src/mainwindow.cpp" line="406"/>
         <source>Show studies archive</source>
         <translation>Открыть архив исследований</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="400"/>
+        <location filename="src/mainwindow.cpp" line="410"/>
         <source>Edit settings</source>
         <translation>Открыть окно настроек</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="404"/>
+        <location filename="src/mainwindow.cpp" line="414"/>
         <source>About %1</source>
         <translation>О программе %1</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="691"/>
-        <location filename="src/mainwindow.cpp" line="696"/>
         <location filename="src/mainwindow.cpp" line="701"/>
         <location filename="src/mainwindow.cpp" line="706"/>
+        <location filename="src/mainwindow.cpp" line="711"/>
+        <location filename="src/mainwindow.cpp" line="716"/>
         <source> - </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="734"/>
+        <location filename="src/mainwindow.cpp" line="744"/>
         <source>Failed to create &apos;%1&apos;</source>
         <translation>Не удалось создать &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="821"/>
-        <location filename="src/mainwindow.cpp" line="877"/>
+        <location filename="src/mainwindow.cpp" line="831"/>
+        <location filename="src/mainwindow.cpp" line="887"/>
         <source>Failed to start recording.
 Please, adjust the video source settings.</source>
         <translation>Невозможно начать запись.
 Проверьте настройки видео.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="840"/>
-        <location filename="src/mainwindow.cpp" line="1083"/>
+        <location filename="src/mainwindow.cpp" line="850"/>
+        <location filename="src/mainwindow.cpp" line="1093"/>
         <source>Failed to start recording.
 Check the error log for details.</source>
         <translation>Невозможно начать запись.
 Проверьте журнал ожибок.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1223"/>
+        <location filename="src/mainwindow.cpp" line="1233"/>
         <source>Failed to start a study.
 Another study is in progress.</source>
         <translation>Невозможно начать исследование.
 Активное исследование ещё не закончено.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="889"/>
+        <location filename="src/mainwindow.cpp" line="899"/>
         <source>End the study?</source>
         <translation>Завершить исследование?</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1119"/>
+        <location filename="src/mainwindow.cpp" line="1129"/>
         <source>End study</source>
         <translation>Завершить исследование</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1119"/>
+        <location filename="src/mainwindow.cpp" line="1129"/>
         <source>Start study</source>
         <translation>Начать исследование</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="315"/>
+        <location filename="src/mainwindow.cpp" line="325"/>
         <source>&amp;Menu</source>
         <translation>&amp;Меню</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="402"/>
+        <location filename="src/mainwindow.cpp" line="412"/>
         <source>A&amp;bout %1</source>
         <translation>&amp;О %1</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="326"/>
+        <location filename="src/mainwindow.cpp" line="336"/>
         <source>&amp;Enable RTP streaming</source>
         <translation>Включить RTP &amp;поток</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="330"/>
+        <location filename="src/mainwindow.cpp" line="340"/>
         <source>&amp;Record entire study</source>
         <translation>Записывать исследование &amp;целиком</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="337"/>
+        <location filename="src/mainwindow.cpp" line="347"/>
         <source>E&amp;xit</source>
         <translation>В&amp;ыход</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="362"/>
+        <location filename="src/mainwindow.cpp" line="372"/>
         <source>Take snapshot</source>
         <translation>Сделать снимок</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="371"/>
+        <location filename="src/mainwindow.cpp" line="381"/>
         <source>Start clip</source>
         <translation>Записать фрагмент</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="380"/>
+        <location filename="src/mainwindow.cpp" line="390"/>
         <source>Clip done</source>
         <translation>Завершить фрагмент</translation>
     </message>
@@ -954,82 +954,82 @@ Another study is in progress.</source>
 <context>
     <name>PatientDataDialog</name>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="57"/>
+        <location filename="src/patientdatadialog.cpp" line="69"/>
         <source>Patient data</source>
         <translation>Данные пациента</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="64"/>
+        <location filename="src/patientdatadialog.cpp" line="76"/>
         <source>&amp;Accession number</source>
         <translation>К&amp;од исследования</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="66"/>
+        <location filename="src/patientdatadialog.cpp" line="78"/>
         <source>&amp;Patient ID</source>
         <translation>&amp;Карта пациента</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="67"/>
+        <location filename="src/patientdatadialog.cpp" line="79"/>
         <source>&amp;Name</source>
         <translation>&amp;ФИО</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="68"/>
+        <location filename="src/patientdatadialog.cpp" line="80"/>
         <source>&amp;Sex</source>
         <translation>&amp;Пол</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="70"/>
+        <location filename="src/patientdatadialog.cpp" line="82"/>
         <source>female</source>
         <translation>женский</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="70"/>
+        <location filename="src/patientdatadialog.cpp" line="82"/>
         <source>male</source>
         <translation>мужской</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="70"/>
+        <location filename="src/patientdatadialog.cpp" line="82"/>
         <source>other</source>
         <translation>иной</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="78"/>
+        <location filename="src/patientdatadialog.cpp" line="90"/>
         <source>&amp;Birthday</source>
         <translation>Дата &amp;рождения</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="80"/>
+        <location filename="src/patientdatadialog.cpp" line="92"/>
         <source>MM/dd/yyyy</source>
         <translation>dd/MM/yyyy</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="82"/>
+        <location filename="src/patientdatadialog.cpp" line="94"/>
         <source>P&amp;hysician</source>
         <translation>&amp;Врач</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="88"/>
+        <location filename="src/patientdatadialog.cpp" line="100"/>
         <source>Study &amp;type</source>
         <translation>&amp;Исследование</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="97"/>
+        <location filename="src/patientdatadialog.cpp" line="109"/>
         <source>Show this dialog if the Shift key is down or some data is required.</source>
         <translation>Показывать окно если нажат Shift или заданы не все данные.</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="112"/>
+        <location filename="src/patientdatadialog.cpp" line="124"/>
         <source>Show work list</source>
         <translation>Открыть рабочий лист</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="124"/>
+        <location filename="src/patientdatadialog.cpp" line="136"/>
         <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="128"/>
+        <location filename="src/patientdatadialog.cpp" line="140"/>
         <source>Start</source>
         <translation>Начать</translation>
     </message>
@@ -1076,128 +1076,128 @@ Another study is in progress.</source>
 <context>
     <name>SettingsDialog</name>
     <message>
-        <location filename="src/settingsdialog.cpp" line="82"/>
-        <location filename="src/settingsdialog.cpp" line="116"/>
+        <location filename="src/settingsdialog.cpp" line="84"/>
+        <location filename="src/settingsdialog.cpp" line="118"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="84"/>
+        <location filename="src/settingsdialog.cpp" line="86"/>
         <source>Save settings to a file</source>
         <translation>Сохранить в файл</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="85"/>
+        <location filename="src/settingsdialog.cpp" line="87"/>
         <source>Load settings from a file</source>
         <translation>Загрузить из файла</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="86"/>
+        <location filename="src/settingsdialog.cpp" line="88"/>
         <source>Edit with external application</source>
         <translation>Открыть во внешнем редакторе</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="88"/>
+        <location filename="src/settingsdialog.cpp" line="90"/>
         <source>Reset settings</source>
         <translation>Сбросить настройки</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="94"/>
+        <location filename="src/settingsdialog.cpp" line="96"/>
         <source>NOTE: all changes will be lost when the application closes.</source>
         <translation>ПРИМЕЧАНИЕ: все изменения будут утеряны после закрытия приложения.</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="98"/>
+        <location filename="src/settingsdialog.cpp" line="100"/>
         <source>Appl&amp;y</source>
         <translation>Применит&amp;ь</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="102"/>
+        <location filename="src/settingsdialog.cpp" line="104"/>
         <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="105"/>
+        <location filename="src/settingsdialog.cpp" line="107"/>
         <source>Ok</source>
         <translation>ОК</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="154"/>
+        <location filename="src/settingsdialog.cpp" line="156"/>
         <source>DICOM device</source>
         <translation>DICOM устройство</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="155"/>
+        <location filename="src/settingsdialog.cpp" line="157"/>
         <source>DICOM servers</source>
         <translation>DICOM сервера</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="156"/>
+        <location filename="src/settingsdialog.cpp" line="158"/>
         <source>DICOM MWL/MPPS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="157"/>
+        <location filename="src/settingsdialog.cpp" line="159"/>
         <source>DICOM storage</source>
         <translation>DICOM хранилище</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="158"/>
+        <location filename="src/settingsdialog.cpp" line="160"/>
         <source>Worklist column display</source>
         <translation>Колонки рабочего листа</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="159"/>
+        <location filename="src/settingsdialog.cpp" line="161"/>
         <source>Worklist query settings</source>
         <translation>Настройки рабочего листа</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="162"/>
+        <location filename="src/settingsdialog.cpp" line="164"/>
         <source>Video sources</source>
         <translation>Источники видео</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="163"/>
+        <location filename="src/settingsdialog.cpp" line="165"/>
         <source>Video recording</source>
         <translation>Запись видео</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="164"/>
+        <location filename="src/settingsdialog.cpp" line="166"/>
         <source>Storage</source>
         <translation>Хранилище</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="165"/>
+        <location filename="src/settingsdialog.cpp" line="167"/>
         <source>Physicians</source>
         <translation>Врачи</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="166"/>
+        <location filename="src/settingsdialog.cpp" line="168"/>
         <source>Studies</source>
         <translation>Исследования</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="167"/>
+        <location filename="src/settingsdialog.cpp" line="169"/>
         <source>Mandatory fields</source>
         <translation>Обязательные поля</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="168"/>
+        <location filename="src/settingsdialog.cpp" line="170"/>
         <source>Hotkeys</source>
         <translation>Комбинации клавиш</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="169"/>
+        <location filename="src/settingsdialog.cpp" line="171"/>
         <source>Confirmations</source>
         <translation>Подтверждения</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="170"/>
+        <location filename="src/settingsdialog.cpp" line="172"/>
         <source>Debug</source>
         <translation>Отладка</translation>
     </message>
     <message>
-        <location filename="src/settingsdialog.cpp" line="231"/>
+        <location filename="src/settingsdialog.cpp" line="233"/>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
@@ -1672,27 +1672,27 @@ source</source>
 <context>
     <name>Worklist</name>
     <message>
-        <location filename="src/dicom/worklist.cpp" line="117"/>
+        <location filename="src/dicom/worklist.cpp" line="126"/>
         <source>Worklist</source>
         <translation>Рабочий лист</translation>
     </message>
     <message>
-        <location filename="src/dicom/worklist.cpp" line="120"/>
+        <location filename="src/dicom/worklist.cpp" line="129"/>
         <source>Back</source>
         <translation>Обратно</translation>
     </message>
     <message>
-        <location filename="src/dicom/worklist.cpp" line="121"/>
+        <location filename="src/dicom/worklist.cpp" line="130"/>
         <source>&amp;Refresh</source>
         <translation>&amp;Обновить</translation>
     </message>
     <message>
-        <location filename="src/dicom/worklist.cpp" line="122"/>
+        <location filename="src/dicom/worklist.cpp" line="131"/>
         <source>&amp;Details</source>
         <translation>&amp;Детали</translation>
     </message>
     <message>
-        <location filename="src/dicom/worklist.cpp" line="124"/>
+        <location filename="src/dicom/worklist.cpp" line="133"/>
         <source>Start &amp;study</source>
         <translation>Начать &amp;исследование</translation>
     </message>
@@ -1769,158 +1769,158 @@ date</source>
 <context>
     <name>cmdline</name>
     <message>
-        <location filename="src/beryllium.cpp" line="135"/>
+        <location filename="src/beryllium.cpp" line="141"/>
         <source>Bad argument &apos;%s&apos; (must be name=value)</source>
         <translation>Неправильный параметр &apos;%s&apos; (должен быть в виде имя=значение)</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="254"/>
+        <location filename="src/beryllium.cpp" line="262"/>
         <source>DCMTK log output file.</source>
         <translation>Файл журнала DCMTK.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="254"/>
-        <location filename="src/beryllium.cpp" line="258"/>
-        <location filename="src/beryllium.cpp" line="297"/>
+        <location filename="src/beryllium.cpp" line="262"/>
+        <location filename="src/beryllium.cpp" line="266"/>
+        <location filename="src/beryllium.cpp" line="305"/>
         <source>FILE</source>
         <translation>ФАЙЛ</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="256"/>
+        <location filename="src/beryllium.cpp" line="264"/>
         <source>DCMTK logging level: fatal, error, warn, info, debug, trace.</source>
         <translation>Уровень отладки DCMTK: fatal, error, warn, info, debug, trace.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="256"/>
+        <location filename="src/beryllium.cpp" line="264"/>
         <source>LEVEL</source>
         <translation>УРОВЕНЬ</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="258"/>
+        <location filename="src/beryllium.cpp" line="266"/>
         <source>Config file for DCMTK logger.</source>
         <translation>Файл настроек журнала DCMTK.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="295"/>
+        <location filename="src/beryllium.cpp" line="303"/>
         <source>Show the archive window.</source>
         <translation>Открыть окно архива.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="295"/>
-        <location filename="src/beryllium.cpp" line="305"/>
+        <location filename="src/beryllium.cpp" line="303"/>
+        <location filename="src/beryllium.cpp" line="315"/>
         <source>PATH</source>
         <translation>ПУТЬ</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="297"/>
+        <location filename="src/beryllium.cpp" line="305"/>
         <source>Show the video editor window.</source>
         <translation>Открыть редактор видео.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="299"/>
+        <location filename="src/beryllium.cpp" line="307"/>
         <source>Show the settings window.</source>
         <translation>Открыть окно настроек.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="299"/>
+        <location filename="src/beryllium.cpp" line="307"/>
         <source>PAGE</source>
         <translation>ВКЛАДКА</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="301"/>
+        <location filename="src/beryllium.cpp" line="309"/>
         <source>Run the program in safe mode.</source>
         <translation>Запустить программу в безопасном режиме.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="303"/>
+        <location filename="src/beryllium.cpp" line="312"/>
         <source>Run the program in X synchronous mode.</source>
         <translation>Запустить программу в синхронном режиме X11.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="305"/>
+        <location filename="src/beryllium.cpp" line="315"/>
         <source>Set root path to the settings file.</source>
         <translation>Задать путь к файлу настроек.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="308"/>
+        <location filename="src/beryllium.cpp" line="318"/>
         <source>Study accession number (id).</source>
         <translation>Код исследования.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="308"/>
-        <location filename="src/beryllium.cpp" line="314"/>
+        <location filename="src/beryllium.cpp" line="318"/>
+        <location filename="src/beryllium.cpp" line="324"/>
         <source>ID</source>
         <translation>КОД</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="310"/>
+        <location filename="src/beryllium.cpp" line="320"/>
         <source>Patient birthdate.</source>
         <translation>Дата рождения пациента.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="310"/>
+        <location filename="src/beryllium.cpp" line="320"/>
         <source>YYYYMMDD</source>
         <translation>ГГГГММДД</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="312"/>
+        <location filename="src/beryllium.cpp" line="322"/>
         <source>Study description.</source>
         <translation>Описание исследования.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="312"/>
-        <location filename="src/beryllium.cpp" line="316"/>
-        <location filename="src/beryllium.cpp" line="318"/>
+        <location filename="src/beryllium.cpp" line="322"/>
+        <location filename="src/beryllium.cpp" line="326"/>
+        <location filename="src/beryllium.cpp" line="328"/>
         <source>STRING</source>
         <translation>СТРОКА</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="314"/>
+        <location filename="src/beryllium.cpp" line="324"/>
         <source>Patient id.</source>
         <translation>Карта пациента.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="316"/>
+        <location filename="src/beryllium.cpp" line="326"/>
         <source>Patient name.</source>
         <translation>Имя пациента.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="318"/>
+        <location filename="src/beryllium.cpp" line="328"/>
         <source>Performing physician name.</source>
         <translation>Имя выполняющего исследование врача.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="320"/>
+        <location filename="src/beryllium.cpp" line="330"/>
         <source>Patient sex.</source>
         <translation>Пол пациента.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="320"/>
+        <location filename="src/beryllium.cpp" line="330"/>
         <source>F|M|O|U</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="322"/>
+        <location filename="src/beryllium.cpp" line="332"/>
         <source>Automatically start the study.</source>
         <translation>Автоматически начинать исследование.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="324"/>
+        <location filename="src/beryllium.cpp" line="334"/>
         <source>Print version information and exit.</source>
         <translation>Показать текущую версию и завершить работу.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="388"/>
+        <location filename="src/beryllium.cpp" line="404"/>
         <source>DCMTK Options</source>
         <translation>Параметры DCMTK</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="389"/>
+        <location filename="src/beryllium.cpp" line="405"/>
         <source>Show DCMTK Options</source>
         <translation>Показать параметры DCMTK</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="401"/>
+        <location filename="src/beryllium.cpp" line="417"/>
         <source>Error initializing: %s
 </source>
         <translation>Ошибка инициализации: %s</translation>

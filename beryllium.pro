@@ -202,10 +202,12 @@ unix {
     translations.path = $$PREFIX/share/beryllium/translations
     sound.files = sound/*
     sound.path = $$PREFIX/share/beryllium/sound
-    dbus.files = ru.baikal.dc.beryllium.service
-    dbus.path = $$PREFIX/share/dbus-1/services
-
-    INSTALLS += dbus translations sound shortcut icon man
+    INSTALLS += translations sound shortcut icon man
+    contains(QT, dbus): {
+        dbus.files = org.softus.beryllium.service
+        dbus.path = $$PREFIX/share/dbus-1/services
+        INSTALLS += dbus
+    }
 }
 
 include (src/dicom/dicom.pri) # Must be very last line of this file

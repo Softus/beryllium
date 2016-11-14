@@ -342,7 +342,7 @@ static GOptionEntry options[] = {
 #ifdef WITH_QT_DBUS
 bool switchToRunningInstance()
 {
-    auto msg = QDBusInterface(PRODUCT_NAMESPACE, "/ru/baikal/dc/Beryllium/Main", "ru.baikal.dc.beryllium.Main")
+    auto msg = QDBusInterface(PRODUCT_NAMESPACE, "/org/softus/Beryllium/Main", "org.softus.beryllium.Main")
          .call("startStudy"
             , accessionNumber
             , patientId
@@ -365,6 +365,10 @@ int main(int argc, char *argv[])
 
     signal(SIGSEGV, sighandler);
 
+    // Mysterious abrakadabra to solve glib encoding issue.
+    //
+    std::locale::global(std::locale(""));
+
     int errCode = 0;
 
     QApplication::setOrganizationName(ORGANIZATION_DOMAIN);
@@ -381,7 +385,7 @@ int main(int argc, char *argv[])
 #endif
 
 #if !GLIB_CHECK_VERSION(2, 32, 0)
-    // Must initialise the threading system before using any other GLib funtion
+    // Must initialise the threading system before using any other GLib funtion.
     //
     if (!g_thread_supported())
     {
@@ -513,7 +517,7 @@ int main(int argc, char *argv[])
             // connect to DBus and register as an object
             //
             auto adapter = new MainWindowDBusAdaptor(wndMain);
-            bus.registerObject("/ru/baikal/dc/Beryllium/Main", wndMain);
+            bus.registerObject("/org/softus/Beryllium/Main", wndMain);
 
             // If registerService succeeded, there is no other instances.
             // If failed, then another instance is possible running, or DBus is complitelly broken.
@@ -567,7 +571,7 @@ int main(int argc, char *argv[])
         }
         delete wnd;
 #ifdef WITH_QT_DBUS
-        QDBusConnection::sessionBus().unregisterObject("/ru/baikal/dc/Beryllium/Main");
+        QDBusConnection::sessionBus().unregisterObject("/org/softus/Beryllium/Main");
 #endif
     }
 
