@@ -379,15 +379,22 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
     updateHotkeys(settings);
 
 #ifdef WITH_QT_DBUS
-    auto conn = connectToDbusService(this, true, "org.freedesktop.UDisks2", "/org/freedesktop/UDisks2", "org.freedesktop.DBus.ObjectManager");
-    if (conn <= 0)
+    auto bus = QDBusConnection::systemBus();
+    auto svc = "org.freedesktop.UDisks2";
+    auto path = "/org/freedesktop/UDisks2";
+    auto iface = "org.freedesktop.DBus.ObjectManager";
+    if (bus.connect(svc, path, iface, "InterfacesAdded",  this, SLOT(InterfacesAdded(QDBusObjectPath,QVariantMapMap)))
+        && bus.connect(svc, path, iface, "InterfacesRemoved",  this, SLOT(InterfacesRemoved(QDBusObjectPath,QStringList))))
     {
-        qDebug() << "Connect to org.freedesktop.UDisks2";
-        conn = connectToDbusService(this, true, "org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks");
-        if (conn <= 0)
-        {
-            qDebug() << "Connect to org.freedesktop.UDisks";
-        }
+        qDebug() << "Connected to" << svc;
+    }
+    else if (connectToDbusService(this, true, "org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks"))
+    {
+        qDebug() << "Connected to" << "org.freedesktop.UDisks";
+    }
+    else
+    {
+        qDebug() << "Connected to connect to UDisks via d-bus";
     }
 #endif
 }
