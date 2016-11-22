@@ -1,3 +1,12 @@
+beryllium (1.3.9) debian;
+
+  * Fix upload to DICOM of jpeg files (broken since 1.3.6).
+  * Support of IssuerOfPatientId DICOM attribute.
+  * Build with DICOM support by default. Use qmake CONFIG+=nodicom
+  * to suppress all DICOM features.
+
+ -- Pavel Bludov <pbludov@gmail.com>  Tue, 22 Nov 2016 13:54:00 +0800
+
 beryllium (1.3.8) debian;
 
   * Fix video editor.
