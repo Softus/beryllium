@@ -1,4 +1,4 @@
-dicom {
+!nodicom {
     QT         += network
     DEFINES    += WITH_DICOM
 
