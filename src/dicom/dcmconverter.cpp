@@ -141,13 +141,19 @@ public:
         QSettings settings;
         settings.beginGroup("dicom");
 
-        if (!mi.Open_Buffer_Init(length))
+        try
         {
-            return makeOFCondition(0, 2, OF_error, "Failed to open buffer");
+            if (!mi.Open_Buffer_Init(length))
+            {
+                return makeOFCondition(0, 2, OF_error, "Failed to open buffer");
+            }
+            mi.Open_Buffer_Continue(pixData, length);
+            qDebug() << QString::fromStdWString(mi.Inform());
         }
-        mi.Open_Buffer_Continue(pixData, length);
-
-        qDebug() << QString::fromStdWString(mi.Inform());
+        catch (std::logic_error e)
+        {
+            return makeOFCondition(0, 2, OF_error, e.what());
+        }
 
         if (getUint16(__T("ImageCount")) > 0)
         {

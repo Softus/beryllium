@@ -365,10 +365,6 @@ int main(int argc, char *argv[])
 
     signal(SIGSEGV, sighandler);
 
-    // Mysterious abrakadabra to solve glib encoding issue.
-    //
-    std::locale::global(std::locale(""));
-
     int errCode = 0;
 
     QApplication::setOrganizationName(ORGANIZATION_DOMAIN);
@@ -409,8 +405,13 @@ int main(int argc, char *argv[])
 
     g_option_context_add_group(ctx, gst_init_get_option_group());
     g_option_context_set_ignore_unknown_options(ctx, false);
+
+    // Mysterious abrakadabra to solve glib encoding issue.
+    //
+    auto activeLocale = std::locale::global(std::locale(""));
     g_option_context_parse(ctx, &argc, &argv, &err);
     g_option_context_free(ctx);
+    std::locale::global(activeLocale);
 
     if (err)
     {
