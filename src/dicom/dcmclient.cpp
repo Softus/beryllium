@@ -54,6 +54,7 @@ static void CopyPatientData(/*const*/ DcmDataset* src, DcmDataset* dst)
     src->findAndInsertCopyOfElement(DCM_AccessionNumber, dst);
     src->findAndInsertCopyOfElement(DCM_PatientName, dst);
     src->findAndInsertCopyOfElement(DCM_PatientID, dst);
+    src->findAndInsertCopyOfElement(DCM_IssuerOfPatientID, dst);
     src->findAndInsertCopyOfElement(DCM_PatientBirthDate, dst);
     src->findAndInsertCopyOfElement(DCM_PatientSex, dst);
 }
@@ -82,6 +83,7 @@ static void BuildCFindDataSet(DcmDataset& ds)
     ds.insertEmptyElement(DCM_AccessionNumber);
     ds.insertEmptyElement(DCM_PatientName);
     ds.insertEmptyElement(DCM_PatientID);
+    ds.insertEmptyElement(DCM_IssuerOfPatientID);
     ds.insertEmptyElement(DCM_PatientBirthDate);
     ds.insertEmptyElement(DCM_PatientSex);
     ds.insertEmptyElement(DCM_PatientSize),
@@ -163,10 +165,12 @@ static void BuildNCreateDataSet(/*const*/ DcmDataset& patientDs, DcmDataset& nCr
     settings.beginGroup("dicom");
 
     auto modality = settings.value("modality", DEFAULT_MODALITY).toString().toUpper().toUtf8();
+    auto issuer = settings.value("issuer", DEFAULT_ISSUER).toString().toUtf8();
     QString aet = settings.value("aet", qApp->applicationName().toUpper()).toString();
 
     nCreateDs.putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 192"); // UTF-8
     CopyPatientData(&patientDs, &nCreateDs);
+    nCreateDs.putAndInsertString(DCM_IssuerOfPatientID, issuer);
     patientDs.findAndInsertCopyOfElement(DCM_ReferencedPatientSequence, &nCreateDs);
     // MPPS ID has not logic on it. It can be anything
     // The SCU have to create it but it doesn't have to be unique and the SCP
@@ -681,10 +685,7 @@ bool DcmClient::sendToServer(const QString& server, DcmDataset* dsPatient, const
     if (cond.bad())
     {
         qDebug() << QString::fromUtf8(cond.text());
-        // cond.reset()
-        //
-        cond = EC_Normal;
-        return true;
+        return false;
     }
 
     cond = ds.putAndInsertString(DCM_SOPInstanceUID, instanceUID);

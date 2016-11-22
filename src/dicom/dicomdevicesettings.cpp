@@ -25,7 +25,7 @@
 #include <QSettings>
 #include <QSpinBox>
 #include <QtNetwork/QHostInfo>
-#include <QtNetwork/QHostAddress>
+#include <QtNetwork/QNetworkInterface>
 
 /*
 C.7.3.1.1.1 Modality
@@ -103,9 +103,10 @@ DicomDeviceSettings::DicomDeviceSettings(QWidget *parent) :
     auto textIp = new QLineEdit;
     textIp->setReadOnly(true);
     QString strIps;
-    foreach (auto addr, QHostInfo::fromName(localHost).addresses())
+
+    foreach (auto addr, QNetworkInterface::allAddresses())
     {
-        if (addr.scopeId() == "Node-local" || addr.isInSubnet(QHostAddress(0x7F000000), 8))
+        if (addr.isLoopback())
         {
             // Skip 127.x.x.x and IPv6 local subnet
             continue;
@@ -118,8 +119,7 @@ DicomDeviceSettings::DicomDeviceSettings(QWidget *parent) :
     }
     textIp->setText(strIps);
 
-    mainLayout->addRow(tr("&IP address"), textIp);
-
+    mainLayout->addRow(tr("&Organization"), textIssuer = new QLineEdit(settings.value("issuer", DEFAULT_ISSUER).toString()));
     mainLayout->addRow(tr("AE &title"), textAet = new QLineEdit(settings.value("aet", localHost.toUpper()).toString()));
     mainLayout->addRow(tr("&Modality"), cbModality = new QComboBox);
     cbModality->addItem(tr("Endoscopy"), "ES");
@@ -128,6 +128,7 @@ DicomDeviceSettings::DicomDeviceSettings(QWidget *parent) :
     cbModality->addItem(tr("External-camera Photography"), "XC");
     auto idx = cbModality->findData(settings.value("modality", DEFAULT_MODALITY).toString());
     cbModality->setCurrentIndex(qMax(idx, 0));
+    mainLayout->addRow(tr("&IP address"), textIp);
     mainLayout->addRow(tr("&Port"), spinPort = new QSpinBox);
     spinPort->setRange(0, 65535);
     spinPort->setValue(settings.value("local-port").toInt());
@@ -146,6 +147,7 @@ void DicomDeviceSettings::save(QSettings& settings)
 {
     settings.beginGroup("dicom");
     settings.setValue("aet", textAet->text());
+    settings.setValue("issuer", textIssuer->text());
     settings.setValue("modality", cbModality->itemData(cbModality->currentIndex()).toString());
     settings.setValue("local-port", spinPort->value());
     settings.setValue("export-clips", checkExportClips->isChecked());

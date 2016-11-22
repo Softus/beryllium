@@ -38,6 +38,7 @@ class PatientDataDialog : public QDialog
     QString      settingsKey;
     QLineEdit*   textAccessionNumber;
     QLineEdit*   textPatientId;
+    QLineEdit*   textIssuerOfPatientId;
     QLineEdit*   textPatientName;
     QComboBox*   cbPatientSex;
     QDateEdit*   dateBirthday;
@@ -61,6 +62,7 @@ public:
 #endif
     QString accessionNumber() const;
     QString patientId() const;
+    QString issuerOfPatientId() const;
     QString patientName() const;
     QDate   patientBirthDate() const;
     QString patientBirthDateStr() const;
@@ -70,6 +72,7 @@ public:
     QString physician() const;
     void setAccessionNumber(const QString& accessionNumber);
     void setPatientId(const QString& id);
+    void setIssuerOfPatientId(const QString& id);
     void setPatientName(const QString& name);
     void setPatientBirthDate(const QDate& date);
     void setPatientBirthDateStr(const QString& strDate);

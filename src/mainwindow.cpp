@@ -461,6 +461,7 @@ QString MainWindow::replace(QString str, int seqNo)
         .replace("%an%",        accessionNumber,     Qt::CaseInsensitive)
         .replace("%name%",      patientName,         Qt::CaseInsensitive)
         .replace("%id%",        patientId,           Qt::CaseInsensitive)
+        .replace("%org%",       issuerOfPatientId,   Qt::CaseInsensitive)
         .replace("%sex%",       patientSex,          Qt::CaseInsensitive)
         .replace("%birthdate%", patientBirthDate,    Qt::CaseInsensitive)
         .replace("%physician%", physician,           Qt::CaseInsensitive)
@@ -714,6 +715,11 @@ void MainWindow::updateWindowTitle()
         if (!studyName.isEmpty())
         {
             windowTitle.append(tr(" - ")).append(studyName);
+        }
+
+        if (!issuerOfPatientId.isEmpty())
+        {
+            windowTitle.append(tr(" - ")).append(issuerOfPatientId);
         }
     }
 
@@ -1202,6 +1208,8 @@ void MainWindow::updateStartDialog()
         dlgPatient->setAccessionNumber(accessionNumber);
     if (!patientId.isEmpty())
         dlgPatient->setPatientId(patientId);
+    if (!issuerOfPatientId.isEmpty())
+        dlgPatient->setIssuerOfPatientId(issuerOfPatientId);
     if (!patientName.isEmpty())
         dlgPatient->setPatientName(patientName);
     if (!patientSex.isEmpty())
@@ -1270,6 +1278,7 @@ void MainWindow::onStartStudy()
 
     accessionNumber  = fixFileName(dlgPatient->accessionNumber());
     patientId        = fixFileName(dlgPatient->patientId());
+    issuerOfPatientId= fixFileName(dlgPatient->issuerOfPatientId());
     patientName      = fixFileName(dlgPatient->patientName());
     patientSex       = fixFileName(dlgPatient->patientSex());
     patientBirthDate = fixFileName(dlgPatient->patientBirthDateStr());
@@ -1417,6 +1426,7 @@ void MainWindow::onStopStudy()
 
     accessionNumber.clear();
     patientId.clear();
+    issuerOfPatientId.clear();
     patientName.clear();
     patientSex.clear();
     patientBirthDate.clear();

@@ -49,6 +49,7 @@ public slots:
         , const QString &id = QString(), const QString &name = QString()
         , const QString &sex = QString(), const QString &birthday = QString()
         , const QString &physician = QString(), const QString &studyType = QString()
+        //, const QString &organization = QString()
         , bool autoStart = true
         );
     bool stopStudy();

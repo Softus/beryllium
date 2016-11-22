@@ -71,6 +71,7 @@ class MainWindow : public QWidget
 
     QString       accessionNumber;
     QString       patientId;
+    QString       issuerOfPatientId;
     QString       patientSex;
     QString       patientName;
     QString       patientBirthDate;

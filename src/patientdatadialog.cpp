@@ -93,15 +93,17 @@ PatientDataDialog::PatientDataDialog(bool noWorklist, const QString& settingsKey
 
     layoutMain->addRow(tr("P&hysician"), cbPhysician = new QComboBox);
     cbPhysician->setLineEdit(new QxtLineEdit);
-    cbPhysician->addItems(QSettings().value("physicians").toStringList());
+    cbPhysician->addItems(settings.value("physicians").toStringList());
     cbPhysician->setCurrentIndex(0); // Select first, if any
     cbPhysician->setEditable(true);
 
     layoutMain->addRow(tr("Study &type"), cbStudyDescription = new QComboBox);
     cbStudyDescription->setLineEdit(new QxtLineEdit);
-    cbStudyDescription->addItems(QSettings().value("studies").toStringList());
+    cbStudyDescription->addItems(settings.value("studies").toStringList());
     cbStudyDescription->setCurrentIndex(0); // Select first, if any
     cbStudyDescription->setEditable(true);
+
+    layoutMain->addRow(tr("&Organization"), textIssuerOfPatientId = new QxtLineEdit);
 
     // Empty row
     layoutMain->addRow(new QLabel, new QLabel);
@@ -155,6 +157,8 @@ PatientDataDialog::PatientDataDialog(bool noWorklist, const QString& settingsKey
             group->add(textAccessionNumber);
         if (listMandatory.contains("PatientID"))
             group->add(textPatientId);
+        if (listMandatory.contains("IssuerOfPatientID"))
+            group->add(textIssuerOfPatientId);
         if (listMandatory.contains("Name"))
             group->add(textPatientName);
         if (listMandatory.contains("Sex"))
@@ -249,6 +253,11 @@ QString PatientDataDialog::patientId() const
     return textPatientId->text();
 }
 
+QString PatientDataDialog::issuerOfPatientId() const
+{
+    return textIssuerOfPatientId->text();
+}
+
 QString PatientDataDialog::patientName() const
 {
     return textPatientName->text();
@@ -293,6 +302,11 @@ void PatientDataDialog::setAccessionNumber(const QString& accessionNumber)
 void PatientDataDialog::setPatientId(const QString& id)
 {
     textPatientId->setText(id);
+}
+
+void PatientDataDialog::setIssuerOfPatientId(const QString& id)
+{
+    textIssuerOfPatientId->setText(id);
 }
 
 void PatientDataDialog::setPatientName(const QString& name)
@@ -353,6 +367,7 @@ void PatientDataDialog::readPatientData(QSettings& settings)
     settings.beginGroup(PRODUCT_SHORT_NAME);
     setAccessionNumber(settings.value("accession-number").toString());
     setPatientId(settings.value("patient-id").toString());
+    setIssuerOfPatientId(settings.value("issuer-of-patient-id").toString());
     setPatientName(settings.value("name").toString());
     setPatientSex(settings.value("sex").toString());
     setPatientBirthDateStr(settings.value("birthday").toString());
@@ -366,6 +381,7 @@ void PatientDataDialog::savePatientData(QSettings& settings)
     settings.beginGroup(PRODUCT_SHORT_NAME);
     settings.setValue("accession-number", accessionNumber());
     settings.setValue("patient-id", patientId());
+    settings.setValue("issuer-of-patient-id", issuerOfPatientId());
     settings.setValue("name", patientName());
     settings.setValue("sex", QString(patientSexCode()));
     settings.setValue("birthday", patientBirthDateStr());
@@ -394,6 +410,11 @@ void PatientDataDialog::readPatientData(DcmDataset* patient)
     if (patient->findAndGetString(DCM_PatientID, str, true).good())
     {
         setPatientId(QString::fromUtf8(str));
+    }
+
+    if (patient->findAndGetString(DCM_IssuerOfPatientID, str, true).good())
+    {
+        setIssuerOfPatientId(QString::fromUtf8(str));
     }
 
     if (patient->findAndGetString(DCM_PatientName, str, true).good())
@@ -439,6 +460,7 @@ void PatientDataDialog::savePatientData(DcmDataset* patient)
     patient->putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 192");
     patient->putAndInsertString(DCM_AccessionNumber, accessionNumber().toUtf8());
     patient->putAndInsertString(DCM_PatientID, patientId().toUtf8());
+    patient->putAndInsertString(DCM_IssuerOfPatientID, issuerOfPatientId().toUtf8());
     patient->putAndInsertString(DCM_PatientName, patientName().toUtf8());
     patient->putAndInsertString(DCM_PatientBirthDate, patientBirthDateStr().toUtf8());
     patient->putAndInsertString(DCM_PatientSex, QString().append(patientSexCode()).toUtf8());

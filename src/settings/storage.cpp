@@ -78,8 +78,10 @@ StorageSettings::StorageSettings(QWidget *parent)
     auto grpLegend = new QGroupBox(tr("Substitutes"));
     auto layoutLegend = new QGridLayout;
     auto str = tr("%yyyy%|year|%mm%|month|%dd%|day|%hh%|hour|%min%|minute|"
-                  "%nn%|sequential number|%an%|accession number|%id%|patient id|%name%|patient name|%sex%|patient sex|"
-                  "%birthdate%|patient birthdate|%physician%|physician name|%study%|study name|%src%|source name");
+                  "%nn%|sequential number|%an%|accession number|"
+                  "%id%|patient id|%name%|patient name|%sex%|patient sex|"
+                  "%birthdate%|patient birthdate|%physician%|physician name|"
+                  "%study%|study name|%src%|source name|%org%|organization");
 
     int cnt = 0;
     foreach (auto lbl, str.split('|'))

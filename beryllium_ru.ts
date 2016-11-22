@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -86,7 +86,7 @@ MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
     <name>ArchiveWindow</name>
     <message>
         <location filename="src/archivewindow.cpp" line="253"/>
-        <location filename="src/archivewindow.cpp" line="1150"/>
+        <location filename="src/archivewindow.cpp" line="1157"/>
         <source>Archive</source>
         <translation>Архив</translation>
     </message>
@@ -174,7 +174,7 @@ MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
     </message>
     <message>
         <location filename="src/archivewindow.cpp" line="351"/>
-        <location filename="src/archivewindow.cpp" line="1431"/>
+        <location filename="src/archivewindow.cpp" line="1438"/>
         <source>Play</source>
         <translation>Воспроизвести</translation>
     </message>
@@ -184,40 +184,40 @@ MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
         <translation>Перемотать вперёд</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="670"/>
+        <location filename="src/archivewindow.cpp" line="677"/>
         <source>The file was uploaded to a storage server</source>
         <translation>Файл был загружен в хранилище</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="682"/>
+        <location filename="src/archivewindow.cpp" line="689"/>
         <source>The file was copied to an usb drive</source>
         <translation>Файл был скопирован на USB диск</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1073"/>
+        <location filename="src/archivewindow.cpp" line="1080"/>
         <source>C&amp;apture</source>
         <translation>&amp;Захват</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1074"/>
+        <location filename="src/archivewindow.cpp" line="1081"/>
         <source>&amp;Browser</source>
         <translation>&amp;Проводник</translation>
     </message>
     <message>
         <source>&amp;Return to capture</source>
-        <translation>&amp;Вернуться к захвату</translation>
+        <translation type="vanished">&amp;Вернуться к захвату</translation>
     </message>
     <message>
         <source>&amp;Show in files</source>
-        <translation>&amp;Показать в проводнике</translation>
+        <translation type="vanished">&amp;Показать в проводнике</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1043"/>
+        <location filename="src/archivewindow.cpp" line="1050"/>
         <source>Copying &apos;%1&apos; to &apos;%2&apos;</source>
         <translation>Копирование &apos;%1&apos; в &apos;%2&apos; </translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1051"/>
+        <location filename="src/archivewindow.cpp" line="1058"/>
         <source>Failed to copy &apos;%1&apos; to &apos;%2&apos;:
 %3
 Continue?</source>
@@ -226,22 +226,22 @@ Continue?</source>
 Продолжить?</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1072"/>
+        <location filename="src/archivewindow.cpp" line="1079"/>
         <source>All files were successfully copied.</source>
         <translation>Все файлы были успешно скопированы.</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1119"/>
+        <location filename="src/archivewindow.cpp" line="1126"/>
         <source>All files were successfully stored.</source>
         <translation>Все файлы были успешно сохранены.</translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1145"/>
+        <location filename="src/archivewindow.cpp" line="1152"/>
         <source>Failed to launch </source>
         <translation>Ошибка при выполнении </translation>
     </message>
     <message>
-        <location filename="src/archivewindow.cpp" line="1431"/>
+        <location filename="src/archivewindow.cpp" line="1438"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
@@ -277,22 +277,22 @@ Continue?</source>
 <context>
     <name>DcmClient</name>
     <message>
-        <location filename="src/dicom/dcmclient.cpp" line="307"/>
+        <location filename="src/dicom/dcmclient.cpp" line="311"/>
         <source>Required settings parameter %1 is missing</source>
         <translation>Необходимый параметр %1 не задан в настройках</translation>
     </message>
     <message>
-        <location filename="src/dicom/dcmclient.cpp" line="421"/>
+        <location filename="src/dicom/dcmclient.cpp" line="425"/>
         <source>Accepted presentation context ID not found</source>
         <translation>Принятый ID контекста представления не найден</translation>
     </message>
     <message>
-        <location filename="src/dicom/dcmclient.cpp" line="837"/>
+        <location filename="src/dicom/dcmclient.cpp" line="838"/>
         <source>Storing &apos;%1&apos; to &apos;%2&apos;</source>
         <translation>Отправка &apos;%1&apos; на &apos;%2&apos; </translation>
     </message>
     <message>
-        <location filename="src/dicom/dcmclient.cpp" line="855"/>
+        <location filename="src/dicom/dcmclient.cpp" line="856"/>
         <source>The file %1 has been already sent to a DICOM server.
 
 Send again?</source>
@@ -301,7 +301,7 @@ Send again?</source>
 Отправить ещё раз?</translation>
     </message>
     <message>
-        <location filename="src/dicom/dcmclient.cpp" line="871"/>
+        <location filename="src/dicom/dcmclient.cpp" line="872"/>
         <source>Failed to send &apos;%1&apos; to &apos;%2&apos;:
 %3
 Continue?</source>
@@ -414,7 +414,7 @@ Continue?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/dicom/dicomdevicesettings.cpp" line="121"/>
+        <location filename="src/dicom/dicomdevicesettings.cpp" line="131"/>
         <source>&amp;IP address</source>
         <translation>IP &amp;адрес</translation>
     </message>
@@ -422,6 +422,11 @@ Continue?</source>
         <location filename="src/dicom/dicomdevicesettings.cpp" line="124"/>
         <source>&amp;Modality</source>
         <translation>&amp;Методика</translation>
+    </message>
+    <message>
+        <location filename="src/dicom/dicomdevicesettings.cpp" line="122"/>
+        <source>&amp;Organization</source>
+        <translation>&amp;Организация</translation>
     </message>
     <message>
         <location filename="src/dicom/dicomdevicesettings.cpp" line="125"/>
@@ -444,22 +449,22 @@ Continue?</source>
         <translation>Фотографии внешней камеры</translation>
     </message>
     <message>
-        <location filename="src/dicom/dicomdevicesettings.cpp" line="131"/>
+        <location filename="src/dicom/dicomdevicesettings.cpp" line="132"/>
         <source>&amp;Port</source>
         <translation>&amp;Порт</translation>
     </message>
     <message>
-        <location filename="src/dicom/dicomdevicesettings.cpp" line="135"/>
+        <location filename="src/dicom/dicomdevicesettings.cpp" line="136"/>
         <source>Export video &amp;clips to DICOM</source>
         <translation>&amp;Экспорт фрагментов видео в DICOM</translation>
     </message>
     <message>
-        <location filename="src/dicom/dicomdevicesettings.cpp" line="137"/>
+        <location filename="src/dicom/dicomdevicesettings.cpp" line="138"/>
         <source>Export &amp;video log to DICOM</source>
-        <translation>&amp;Экспорт видео журнала в DICOM</translation>
+        <translation>Экспорт видео &amp;журнала в DICOM</translation>
     </message>
     <message>
-        <location filename="src/dicom/dicomdevicesettings.cpp" line="139"/>
+        <location filename="src/dicom/dicomdevicesettings.cpp" line="140"/>
         <source>DICOM server accepts 7-bit &amp;ASCII only</source>
         <translation>Сервер DICOM принимает только 7 bit &amp;ASCII</translation>
     </message>
@@ -589,7 +594,7 @@ Continue?</source>
     <message>
         <location filename="src/dicom/dicomstoragesettings.cpp" line="30"/>
         <source>Store video files as regular binary</source>
-        <translation>Сохранять видео файлы как обычные файлы</translation>
+        <translation>Сохранять видео файлы как двоичные файлы</translation>
     </message>
 </context>
 <context>
@@ -813,53 +818,54 @@ Continue?</source>
         <translation>О программе %1</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="701"/>
-        <location filename="src/mainwindow.cpp" line="706"/>
-        <location filename="src/mainwindow.cpp" line="711"/>
-        <location filename="src/mainwindow.cpp" line="716"/>
+        <location filename="src/mainwindow.cpp" line="702"/>
+        <location filename="src/mainwindow.cpp" line="707"/>
+        <location filename="src/mainwindow.cpp" line="712"/>
+        <location filename="src/mainwindow.cpp" line="717"/>
+        <location filename="src/mainwindow.cpp" line="722"/>
         <source> - </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="744"/>
+        <location filename="src/mainwindow.cpp" line="750"/>
         <source>Failed to create &apos;%1&apos;</source>
         <translation>Не удалось создать &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="831"/>
-        <location filename="src/mainwindow.cpp" line="887"/>
+        <location filename="src/mainwindow.cpp" line="837"/>
+        <location filename="src/mainwindow.cpp" line="893"/>
         <source>Failed to start recording.
 Please, adjust the video source settings.</source>
         <translation>Невозможно начать запись.
 Проверьте настройки видео.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="850"/>
-        <location filename="src/mainwindow.cpp" line="1093"/>
+        <location filename="src/mainwindow.cpp" line="856"/>
+        <location filename="src/mainwindow.cpp" line="1099"/>
         <source>Failed to start recording.
 Check the error log for details.</source>
         <translation>Невозможно начать запись.
 Проверьте журнал ожибок.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1233"/>
+        <location filename="src/mainwindow.cpp" line="1241"/>
         <source>Failed to start a study.
 Another study is in progress.</source>
         <translation>Невозможно начать исследование.
 Активное исследование ещё не закончено.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="899"/>
+        <location filename="src/mainwindow.cpp" line="905"/>
         <source>End the study?</source>
         <translation>Завершить исследование?</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1129"/>
+        <location filename="src/mainwindow.cpp" line="1135"/>
         <source>End study</source>
         <translation>Завершить исследование</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1129"/>
+        <location filename="src/mainwindow.cpp" line="1135"/>
         <source>Start study</source>
         <translation>Начать исследование</translation>
     </message>
@@ -929,6 +935,11 @@ Another study is in progress.</source>
         <location filename="src/settings/mandatoryfields.cpp" line="31"/>
         <source>Name</source>
         <translation>Имя</translation>
+    </message>
+    <message>
+        <location filename="src/settings/mandatoryfields.cpp" line="30"/>
+        <source>Organization</source>
+        <translation>Организация</translation>
     </message>
     <message>
         <location filename="src/settings/mandatoryfields.cpp" line="31"/>
@@ -1014,22 +1025,27 @@ Another study is in progress.</source>
         <translation>&amp;Исследование</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="109"/>
+        <location filename="src/patientdatadialog.cpp" line="106"/>
+        <source>&amp;Organization</source>
+        <translation>&amp;Организация</translation>
+    </message>
+    <message>
+        <location filename="src/patientdatadialog.cpp" line="111"/>
         <source>Show this dialog if the Shift key is down or some data is required.</source>
         <translation>Показывать окно если нажат Shift или заданы не все данные.</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="124"/>
+        <location filename="src/patientdatadialog.cpp" line="126"/>
         <source>Show work list</source>
         <translation>Открыть рабочий лист</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="136"/>
+        <location filename="src/patientdatadialog.cpp" line="138"/>
         <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="src/patientdatadialog.cpp" line="140"/>
+        <location filename="src/patientdatadialog.cpp" line="142"/>
         <source>Start</source>
         <translation>Начать</translation>
     </message>
@@ -1250,25 +1266,26 @@ Another study is in progress.</source>
     </message>
     <message>
         <location filename="src/settings/storage.cpp" line="80"/>
-        <source>%yyyy%|year|%mm%|month|%dd%|day|%hh%|hour|%min%|minute|%nn%|sequential number|%an%|accession number|%id%|patient id|%name%|patient name|%sex%|patient sex|%birthdate%|patient birthdate|%physician%|physician name|%study%|study name|%src%|source name</source>
-        <translation>%yyyy%|год|%mm%|месяц|%dd%|день|%hh%|час|%min%|минуты|%nn%|порядковый номер|%an%|идентификатор исследования|%id%|номер карты|%name%|ФИО пациента|%sex%|пол|%birthdate%|дата рождения|%physician%|врач|%study%|тип исследования|%src%|имя источника</translation>
+        <source>%yyyy%|year|%mm%|month|%dd%|day|%hh%|hour|%min%|minute|%nn%|sequential number|%an%|accession number|%id%|patient id|%name%|patient name|%sex%|patient sex|%birthdate%|patient birthdate|%physician%|physician name|%study%|study name|%src%|source name|%org%|organization</source>
+        <oldsource>%yyyy%|year|%mm%|month|%dd%|day|%hh%|hour|%min%|minute|%nn%|sequential number|%an%|accession number|%id%|patient id|%name%|patient name|%sex%|patient sex|%birthdate%|patient birthdate|%physician%|physician name|%study%|study name|%src%|source name</oldsource>
+        <translation>%yyyy%|год|%mm%|месяц|%dd%|день|%hh%|час|%min%|минуты|%nn%|порядковый номер|%an%|идентификатор исследования|%id%|номер карты|%name%|ФИО пациента|%sex%|пол|%birthdate%|дата рождения|%physician%|врач|%study%|тип исследования|%src%|имя источника|%org%|организация</translation>
     </message>
     <message>
-        <location filename="src/settings/storage.cpp" line="131"/>
+        <location filename="src/settings/storage.cpp" line="133"/>
         <source>Pictures template</source>
         <translation>Шаблон снимков</translation>
     </message>
     <message>
-        <location filename="src/settings/storage.cpp" line="132"/>
+        <location filename="src/settings/storage.cpp" line="134"/>
         <source>Clips template</source>
         <translation>Шаблон клипов</translation>
     </message>
     <message>
-        <location filename="src/settings/storage.cpp" line="136"/>
+        <location filename="src/settings/storage.cpp" line="138"/>
         <source>The field &quot;%1&quot; does not contain a serial number (template %nn%).
 This may lead to overwriting of files.</source>
         <translation>В поле &quot;%1&quot; отсутствует серийный номер (подстановка %nn%).
-Новые файлы могут затереть имеющиется.</translation>
+Новые файлы могут быть записаны поверх уже существующих.</translation>
     </message>
     <message>
         <location filename="src/settings/storage.cpp" line="63"/>
@@ -1700,17 +1717,17 @@ source</source>
 <context>
     <name>WorklistColumnSettings</name>
     <message>
-        <location filename="src/dicom/worklistcolumnsettings.cpp" line="49"/>
+        <location filename="src/dicom/worklistcolumnsettings.cpp" line="50"/>
         <source>Code</source>
         <translation>Код</translation>
     </message>
     <message>
-        <location filename="src/dicom/worklistcolumnsettings.cpp" line="50"/>
+        <location filename="src/dicom/worklistcolumnsettings.cpp" line="51"/>
         <source>Tag name</source>
         <translation>Имя тега</translation>
     </message>
     <message>
-        <location filename="src/dicom/worklistcolumnsettings.cpp" line="51"/>
+        <location filename="src/dicom/worklistcolumnsettings.cpp" line="52"/>
         <source>VR</source>
         <translation>Тип</translation>
     </message>
@@ -1910,17 +1927,17 @@ date</source>
         <translation>Показать текущую версию и завершить работу.</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="404"/>
+        <location filename="src/beryllium.cpp" line="400"/>
         <source>DCMTK Options</source>
         <translation>Параметры DCMTK</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="405"/>
+        <location filename="src/beryllium.cpp" line="401"/>
         <source>Show DCMTK Options</source>
         <translation>Показать параметры DCMTK</translation>
     </message>
     <message>
-        <location filename="src/beryllium.cpp" line="417"/>
+        <location filename="src/beryllium.cpp" line="418"/>
         <source>Error initializing: %s
 </source>
         <translation>Ошибка инициализации: %s</translation>

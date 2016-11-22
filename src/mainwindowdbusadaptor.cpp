@@ -60,6 +60,7 @@ bool MainWindowDBusAdaptor::startStudy
     , const QString &id, const QString &name
     , const QString &sex, const QString &birthdate
     , const QString &physician, const QString &studyName
+    //, const QString &organization
     , bool autoStart
     )
 {
@@ -83,6 +84,8 @@ bool MainWindowDBusAdaptor::startStudy
         wnd->accessionNumber = accessionNumber;
     if (!id.isEmpty())
         wnd->patientId = id;
+    //if (!organization.isEmpty())
+    //    wnd->issuerOfPatientId = organization;
     if (!name.isEmpty())
         wnd->patientName = name;
     if (!sex.isEmpty())

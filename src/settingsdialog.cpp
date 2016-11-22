@@ -71,7 +71,7 @@ SettingsDialog::SettingsDialog(const QString& pageTitle, QWidget *parent, Qt::Wi
     listWidget->setSpacing(2);
 
     pagesWidget = new QStackedWidget;
-    pagesWidget->setMinimumSize(640, 520); // Video source settings is a big one
+    pagesWidget->setMinimumSize(640, 580); // Video source settings is a big one
 
     createPages();
     listWidget->setCurrentRow(0);

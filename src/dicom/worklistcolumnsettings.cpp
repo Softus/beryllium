@@ -29,6 +29,7 @@
 static DcmTagKey rowTags[] =
 {
     DCM_PatientID,
+    DCM_IssuerOfPatientID,
     DCM_PatientName,
     DCM_PatientBirthDate,
     DCM_PatientSex,

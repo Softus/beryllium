@@ -30,6 +30,7 @@ QT_END_NAMESPACE
 class DicomDeviceSettings : public QWidget
 {
     Q_OBJECT
+    QLineEdit *textIssuer;
     QLineEdit *textAet;
     QComboBox *cbModality;
     QSpinBox  *spinPort;
