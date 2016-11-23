@@ -16,7 +16,7 @@
 
 #include "../product.h"
 #include "../defaults.h"
-#include <exception>
+#include <stdexcept>
 
 #ifdef UNICODE
 #define DCMTK_UNICODE_BUG_WORKAROUND
