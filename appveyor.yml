@@ -62,7 +62,6 @@ install:
 - set PATH=%PATH%;C:\Program Files\Git\usr\bin
 - cd ..\..
 
-
 build_script:
 - lrelease *.ts
 - qmake INCLUDEPATH+=%BOOST_DIR% CONFIG+=dicom
@@ -72,7 +71,7 @@ build_script:
 - copy %QT_DIR%\bin\*.dll Release\
 - xcopy /s %QT_DIR%\plugins Release\
 
-- wix\build.cmd
+- msbuild "/property:configuration=Release" "wix\msi.wixproj"
 
 artifacts:
 - path: dist\Releasex86\en-US\*.msi
