@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <?define ProductBuild     = "1.3" ?>
-<?define ProductRevision  = "9" ?>
+<?define ProductRevision  = "10" ?>
 <?define ProductName      = "Beryllium" ?>
 
 <?define Manufacturer    = "softus.org" ?>

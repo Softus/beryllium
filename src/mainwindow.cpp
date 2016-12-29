@@ -79,12 +79,12 @@ static DcmTagKey DCM_ClipNo(0x5000,  0x8002);
 
 #define SAFE_MODE_KEYS (Qt::AltModifier | Qt::ControlModifier | Qt::ShiftModifier)
 #ifdef Q_OS_WIN
+  #include <initguid.h>
   #include <qt_windows.h>
   #include <dbt.h>
   #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     #include <qpa/qplatformnativeinterface.h>
   #endif
-  static const GUID GUID_DEVINTERFACE_USBSTOR = { 0xA5DCBF10L, 0x6530, 0x11D2, { 0x90, 0x1F, 0x00, 0xC0, 0x4F, 0xB9, 0x51, 0xED } };
   #define DATA_FOLDER qApp->applicationDirPath()
 #else
   #define DATA_FOLDER qApp->applicationDirPath() + "/../share/" PRODUCT_SHORT_NAME
@@ -254,19 +254,50 @@ void MainWindow::showEvent(QShowEvent *evt)
             applySettings();
         }
 #ifdef Q_OS_WIN
-    // Archive window need this, but only the top level window may receive this message
-    //
-    DEV_BROADCAST_DEVICEINTERFACE dbd;
-    ZeroMemory(&dbd, sizeof(DEV_BROADCAST_DEVICEINTERFACE));
-    dbd.dbcc_size = sizeof(DEV_BROADCAST_DEVICEINTERFACE);
-    dbd.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
-    dbd.dbcc_classguid = GUID_DEVINTERFACE_USBSTOR;
+        // Archive window need this, but only the top level window may receive this message
+        //
+        DEV_BROADCAST_DEVICEINTERFACE dbd;
+        ZeroMemory(&dbd, sizeof(DEV_BROADCAST_DEVICEINTERFACE));
+        dbd.dbcc_size = sizeof(DEV_BROADCAST_DEVICEINTERFACE);
+        dbd.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
+        dbd.dbcc_classguid = GUID_DEVINTERFACE_PARTITION;
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
-    HWND hwnd  = (HWND)qApp->platformNativeInterface()->nativeResourceForWindow(QByteArrayLiteral("handle"), windowHandle());
+        HWND hWnd  = (HWND)qApp->platformNativeInterface()->nativeResourceForWindow(QByteArrayLiteral("handle"), windowHandle());
 #else
-    HWND hwnd  = (HWND)winId();
+        HWND hWnd  = (HWND)winId();
 #endif
-    qDebug() << hwnd << RegisterDeviceNotification(hwnd, &dbd, DEVICE_NOTIFY_WINDOW_HANDLE);
+        qDebug() << hWnd << RegisterDeviceNotification(hWnd, &dbd, DEVICE_NOTIFY_WINDOW_HANDLE);
+
+        // Register notifications for all floppy drives and SD readers.
+        TCHAR drvPath[] = {'\\','\\', '.', '\\', '0', ':', '\x0'}; // Full path: "\\.\X:"
+        TCHAR drvLetter[] = {'0', ':', '\\', '\x0'}; // Drive name with slash: "X:\"
+
+        DWORD drives = GetLogicalDrives();
+        for (int i = 0; i < 26; ++i)
+        {
+            if (!(drives & (1 << i)))
+                continue;
+
+            drvLetter[0] = drvPath[4] = 'A' + i;
+
+            if (GetDriveTypeW(drvLetter) != DRIVE_REMOVABLE)
+                continue;
+
+            HANDLE hDir = CreateFile(drvPath, 0, FILE_SHARE_READ|FILE_SHARE_DELETE|FILE_SHARE_WRITE,
+                NULL, OPEN_EXISTING, 0, NULL);
+
+            if (INVALID_HANDLE_VALUE == hDir)
+                continue;
+
+            DEV_BROADCAST_HANDLE dbh;
+            ZeroMemory (&dbh, sizeof (DEV_BROADCAST_HANDLE));
+            dbh.dbch_size = sizeof (DEV_BROADCAST_HANDLE);
+            dbh.dbch_devicetype = DBT_DEVTYP_HANDLE;
+            dbh.dbch_handle = hDir;
+
+            qDebug() << drvLetter << RegisterDeviceNotification(hWnd, &dbh, DEVICE_NOTIFY_WINDOW_HANDLE);
+            CloseHandle(hDir);
+        }
 #endif
     }
 

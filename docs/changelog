@@ -1,3 +1,11 @@
+beryllium (1.3.10) debian;
+
+  * Proper rendering of images on Windows.
+  * SD card insertion fix.
+  * Hide "No disk in drive A:" error.
+
+ -- Pavel Bludov <pbludov@gmail.com>  Tue, 29 Dec 2016 12:26:00 +0800
+
 beryllium (1.3.9) debian;
 
   * Fix upload to DICOM of jpeg files (broken since 1.3.6).

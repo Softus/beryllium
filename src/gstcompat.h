@@ -20,11 +20,13 @@
 #include <glib.h>
 #include <gst/gstversion.h>
 #if GST_CHECK_VERSION(1,0,0)
+#define IMAGEFREEZE_ELEMENT "imagefreeze"
 #define PLAYBIN_ELEMENT "playbin"
 #define DEFAULT_VIDEO_CONVERTER "videoconvert"
 #define PREPARE_WINDOW_HANDLE_MESSAGE "prepare-window-handle"
 #define WIN_VIDEO_SOURCE "ksvideosrc"
 #else
+#define IMAGEFREEZE_ELEMENT "freeze"
 #define PLAYBIN_ELEMENT "playbin2"
 #define DEFAULT_VIDEO_CONVERTER "ffmpegcolorspace"
 #define PREPARE_WINDOW_HANDLE_MESSAGE "prepare-xwindow-id"

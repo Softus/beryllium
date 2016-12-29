@@ -220,6 +220,10 @@ static QStringList collectRemovableDrives()
     DWORD dummy = 0, drives = GetLogicalDrives();
     wchar_t drvPath[] = {'0', ':', '\\', '\x0'};
 
+    // Hide "No disk in drive A:" error.
+    //
+    auto errMode = SetErrorMode(SEM_FAILCRITICALERRORS);
+
     for (int i = 0; i < 26; ++i)
     {
         if (!(drives & (1 << i)))
@@ -232,6 +236,10 @@ static QStringList collectRemovableDrives()
             ret.append(QString::fromWCharArray(drvPath));
         }
     }
+
+    // Restore the default behaviour.
+    //
+    SetErrorMode(errMode);
 #endif
 
     return ret;
@@ -1238,7 +1246,6 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
         // Will get here again once switchig is done
     }
 
-    auto isVideo = false;
     stopMedia();
 
     auto caps = typeDetect(fi.absoluteFilePath());
@@ -1247,11 +1254,15 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
         return;
     }
 
+    auto isVideo = caps.startsWith("video/");
+
     try
     {
 //      auto pipeDef = QString("filesrc location=\"%1\" ! decodebin ! autovideosink name=displaysink async=0").arg(fi.absoluteFilePath());
-//      auto pipeDef = QString("uridecodebin uri=\"%1\" ! autovideosink name=displaysink async=0").arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toString());
-        auto pipeDef = QString(PLAYBIN_ELEMENT " uri=\"%1\"").arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toEncoded().constData());
+        auto pipeDef = QString("uridecodebin uri=\"%1\" ! %2 autovideosink name=displaysink async=0")
+                .arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toEncoded().constData())
+                .arg(isVideo? "": IMAGEFREEZE_ELEMENT " ! ");
+//      auto pipeDef = QString(PLAYBIN_ELEMENT " uri=\"%1\"").arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toEncoded().constData());
         pipeline = QGst::Parse::launch(pipeDef).dynamicCast<QGst::Pipeline>();
         auto hiddenVideoWidget = static_cast<QGst::Ui::VideoWidget*>(pagesWidget->widget(1 - pagesWidget->currentIndex()));
         hiddenVideoWidget->watchPipeline(pipeline);
@@ -1261,13 +1272,13 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
         pipeline->getState(nullptr, nullptr, GST_SECOND * 10); // 10 sec
         auto details = GstDebugGraphDetails(GST_DEBUG_GRAPH_SHOW_MEDIA_TYPE | GST_DEBUG_GRAPH_SHOW_NON_DEFAULT_PARAMS | GST_DEBUG_GRAPH_SHOW_STATES);
         GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(pipeline.staticCast<QGst::Bin>(), details, qApp->applicationName().append(".archive").toUtf8());
-        isVideo = caps.startsWith("video/");
     }
     catch (const QGlib::Error& ex)
     {
         const QString msg = ex.message();
         qCritical() << msg;
         QMessageBox::critical(this, windowTitle(), msg, QMessageBox::Ok);
+        isVideo = false;
     }
 
     actionEdit->setEnabled(isVideo);

@@ -23,8 +23,8 @@
 #define PRODUCT_FULL_NAME       "Beryllium"
 #define PRODUCT_SHORT_NAME      "beryllium" // lowercase, no spaces
 
-#define PRODUCT_VERSION         0x010309
-#define PRODUCT_VERSION_STR     "1.3.9"
+#define PRODUCT_VERSION         0x01030A
+#define PRODUCT_VERSION_STR     "1.3.10"
 
 #define PRODUCT_SITE_URL        "http://" ORGANIZATION_DOMAIN "/projects/" PRODUCT_SHORT_NAME "/"
 #define PRODUCT_NAMESPACE       "org.softus." PRODUCT_SHORT_NAME
