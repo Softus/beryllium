@@ -2,10 +2,9 @@ language: c++
 sudo: required
 dist: trusty
 before_install:
-  - sudo add-apt-repository ppa:ppettina/gstreamer1.6.0+trusty -y
-  - echo "deb http://repos.dc.baikal.ru/projects trusty main" | sudo tee -a /etc/apt/sources.list  
+  - sudo add-apt-repository ppa:softus-team/ppa -y
   - sudo apt-get update -q
-  - sudo apt-get install --force-yes -y libdcmtk2-dev libboost-dev libmediainfo-dev libwrap0-dev libgudev-1.0-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libqt5opengl5-dev libqt5gstreamer-1.0-0 libqt5gstreamer-dev libavc1394-dev libraw1394-dev libv4l-dev qttools5-dev-tools qt5-default libqt5x11extras5-dev
+  - sudo apt-get install -y libdcmtk2-dev libboost-dev libmediainfo-dev libwrap0-dev libgudev-1.0-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libqt5opengl5-dev libqt5gstreamer-1.0-0 libqt5gstreamer-dev libavc1394-dev libraw1394-dev libv4l-dev qttools5-dev-tools qt5-default libqt5x11extras5-dev
 script:
    - lrelease *.ts
    - cp docs/* debian/
