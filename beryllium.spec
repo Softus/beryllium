@@ -60,6 +60,8 @@ Beryllium DICOM edition.
 
 Video and image capturing for medicine.
 
+%global debug_package %{nil}
+
 %define _rpmfilename %{distro}-%{rev}-%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm
 
 %prep
