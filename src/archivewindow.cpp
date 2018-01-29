@@ -1258,8 +1258,8 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
 
     try
     {
-//      auto pipeDef = QString("filesrc location=\"%1\" ! decodebin ! autovideosink name=displaysink async=0").arg(fi.absoluteFilePath());
-        auto pipeDef = QString("uridecodebin uri=\"%1\" ! %2 autovideosink name=displaysink async=0")
+//      auto pipeDef = QString("filesrc location=\"%1\" ! decodebin ! " DEFAULT_VIDEO_CONVERTER " ! autovideosink name=displaysink async=0").arg(fi.absoluteFilePath());
+        auto pipeDef = QString("uridecodebin uri=\"%1\" ! " DEFAULT_VIDEO_CONVERTER " ! %2 autovideosink name=displaysink async=0")
                 .arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toEncoded().constData())
                 .arg(isVideo? "": IMAGEFREEZE_ELEMENT " ! ");
 //      auto pipeDef = QString(PLAYBIN_ELEMENT " uri=\"%1\"").arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toEncoded().constData());
