@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (C) 2013-2016 Softus Inc.
+ * Copyright (C) 2013-2018 Softus Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
