@@ -3,6 +3,7 @@ Beryllium
 
 [![Build Status](https://api.travis-ci.org/Softus/beryllium.svg?branch=master)](https://travis-ci.org/Softus/beryllium)
 [![Build status](https://ci.appveyor.com/api/projects/status/ae09iex64d3bfgar?svg=true)](https://ci.appveyor.com/project/pbludov/beryllium)
+[![PPA](https://img.shields.io/badge/PPA-available-green.svg)](https://launchpad.net/~softus-team/+archive/ubuntu/ppa)
 
 Introduction
 ============
