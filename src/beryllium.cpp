@@ -24,6 +24,7 @@
 #include "dbusconnect.h"
 #include "mainwindowdbusadaptor.h"
 #endif
+#include "darkthemestyle.h"
 #include "videoeditor.h"
 #include "settingsdialog.h"
 #include "smartshortcut.h"
@@ -463,6 +464,16 @@ int main(int argc, char *argv[])
 #endif
     QApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/app/product"));
+
+    // Apply dark aware theme if button text is bright or the dart theme is forced
+    //
+    QString theme = settings.value("theme", "auto").toString();
+    if (theme.compare("dark", Qt::CaseInsensitive) == 0
+            || (theme.compare("auto", Qt::CaseInsensitive) == 0
+                && app.palette().color(QPalette::Active, QPalette::ButtonText).lightness() > 128))
+    {
+        app.setStyle(new DarkThemeStyle(QApplication::style()));
+    }
 
     bool fullScreen = settings.value("show-fullscreen").toBool();
 

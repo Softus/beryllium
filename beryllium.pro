@@ -100,6 +100,7 @@ SOURCES += \
     src/aboutdialog.cpp \
     src/archivewindow.cpp \
     src/beryllium.cpp \
+    src/darkthemestyle.cpp \
     src/hotkeyedit.cpp \
     src/mainwindow.cpp \
     src/mandatoryfieldgroup.cpp \
@@ -154,6 +155,7 @@ HEADERS += \
     src/archivewindow.h \
     src/comboboxwithpopupsignal.h \
     src/gstcompat.h \
+    src/darkthemestyle.h \
     src/defaults.h \
     src/hotkeyedit.h \
     src/mainwindow.h \

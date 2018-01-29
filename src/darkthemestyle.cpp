@@ -14,10 +14,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DBUSCONNECT_H
-#define DBUSCONNECT_H
+#include "darkthemestyle.h"
 
-#include <QObject>
-int connectToDbusService(QObject *target, bool systemBus, const QString &service, const QString &path, const QString &interface);
+DarkThemeStyle::DarkThemeStyle(QStyle *style)
+    : QProxyStyle(style)
+{
+}
 
-#endif // DBUSCONNECT_H
+void DarkThemeStyle::drawItemPixmap
+    ( QPainter *painter
+    , const QRect &rect
+    , int alignment
+    , const QPixmap &pixmap
+    ) const
+{
+    auto img = pixmap.toImage();
+    img.invertPixels();
+    QProxyStyle::drawItemPixmap(painter, rect, alignment, QPixmap::fromImage(img));
+}
+
