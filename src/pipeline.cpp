@@ -22,6 +22,7 @@
 
 #include <QApplication>
 #include <QPainter>
+#include <QScreen>
 
 #include <QGlib/Connect>
 
@@ -337,6 +338,28 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
         {
             pipe.append(" guid=\"").append(deviceDef).append("\"");
         }
+    }
+    else if (deviceType == "ximagesrc")
+    {
+        // Special handling of display sources
+        //
+        //pipe.append(" ").append("startx=100 starty=100 endx=739 endy=579").append("");
+        if (!inputChannel.isEmpty())
+        {
+            foreach (auto screen, QGuiApplication::screens())
+            {
+                if (inputChannel == screen->name())
+                {
+                    auto geom = screen->geometry();
+                    pipe = pipe.append(" startx=%1 starty=%2 endx=%3 endy=%4")
+                            .arg(geom.left()).arg(geom.top()).arg(geom.right()).arg(geom.bottom());
+                    break;
+                }
+            }
+
+            //pipe.append(" display-name=\"").append(inputChannel).append("\"");
+        }
+
     }
     else if (deviceType == "videotestsrc")
     {

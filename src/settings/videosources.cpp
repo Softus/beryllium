@@ -65,15 +65,6 @@ VideoSources::VideoSources(QWidget *parent) :
     mainLayout->addWidget(listSources);
     QBoxLayout* buttonsLayout = new QVBoxLayout;
 
-    // For debug purposes
-    //
-    if (qApp->keyboardModifiers().testFlag(Qt::ShiftModifier))
-    {
-        auto btnAdd = new QPushButton(tr("&Add test\nsource"));
-        connect(btnAdd, SIGNAL(clicked()), this, SLOT(onAddClicked()));
-        buttonsLayout->addWidget(btnAdd);
-    }
-
     btnDetails = new QPushButton(tr("&Edit"));
     connect(btnDetails, SIGNAL(clicked()), this, SLOT(onEditClicked()));
     buttonsLayout->addWidget(btnDetails);
@@ -81,6 +72,18 @@ VideoSources::VideoSources(QWidget *parent) :
     btnRemove = new QPushButton(tr("&Remove"));
     connect(btnRemove, SIGNAL(clicked()), this, SLOT(onRemoveClicked()));
     buttonsLayout->addWidget(btnRemove);
+
+    buttonsLayout->addSpacing(100);
+
+    auto btnAddScreenCapture = new QPushButton(tr("&Add screen\ncapture"));
+    connect(btnAddScreenCapture, SIGNAL(clicked()), this, SLOT(onAddScreenCaptureClicked()));
+    buttonsLayout->addWidget(btnAddScreenCapture);
+
+    // For debug purposes
+    //
+    auto btnAddTest = new QPushButton(tr("&Add test\nsource"));
+    connect(btnAddTest, SIGNAL(clicked()), this, SLOT(onAddTestClicked()));
+    buttonsLayout->addWidget(btnAddTest);
 
     buttonsLayout->addStretch(1);
     mainLayout->addItem(buttonsLayout);
@@ -280,13 +283,22 @@ void VideoSources::onRemoveClicked()
     delete item;
 }
 
-void VideoSources::onAddClicked()
+void VideoSources::onAddScreenCaptureClicked()
+{
+    QVariantMap parameters;
+    parameters["alias"] = QString("src%1").arg(listSources->topLevelItemCount());
+    parameters["device-type"] = PLATFORM_SPECIFIC_SCREEN_SOURCE;
+    listSources->addTopLevelItem(newItem("", "Screen capture", parameters, true));
+}
+
+void VideoSources::onAddTestClicked()
 {
     QVariantMap parameters;
     parameters["alias"] = QString("src%1").arg(listSources->topLevelItemCount());
     parameters["device-type"] = "videotestsrc";
     listSources->addTopLevelItem(newItem("", "Video test source", parameters, true));
 }
+
 
 void VideoSources::save(QSettings& settings)
 {

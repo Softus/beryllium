@@ -28,12 +28,15 @@ QT_END_NAMESPACE
 
 #if defined (Q_OS_WIN)
 #define PLATFORM_SPECIFIC_SOURCE WIN_VIDEO_SOURCE
+#define PLATFORM_SPECIFIC_SCREEN_SOURCE "gdiscreencapsrc"
 #define PLATFORM_SPECIFIC_PROPERTY "device-name"
 #elif defined (Q_OS_UNIX)
 #define PLATFORM_SPECIFIC_SOURCE "v4l2src"
+#define PLATFORM_SPECIFIC_SCREEN_SOURCE "ximagesrc"
 #define PLATFORM_SPECIFIC_PROPERTY "device"
 #elif defined (Q_OS_DARWIN)
 #define PLATFORM_SPECIFIC_SOURCE "osxvideosrc"
+#define PLATFORM_SPECIFIC_SCREEN_SOURCE "avfvideosrc"
 #define PLATFORM_SPECIFIC_PROPERTY "device"
 #else
 #error The platform is not supported.
@@ -56,7 +59,8 @@ protected:
     virtual void showEvent(QShowEvent *);
 
 private slots:
-    void onAddClicked();
+    void onAddScreenCaptureClicked();
+    void onAddTestClicked();
     void onRemoveClicked();
     void onEditClicked();
     void onTreeItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);

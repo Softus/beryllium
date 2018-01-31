@@ -27,6 +27,7 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QScreen>
 #include <QSettings>
 #include <QSpinBox>
 #include <QTextEdit>
@@ -59,6 +60,7 @@ static QString getPropName(const QString& deviceType)
     if (deviceType == "dshowvideosrc") return "device-name";
     if (deviceType == "v4l2src")       return "device";
     if (deviceType == "osxvideosrc")   return "device";
+    //if (deviceType == "ximagesrc")     return "display-name";
 
     // Unknown device type
     return QString();
@@ -271,11 +273,11 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
                 break;
             }
             auto label = QString::fromUtf8((const char*)input.name);
-            listChannels->addItem(label);
             if (selectedChannelLabel == label)
             {
-                idx = listChannels->count() - 1;
+                idx = listChannels->count();
             }
+            listChannels->addItem(label);
         }
   #else
         auto tuner = GST_TUNER(src);
@@ -289,11 +291,11 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
                 auto ch = GST_TUNER_CHANNEL(channelList->data);
                 //gst_tuner_set_channel(tuner, ch);
 
-                listChannels->addItem(ch->label);
                 if (selectedChannelLabel == ch->label)
                 {
-                    idx = listChannels->count() - 1;
+                    idx = listChannels->count();
                 }
+                listChannels->addItem(ch->label);
                 channelList = g_list_next(channelList);
             }
         }
@@ -323,6 +325,17 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
                     listChannels->addItem(QString::number(i));
                 }
                 idx = selectedChannel.toInt() + 1;
+            }
+            else if (deviceType == "ximagesrc")
+            {
+                foreach (auto screen, QGuiApplication::screens())
+                {
+                    if (selectedChannelLabel == screen->name())
+                    {
+                        idx = listChannels->count();
+                    }
+                    listChannels->addItem(screen->name());
+                }
             }
         }
 
