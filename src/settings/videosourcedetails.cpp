@@ -313,17 +313,16 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
             }
             else if (deviceType == "videotestsrc")
             {
-#if GST_CHECK_VERSION(1,6,0)
-                auto numPatterns = 24;
-#elif GST_CHECK_VERSION(1,0,0)
-                auto numPatterns = 22;
-#else
-                auto numPatterns = 20;
-#endif
-                for (int i = 0; i <= numPatterns; ++i)
+                auto pattern = src->findProperty("pattern");
+                GEnumClass *cls = G_ENUM_CLASS(g_type_class_ref(pattern->valueType()));
+                for (guint i = 0; i < cls->n_values; ++i)
                 {
-                    listChannels->addItem(QString::number(i), i);
+                    listChannels->addItem(cls->values[i].value_name, i);
                 }
+                g_type_class_unref (cls);
+
+                // Enum values are sequential
+                //
                 idx = selectedChannel.toInt() + 1;
             }
             else if (deviceType == "ximagesrc")
@@ -335,9 +334,9 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
                         idx = listChannels->count();
                     }
                     auto geom = screen->geometry();
-                    listChannels->addItem(screen->name()
-                            .append(" (%1,%2) - (%3,%4)").arg(geom.left()).arg(geom.top())
-                                .arg(geom.right()).arg(geom.bottom()),
+                    listChannels->addItem(tr("%1 (%2,%3) - (%4,%5)").arg(screen->name())
+                            .arg(geom.left()).arg(geom.top())
+                            .arg(geom.right()).arg(geom.bottom()),
                         screen->name());
                 }
             }
