@@ -277,7 +277,7 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
             {
                 idx = listChannels->count();
             }
-            listChannels->addItem(label);
+            listChannels->addItem(label, label);
         }
   #else
         auto tuner = GST_TUNER(src);
@@ -295,7 +295,7 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
                 {
                     idx = listChannels->count();
                 }
-                listChannels->addItem(ch->label);
+                listChannels->addItem(ch->label, ch->label);
                 channelList = g_list_next(channelList);
             }
         }
@@ -307,7 +307,7 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
             {
                 for (int i = 1; i <= 64; ++i)
                 {
-                    listChannels->addItem(QString::number(i));
+                    listChannels->addItem(QString::number(i), i);
                 }
                 idx = selectedChannel.toInt();
             }
@@ -322,7 +322,7 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
 #endif
                 for (int i = 0; i <= numPatterns; ++i)
                 {
-                    listChannels->addItem(QString::number(i));
+                    listChannels->addItem(QString::number(i), i);
                 }
                 idx = selectedChannel.toInt() + 1;
             }
@@ -334,7 +334,11 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
                     {
                         idx = listChannels->count();
                     }
-                    listChannels->addItem(screen->name());
+                    auto geom = screen->geometry();
+                    listChannels->addItem(screen->name()
+                            .append(" (%1,%2) - (%3,%4)").arg(geom.left()).arg(geom.top())
+                                .arg(geom.right()).arg(geom.bottom()),
+                        screen->name());
                 }
             }
         }
@@ -515,14 +519,6 @@ void VideoSourceDetails::formatChanged(int index)
     }
 }
 
-// Return nullptr for '(default)', otherwise the text itself
-//
-static QString getListText(const QComboBox* cb)
-{
-    auto idx = cb->currentIndex();
-    return idx <= 0? nullptr: cb->itemText(idx);
-}
-
 static QVariant getListData(const QComboBox* cb)
 {
     auto idx = cb->currentIndex();
@@ -535,7 +531,7 @@ void VideoSourceDetails::updateParameters(QVariantMap& settings)
 #ifdef WITH_DICOM
     settings["modality"]          = editModality->text();
 #endif
-    settings["video-channel"]     = getListText(listChannels);
+    settings["video-channel"]     = getListData(listChannels);
     settings["format"]            = getListData(listFormats);
     settings["size"]              = getListData(listSizes);
     settings["video-encoder"]     = getListData(listVideoCodecs);
