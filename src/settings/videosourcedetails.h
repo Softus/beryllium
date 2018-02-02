@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VIDEOSETTINGS_H
-#define VIDEOSETTINGS_H
+#ifndef VIDEOSOURCEDETAILS_H
+#define VIDEOSOURCEDETAILS_H
 
 #include <QDialog>
 #include <QSettings>
@@ -26,6 +26,7 @@
 QT_BEGIN_NAMESPACE
 class QCheckBox;
 class QComboBox;
+class QFormLayout;
 class QLineEdit;
 class QSpinBox;
 class QTextEdit;
@@ -60,24 +61,39 @@ class VideoSourceDetails : public QDialog
     QCheckBox *checkDeinterlace;
     QCheckBox *checkLogOnly;
     QGst::CapsPtr caps;
+    QVariantMap parameters;
 
     QVariant selectedChannel;
     QString  selectedFormat;
     QSize    selectedSize;
 
-    QString updateGstList(const QVariantMap& parameters, const char* settingName, const char* def,
-                          unsigned long long type, QComboBox* cb);
+    QString updateGstList
+        ( const char* settingName
+        , const char* def
+        , unsigned long long type
+        , QComboBox* cb
+        );
+    void widgetWithExtraButton
+        ( QFormLayout *form
+        , const QString &text
+        , QWidget* widget
+        );
 
 public:
-    explicit VideoSourceDetails(const QVariantMap& parameters, QWidget *parent = 0);
-    void updateDevice(const QString& device, const QString& deviceType);
-    void updateParameters(QVariantMap& parameters);
+    VideoSourceDetails
+        ( const QVariantMap& parameters
+        , QWidget *parent = 0
+        );
+    void updateDevice(const QString& device);
+    void getParameters(QVariantMap& parameters);
 
 signals:
     
 private slots:
     void inputChannelChanged(int index);
     void formatChanged(int index);
+    void onAdvancedClick();
+    void onExtraButtonPressed();
 };
 
-#endif // VIDEOSETTINGS_H
+#endif // VIDEOSOURCEDETAILS_H

@@ -262,15 +262,14 @@ void VideoSources::onEditClicked()
     }
     auto device     = item->data(0, Qt::UserRole).toString();
     auto parameters = item->data(2, Qt::UserRole).toMap();
-    auto deviceType = parameters["device-type"].toString();
 
     VideoSourceDetails dlg(parameters, this);
     dlg.setWindowTitle(item->text(0));
-    dlg.updateDevice(device, deviceType);
+    dlg.updateDevice(device);
 
     if (dlg.exec())
     {
-        dlg.updateParameters(parameters);
+        dlg.getParameters(parameters);
         item->setData(2, Qt::UserRole, parameters);
         item->setText(1, parameters["modality"].toString());
         item->setText(2, parameters["alias"].toString());

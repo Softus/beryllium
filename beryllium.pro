@@ -94,6 +94,7 @@ HEADERS += \
 }
 
 SOURCES += \
+    libqxt/qxtcheckcombobox.cpp \
     libqxt/qxtconfirmationmessage.cpp \
     libqxt/qxtlineedit.cpp \
     libqxt/qxtspanslider.cpp \
@@ -125,7 +126,8 @@ SOURCES += \
     src/settings/mandatoryfields.cpp \
     src/settings/hotkeys.cpp \
     src/settings/debug.cpp \
-    src/settings/confirmations.cpp
+    src/settings/confirmations.cpp \
+    src/settings/elementproperties.cpp
 
 unix {
     SOURCES += src/smartshortcut_x11.cpp
@@ -147,9 +149,15 @@ contains(QT, dbus): {
 }
 
 HEADERS += \
+    libqxt/qxtcheckcombobox.h \
+    libqxt/qxtcheckcombobox_p.h \
+    libqxt/QxtCheckComboBox \
     libqxt/qxtconfirmationmessage.h \
+    libqxt/QxtConfirmationMessage \
     libqxt/qxtlineedit.h \
+    libqxt/QxtLineEdit \
     libqxt/qxtspanslider.h \
+    libqxt/QxtSpanSlider \
     libqxt/qxtspanslider_p.h \
     src/aboutdialog.h \
     src/archivewindow.h \
@@ -185,7 +193,8 @@ HEADERS += \
     src/settings/storage.h \
     src/settings/studies.h \
     src/settings/videorecord.h \
-    gst/enumsrc.h
+    gst/enumsrc.h \
+    src/settings/elementproperties.h
 
 FORMS   +=
 

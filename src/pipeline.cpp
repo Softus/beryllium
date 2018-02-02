@@ -305,7 +305,7 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
     auto formatDef      = settings.value("format").toString();
     auto sizeDef        = settings.value("size").toSize();
     auto srcDeinterlace = settings.value("video-deinterlace").toBool();
-    auto srcParams      = settings.value("src-parameters").toString();
+    auto srcParams      = settings.value(deviceType + "-parameters").toString();
     alias               = settings.value("alias").toString();
     modality            = settings.value("modality").toString();
 

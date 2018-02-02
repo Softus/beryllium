@@ -15,7 +15,9 @@
  */
 
 #include "videosourcedetails.h"
+#include "elementproperties.h"
 #include "../defaults.h"
+#include "../qwaitcursor.h"
 #include "../gstcompat.h"
 #include <algorithm>
 
@@ -24,6 +26,7 @@
 #include <QComboBox>
 #include <QDebug>
 #include <QFormLayout>
+#include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
@@ -57,7 +60,7 @@
 static QString getPropName(const QString& deviceType)
 {
     if (deviceType == "videotestsrc")  return "pattern";
-    if (deviceType == "dshowvideosrc") return "device-name";
+    if (deviceType == WIN_VIDEO_SOURCE) return "device-name";
     if (deviceType == "v4l2src")       return "device";
     if (deviceType == "osxvideosrc")   return "device";
     //if (deviceType == "ximagesrc")     return "display-name";
@@ -66,11 +69,14 @@ static QString getPropName(const QString& deviceType)
     return QString();
 }
 
-// TODO: rewrite with qvariantmap
-VideoSourceDetails::VideoSourceDetails(const QVariantMap& parameters, QWidget *parent)
-  : QDialog(parent)
-  , checkFps(nullptr)
-  , spinFps(nullptr)
+VideoSourceDetails::VideoSourceDetails
+    ( const QVariantMap& parameters
+    , QWidget *parent
+    )
+    : QDialog(parent)
+    , checkFps(nullptr)
+    , spinFps(nullptr)
+    , parameters(parameters)
 {
     selectedChannel = parameters.value("video-channel");
     selectedFormat  = parameters.value("format").toString();
@@ -95,7 +101,7 @@ VideoSourceDetails::VideoSourceDetails(const QVariantMap& parameters, QWidget *p
     layoutMain->addRow(tr("Pixel &format"), listFormats = new QComboBox());
     connect(listFormats, SIGNAL(currentIndexChanged(int)), this, SLOT(formatChanged(int)));
     layoutMain->addRow(tr("Frame &size"), listSizes = new QComboBox());
-    layoutMain->addRow(tr("Video &codec"), listVideoCodecs = new QComboBox());
+    widgetWithExtraButton(layoutMain, tr("Video &codec"), listVideoCodecs = new QComboBox());
 
     auto elm = QGst::ElementFactory::make("videorate");
     if (elm && elm->findProperty("max-rate"))
@@ -117,12 +123,13 @@ VideoSourceDetails::VideoSourceDetails(const QVariantMap& parameters, QWidget *p
 
     layoutMain->addRow(nullptr, checkDeinterlace = new QCheckBox(tr("De&interlace")));
     checkDeinterlace->setChecked(parameters.value("video-deinterlace").toBool());
-    layoutMain->addRow(nullptr, checkLogOnly = new QCheckBox(tr("Use this source for video log &only")));
+    layoutMain->addRow(nullptr,
+        checkLogOnly = new QCheckBox(tr("Use this source for video log &only")));
     checkLogOnly->setChecked(parameters.value("log-only").toBool());
 
-    layoutMain->addRow(tr("Video m&uxer"), listVideoMuxers = new QComboBox());
-    layoutMain->addRow(tr("Ima&ge codec"), listImageCodecs = new QComboBox());
-    layoutMain->addRow(tr("RTP &payloader"), listRtpPayloaders = new QComboBox());
+    widgetWithExtraButton(layoutMain, tr("Video m&uxer"), listVideoMuxers = new QComboBox());
+    widgetWithExtraButton(layoutMain, tr("Ima&ge codec"), listImageCodecs = new QComboBox());
+    widgetWithExtraButton(layoutMain, tr("RTP &payloader"), listRtpPayloaders = new QComboBox());
 
     // UDP streaming
     //
@@ -151,6 +158,9 @@ VideoSourceDetails::VideoSourceDetails(const QVariantMap& parameters, QWidget *p
     // Buttons row
     //
     auto layoutBtns = new QHBoxLayout;
+    auto btnAdvanced = new QPushButton(tr("Advanced"));
+    connect(btnAdvanced, SIGNAL(clicked()), this, SLOT(onAdvancedClick()));
+    layoutBtns->addWidget(btnAdvanced);
     layoutBtns->addStretch(1);
     auto btnCancel = new QPushButton(tr("Cancel"));
     connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -168,28 +178,39 @@ VideoSourceDetails::VideoSourceDetails(const QVariantMap& parameters, QWidget *p
 
     // Refill the boxes every time the page is shown
     //
-    auto selectedCodec = updateGstList(parameters, "video-encoder", defaultEncoder, GST_ELEMENT_FACTORY_TYPE_ENCODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, listVideoCodecs);
+    auto selectedCodec = updateGstList("video-encoder", defaultEncoder,
+        GST_ELEMENT_FACTORY_TYPE_ENCODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, listVideoCodecs);
     listVideoCodecs->insertItem(0, tr("(none)"));
     if (selectedCodec.isEmpty())
     {
         listVideoCodecs->setCurrentIndex(0);
     }
-    auto selectedMuxer = updateGstList(parameters, "video-muxer",   DEFAULT_VIDEO_MUXER,   GST_ELEMENT_FACTORY_TYPE_MUXER, listVideoMuxers);
+    auto selectedMuxer = updateGstList("video-muxer",
+        DEFAULT_VIDEO_MUXER,   GST_ELEMENT_FACTORY_TYPE_MUXER, listVideoMuxers);
     listVideoMuxers->insertItem(0, tr("(none)"));
     if (selectedMuxer.isEmpty())
     {
         listVideoMuxers->setCurrentIndex(0);
     }
-    updateGstList(parameters, "image-encoder", DEFAULT_IMAGE_ENCODER, GST_ELEMENT_FACTORY_TYPE_ENCODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_IMAGE, listImageCodecs);
-    updateGstList(parameters, "rtp-payloader", DEFAULT_RTP_PAYLOADER, GST_ELEMENT_FACTORY_TYPE_PAYLOADER, listRtpPayloaders);
+    updateGstList("image-encoder", DEFAULT_IMAGE_ENCODER,
+        GST_ELEMENT_FACTORY_TYPE_ENCODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_IMAGE, listImageCodecs);
+    updateGstList("rtp-payloader", DEFAULT_RTP_PAYLOADER, GST_ELEMENT_FACTORY_TYPE_PAYLOADER,
+        listRtpPayloaders);
 }
 
-QString VideoSourceDetails::updateGstList(const QVariantMap& parameters, const char* settingName, const char* def, unsigned long long type, QComboBox* cb)
+QString VideoSourceDetails::updateGstList
+    ( const char* settingName
+    , const char* def
+    , unsigned long long type
+    , QComboBox* cb
+    )
 {
     cb->clear();
     auto selectedCodec = parameters.value(settingName, def).toString();
-    auto extra = parameters.value(QString(settingName)+"-extra").toBool() || qApp->keyboardModifiers().testFlag(Qt::ShiftModifier);
-    auto elmList = gst_element_factory_list_get_elements(type, extra? GST_RANK_NONE: GST_RANK_SECONDARY);
+    auto extra = parameters.value(QString(settingName)+"-extra").toBool()
+        || qApp->keyboardModifiers().testFlag(Qt::ShiftModifier);
+    auto elmList = gst_element_factory_list_get_elements(type,
+        extra? GST_RANK_NONE: GST_RANK_SECONDARY);
     for (auto curr = elmList; curr; curr = curr->next)
     {
         auto factory = QGst::ElementFactoryPtr::wrap(GST_ELEMENT_FACTORY(curr->data), true);
@@ -208,7 +229,7 @@ QString VideoSourceDetails::updateGstList(const QVariantMap& parameters, const c
     return selectedCodec;
 }
 
-void VideoSourceDetails::updateDevice(const QString& device, const QString& deviceType)
+void VideoSourceDetails::updateDevice(const QString& device)
 {
     int idx = 0;
 
@@ -219,10 +240,12 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
         return;
     }
 
-    auto src = QGst::ElementFactory::make(deviceType);
+    auto deviceType = parameters.value("device-type").toString();
+    auto src = QGst::ElementFactory::make(parameters.value("device-type").toString());
     if (!src)
     {
-        QMessageBox::critical(this, windowTitle(), tr("Failed to create element '%1'").arg(deviceType));
+        QMessageBox::critical(this, windowTitle(),
+            tr("Failed to create element '%1'").arg(deviceType));
         return;
     }
     pipeline->add(src);
@@ -314,12 +337,11 @@ void VideoSourceDetails::updateDevice(const QString& device, const QString& devi
             else if (deviceType == "videotestsrc")
             {
                 auto pattern = src->findProperty("pattern");
-                GEnumClass *cls = G_ENUM_CLASS(g_type_class_ref(pattern->valueType()));
+                auto cls = G_PARAM_SPEC_ENUM(static_cast<GParamSpec *>(pattern))->enum_class;
                 for (guint i = 0; i < cls->n_values; ++i)
                 {
                     listChannels->addItem(cls->values[i].value_name, i);
                 }
-                g_type_class_unref (cls);
 
                 // Enum values are sequential
                 //
@@ -397,12 +419,14 @@ void VideoSourceDetails::inputChannelChanged(int index)
         auto s = caps->internalStructure(i);
         foreach (auto format, getFormats(s->value("format")))
         {
-            auto formatName = !format.isValid()? s->name(): s->name().append(",format=").append(valueToString(format));
+            auto formatName = !format.isValid()
+                ? s->name() : s->name().append(",format=").append(valueToString(format));
             if (listFormats->findData(formatName) >= 0)
             {
                 continue;
             }
-            auto displayName = !format.isValid()? s->name(): s->name().append(" (").append(format.toString()).append(")");
+            auto displayName = !format.isValid()
+                ? s->name() : s->name().append(" (").append(format.toString()).append(")");
             listFormats->addItem(displayName, formatName);
             if (formatName == selectedFormat)
             {
@@ -499,9 +523,10 @@ void VideoSourceDetails::formatChanged(int index)
 
     // Sort resolutions descending
     //
-    qSort(sizes.begin(), sizes.end(),
-        [](const QSize &s1, const QSize &s2) { return s1.width() * s1.height() > s2.width() * s2.height(); }
-        );
+    qSort(sizes.begin(), sizes.end(), [](const QSize& s1, const QSize& s2)
+        {
+            return s1.width() * s1.height() > s2.width() * s2.height();
+        });
 
     // And remove duplicates
     //
@@ -518,14 +543,74 @@ void VideoSourceDetails::formatChanged(int index)
     }
 }
 
+void VideoSourceDetails::onAdvancedClick()
+{
+    QWaitCursor wait(this);
+    auto deviceType = parameters.value("device-type").toString();
+    auto deviceParams = deviceType + "-parameters";
+
+    ElementProperties dlg(deviceType, parameters.value(deviceParams).toString(), this);
+    if (dlg.exec())
+    {
+        parameters[deviceParams]=dlg.getProperties();
+    }
+}
+
+void VideoSourceDetails::widgetWithExtraButton
+    ( QFormLayout* form
+    , const QString& text
+    , QWidget* widget
+    )
+{
+    auto layout = new QHBoxLayout;
+
+    widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);;
+    layout->addWidget(widget);
+
+    auto btn = new QPushButton(tr("..."));
+    connect(btn, SIGNAL(pressed()), this, SLOT(onExtraButtonPressed()));
+    layout->addWidget(btn);
+
+    auto label = new QLabel(text);
+    label->setBuddy(widget);
+
+    form->addRow(label, layout);
+}
+
 static QVariant getListData(const QComboBox* cb)
 {
     auto idx = cb->currentIndex();
     return cb->itemData(idx);
 }
 
-void VideoSourceDetails::updateParameters(QVariantMap& settings)
+void VideoSourceDetails::onExtraButtonPressed()
 {
+    QWaitCursor wait(this);
+
+    auto btn = static_cast<QPushButton*>(sender());
+    auto cb = static_cast<QComboBox*>(btn->previousInFocusChain());
+    auto elmType = getListData(cb).toString();
+    auto elmParams = elmType + "-parameters";
+
+    ElementProperties dlg(elmType, parameters.value(elmParams).toString(), this);
+    if (dlg.exec())
+    {
+        parameters[elmParams]=dlg.getProperties();
+    }
+}
+
+void VideoSourceDetails::getParameters(QVariantMap& settings)
+{
+    // Copy advanced options for source & codecs
+    //
+    foreach(auto param, parameters.keys())
+    {
+        if (param.endsWith("-parameters"))
+        {
+            settings[param] = parameters[param];
+        }
+    }
+
     settings["alias"]             = editAlias->text();
 #ifdef WITH_DICOM
     settings["modality"]          = editModality->text();
@@ -550,6 +635,6 @@ void VideoSourceDetails::updateParameters(QVariantMap& settings)
     if (spinFps)
     {
         settings["limit-video-fps"] = checkFps->isChecked();
-        settings["video-max-fps"]   = spinFps->value() > 0? spinFps->value(): QVariant();
+        settings["video-max-fps"]   = spinFps->value() > 0 ? spinFps->value() : QVariant();
     }
 }
