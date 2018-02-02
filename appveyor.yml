@@ -8,6 +8,7 @@ environment:
   QT_DIR: C:\Qt\Qt5.0.2\5.0.2\mingw47_32
   BOOST_DIR: C:\Libraries\boost_1_59_0
   GSTREAMER_VER: 1.12.4
+  DCMTK_VER: DCMTK-3.6.1_20150924
   QTGSTREAMER_URI: https://github.com/detrout/qt-gstreamer.git
   PKG_CONFIG_PATH: C:\usr\lib\pkgconfig;%GSTREAMER_DIR%\lib\pkgconfig;%QT_DIR%\lib\pkgconfig
   MEDIAINFO_VER: 0.7.93
@@ -55,7 +56,7 @@ install:
 - cd ..\..
 
 # DCMTK
-- git clone git://git.dcmtk.org/dcmtk.git -b DCMTK-3.6.1_20150924 && cd dcmtk
+- git clone https://github.com/DCMTK/dcmtk.git -b %DCMTK_VER% && cd dcmtk
 - mkdir build && cd build
 - set PATH=%PATH:C:\Program Files\Git\usr\bin=%
 - cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "MinGW Makefiles"
