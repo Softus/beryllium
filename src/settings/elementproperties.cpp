@@ -204,7 +204,7 @@ static QWidget* createEditor
             {
                 combo->addItem(cls->values[i].value_name, cls->values[i].value);
             }
-            combo->setMask(elmValue.toInt());
+            combo->setMask(elmValue.toUInt64());
             qtDefValue = spec->default_value;
             widget = combo;
         }
@@ -309,7 +309,8 @@ QString ElementProperties::getProperties()
         }
         else if (widget->inherits("QComboBox"))
         {
-            value = static_cast<QComboBox*>(widget)->currentData();
+            auto cb = static_cast<QComboBox*>(widget);
+            value = cb->itemData(cb->currentIndex());
         }
         else if (widget->inherits("QSpinBox"))
         {

@@ -577,6 +577,11 @@ void VideoSourceDetails::widgetWithExtraButton
     form->addRow(label, layout);
 }
 
+/**
+ * @brief QComboBox::currentData() for Qt 5.0.
+ * @param cb combobox to use.
+ * @return data associated with current item.
+ */
 static QVariant getListData(const QComboBox* cb)
 {
     auto idx = cb->currentIndex();
