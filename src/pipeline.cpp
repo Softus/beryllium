@@ -341,9 +341,9 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
     }
     else if (deviceType == "ximagesrc")
     {
-        // Special handling of display sources
+        // Special handling for XOrg screen source
         //
-        //pipe.append(" ").append("startx=100 starty=100 endx=739 endy=579").append("");
+        //pipe.append(" startx=100 starty=100 endx=739 endy=579").append("");
         if (!inputChannel.isEmpty())
         {
             foreach (auto screen, QGuiApplication::screens())
@@ -356,10 +356,26 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
                     break;
                 }
             }
-
-            //pipe.append(" display-name=\"").append(inputChannel).append("\"");
         }
-
+    }
+    else if (deviceType == "gdiscreencapsrc")
+    {
+        // Special handling for Windows screen source
+        //
+        //pipe.append(" x=100 y=100 width=640 height=480").append("");
+        if (!inputChannel.isEmpty())
+        {
+            foreach (auto screen, QGuiApplication::screens())
+            {
+                if (inputChannel == screen->name())
+                {
+                    auto geom = screen->geometry();
+                    pipe = pipe.append(" x=%1 y=%2 width=%3 height=%4")
+                            .arg(geom.x()).arg(geom.y()).arg(geom.width()).arg(geom.height());
+                    break;
+                }
+            }
+        }
     }
     else if (deviceType == "videotestsrc")
     {
