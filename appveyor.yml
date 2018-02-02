@@ -7,10 +7,10 @@ image: Visual Studio 2013
 environment:
   QT_DIR: C:\Qt\Qt5.0.2\5.0.2\mingw47_32
   BOOST_DIR: C:\Libraries\boost_1_59_0
-  GSTREAMER_VER: 1.8.3
+  GSTREAMER_VER: 1.12.4
   QTGSTREAMER_URI: https://github.com/detrout/qt-gstreamer.git
   PKG_CONFIG_PATH: C:\usr\lib\pkgconfig;%GSTREAMER_DIR%\lib\pkgconfig;%QT_DIR%\lib\pkgconfig
-  MEDIAINFO_VER: 17.12
+  MEDIAINFO_VER: 0.7.98
   MINGW_DIR: C:\Qt\Qt5.0.2\Tools\MinGW
   QT_URI: https://download.qt.io/archive/qt/5.0/5.0.2/qt-windows-opensource-5.0.2-mingw47_32-x86-offline.exe
   GSTREAMER_DIR: c:\gstreamer\1.0\x86
