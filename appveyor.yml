@@ -38,7 +38,7 @@ install:
 - curl -kL http://mediaarea.net/download/source/libmediainfo/%MEDIAINFO_VER%/libmediainfo_%MEDIAINFO_VER%_AllInclusive.7z -o mediainfo.7z && 7z x mediainfo.7z && del mediainfo.7z
 - cd libmediainfo*
 - cd MediaInfoLib\Project\CMake
-- sed -i 48d CMakeLists.txt
+- sed -i -e 48d -e 82,87d CMakeLists.txt
 - mkdir build && cd build
 - set PATH=%PATH:C:\Program Files\Git\usr\bin=%
 - cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "MinGW Makefiles"
