@@ -1,6 +1,7 @@
 Beryllium
 =========
 
+[![Buddy Pipeline](https://app.buddy.works/pbludov/beryllium/pipelines/pipeline/124168/badge.svg?token=bf26fe8fed990190f11227bb2aa0c7d1e71118737795eed7b5069fff7106a015)](https://app.buddy.works/pbludov/beryllium/pipelines/pipeline/124168)
 [![Build Status](https://api.travis-ci.org/Softus/beryllium.svg?branch=master)](https://travis-ci.org/Softus/beryllium)
 [![Build status](https://ci.appveyor.com/api/projects/status/ae09iex64d3bfgar?svg=true)](https://ci.appveyor.com/project/pbludov/beryllium)
 [![PPA](https://img.shields.io/badge/PPA-available-green.svg)](https://launchpad.net/~softus-team/+archive/ubuntu/ppa)
@@ -39,7 +40,7 @@ Debian/Ubuntu/Mint
 
 2. Make Makefile
 
-        qmake CONFIG+=dicom beryllium.pro
+        qmake beryllium.pro
   
 3. Make Beryllium
 
@@ -67,7 +68,7 @@ SUSE/Open SUSE
 
 2. Make Makefile
 
-        qmake-qt5 CONFIG+=dicom beryllium.pro
+        qmake-qt5 beryllium.pro
 
 3. Make Beryllium
 
@@ -95,11 +96,11 @@ CentOS
 
 2. Make Makefile
 
-        qmake-qt5 CONFIG+=dicom beryllium.pro
+        qmake-qt5 beryllium.pro
 
 3. Make Beryllium
 
-        lrelease *.ts
+        lrelease-qt5 *.ts
         make
 
 4. Install Beryllium
@@ -118,16 +119,16 @@ Fedora
 1. Install build dependecies
 
         sudo dnf install make rpm-build gstreamer-devel libv4l-devel \
-        qt-devel qt5-gstreamer-devel libgudev-devel libavc1394-devel \
-        libmediainfo-devel dcmtk-devel openssl-devel
+        qt-devel qt5-gstreamer-devel qt5-linguist libgudev-devel libavc1394-devel \
+        libmediainfo-devel dcmtk-devel openssl-devel tcp_wrappers-devel gcc-c++ 
 
 2. Make Makefile
 
-        qmake-qt5 CONFIG+=dicom beryllium.pro
+        qmake-qt5 beryllium.pro
 
 3. Make Beryllium
 
-        lrelease *.ts
+        lrelease-qt5 *.ts
         make
 
 4. Install Beryllium
@@ -138,7 +139,7 @@ Fedora
 
         distro=$( lsb_release -is | awk '{print tolower($1)}' )
         rev=$( lsb_release -rs )
-        tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1 -D"distro $distro" -D"rev $rev" -ta ../beryllium.tar.gz
+        tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1" -D"distro $distro" -D"rev $rev" -ta ../beryllium.tar.gz
 
 Windows (Visual Studio)
 -----------------------
@@ -177,12 +178,11 @@ Windows (Visual Studio)
 
 3. Make Makefile
 
-        # 'CONFIG+=dicom ' is optional.
-        qmake-qt5 INCLUDEDIR+=%BOOST_DIR% CONFIG+=dicom
+        qmake-qt5 INCLUDEDIR+=%BOOST_DIR%
 
 4. Make Beryllium
 
-        lrelease *.ts
+        lrelease-qt5 *.ts
         nmake -f Makefile.Release
 
 5. Create Package
@@ -233,12 +233,11 @@ Windows (MinGW)
 
 3. Make Makefile
 
-        # 'CONFIG+=dicom ' is optional.
-        qmake-qt5 INCLUDEDIR+=%BOOST_DIR% CONFIG+=dicom
+        qmake-qt5 INCLUDEDIR+=%BOOST_DIR%
 
 4. Make Beryllium
 
-        lrelease *.ts
+        lrelease-qt5 *.ts
         min32gw-make -f Makefile.Release
 
 5. Create Package

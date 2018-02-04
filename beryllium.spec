@@ -68,7 +68,8 @@ Video and image capturing for medicine.
 %setup -c %{name}
  
 %build
-qmake PREFIX=%{_prefix} QMAKE_CFLAGS+="%optflags" QMAKE_CXXFLAGS+="%optflags";
+qmake-qt5 PREFIX=%{_prefix} QMAKE_CFLAGS+="%optflags" QMAKE_CXXFLAGS+="%optflags";
+lrelease-qt5 *.ts
 make -j 2 %{?_smp_mflags};
 
 %install
