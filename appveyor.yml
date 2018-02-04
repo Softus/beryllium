@@ -13,8 +13,8 @@ environment:
   MINGW_DIR: C:\Qt\Qt5.0.2\Tools\MinGW
   QT_DIR: C:\Qt\Qt5.0.2\5.0.2\mingw47_32
   DCMTK_URI: https://github.com/DCMTK/dcmtk.git
-  GSTREAMER_UIR: https://gstreamer.freedesktop.org/data/pkg/windows
-  MEDIAINFO_URI: http://mediaarea.net/download/source/libmediainfo
+  GSTREAMER_URI: https://gstreamer.freedesktop.org/data/pkg/windows
+  MEDIAINFO_URI: https://mediaarea.net/download/source/libmediainfo
   QTGSTREAMER_URI: https://github.com/detrout/qt-gstreamer.git
   QT_URI: https://download.qt.io/archive/qt/5.0/5.0.2/qt-windows-opensource-5.0.2-mingw47_32-x86-offline.exe
   QT_RUNTIME: qt-5.0.2_mingw-4.7.wxi
