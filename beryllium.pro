@@ -14,9 +14,7 @@
 
 isEmpty(PREFIX): PREFIX   = /usr/local
 DEFINES += PREFIX=$$PREFIX
-
-# GCC tuning
-*-g++*:QMAKE_CXXFLAGS += -std=c++0x -Wno-multichar
+CONFIG  += c++11
 
 win32 {
     greaterThan(QT_MAJOR_VERSION, 4): QT += gui-private

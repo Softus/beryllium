@@ -32,11 +32,11 @@ Debian/Ubuntu/Mint
 
 1. Install build dependecies
 
-        sudo apt install libdcmtk2-dev libboost-dev libmediainfo-dev \
-        libwrap0-dev libgudev-1.0-dev libgstreamer1.0-dev libv4l-dev \
-        libgstreamer-plugins-base1.0-dev libavc1394-dev libraw1394-dev \
-        libqt5x11extras5-dev libqt5gstreamer-1.0-0 libqt5gstreamer-dev \
-        qttools5-dev-tools libqt5opengl5-dev qt5-default
+        sudo apt install lsb-release debhelper fakeroot libdcmtk2-dev libboost-dev \
+        libmediainfo-dev libssl-dev libwrap0-dev libgudev-1.0-dev libqt5opengl5-dev \
+        libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libqt5gstreamer-1.0-0 \
+        libqt5gstreamer-dev libavc1394-dev libraw1394-dev libv4l-dev qttools5-dev-tools \
+        qt5-default libqt5x11extras5-dev
 
 2. Make Makefile
 
@@ -64,7 +64,7 @@ SUSE/Open SUSE
         sudo zypper install make rpm-build qt-devel qt-gstreamer-devel \
         libQtGlib-devel dcmtk-devel tcp_wrappers-devel libgudev-devel \
         mediainfo-devel gstreamer-devel gstreamer-plugins-qt5-devel \
-        libqt5-qtbase-devel libavc-1394-devel libv4l-devel
+        libqt5-qtbase-devel qt5-qtx11extras-devel libavc-1394-devel libv4l-devel
 
 2. Make Makefile
 
@@ -72,7 +72,7 @@ SUSE/Open SUSE
 
 3. Make Beryllium
 
-        lrelease *.ts
+        lrelease-qt5 *.ts
         make
 
 4. Install Beryllium
@@ -81,9 +81,9 @@ SUSE/Open SUSE
 
 5. Create Package
 
-        distro=$( lsb_release -is | awk '{print tolower($1)}' )
-        rev=$( lsb_release -rs )
-        tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1 -D"distro $distro" -D"rev $rev" -ta ../beryllium.tar.gz
+        distro=$(lsb_release -is | awk '{print tolower($1)}')
+        rev=$(lsb_release -rs)
+        tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1" -D"distro $distro" -D"rev $rev" -ta ../beryllium.tar.gz
 
 CentOS
 ------
@@ -91,7 +91,7 @@ CentOS
 1. Install build dependecies
 
         sudo yum install make rpm-build gstreamer-devel libv4l-devel \
-        qt-devel libgudev1-devel libavc1394-devel libmediainfo-devel \
+        qt-devel qt5-qtx11extras-devel libgudev1-devel libavc1394-devel libmediainfo-devel \
         dcmtk-devel openssl-devel
 
 2. Make Makefile
@@ -109,9 +109,9 @@ CentOS
 
 5. Create Package
 
-        distro=$( lsb_release -is | awk '{print tolower($1)}' )
-        rev=$( lsb_release -rs )
-        tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1 -D"distro $distro" -D"rev $rev" -ta ../beryllium.tar.gz
+        distro=$(lsb_release -is | awk '{print tolower($1)}')
+        rev=$(lsb_release -rs)
+        tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1" -D"distro $distro" -D"rev $rev" -ta ../beryllium.tar.gz
 
 Fedora
 ------
@@ -119,8 +119,8 @@ Fedora
 1. Install build dependecies
 
         sudo dnf install redhat-lsb make rpm-build gstreamer-devel libv4l-devel \
-        qt-devel qt5-gstreamer-devel qt5-linguist libgudev-devel libavc1394-devel \
-        libmediainfo-devel dcmtk-devel openssl-devel tcp_wrappers-devel gcc-c++ 
+        qt-devel qt5-gstreamer-devel qt5-linguist qt5-qtx11extras-devel libgudev-devel \
+        libavc1394-devel libmediainfo-devel dcmtk-devel openssl-devel tcp_wrappers-devel gcc-c++ 
 
 2. Make Makefile
 
@@ -137,8 +137,8 @@ Fedora
 
 5. Create Package
 
-        distro=$( lsb_release -is | awk '{print tolower($1)}' )
-        rev=$( lsb_release -rs )
+        distro=$(lsb_release -is | awk '{print tolower($1)}')
+        rev=$(lsb_release -rs)
         tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1" -D"distro $distro" -D"rev $rev" -ta ../beryllium.tar.gz
 
 Windows (Visual Studio)
@@ -167,13 +167,13 @@ Windows (Visual Studio)
         # DCMTK (optional)
         cd dcmtk
         mkdir build && cd build
-        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "Visual Studio <version>"
+        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DDCMTK_WITH_OPENSSL=OFF -G "Visual Studio <version>"
         cmake --build . --target install
 
         # QtGStreamer
         set BOOST_DIR=<the path to boost headers>
         mkdir build && cd build
-        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5  -DBoost_INCLUDE_DIR=%BOOST_DIR% -G "Visual Studio <version>"
+        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5 -DBoost_INCLUDE_DIR=%BOOST_DIR% -G "Visual Studio <version>"
         cmake --build . --target install
 
 3. Make Makefile
@@ -223,12 +223,12 @@ Windows (MinGW)
         # DCMTK (optional)
         cd dcmtk
         mkdir build && cd build
-        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "MinGW Makefiles"
+        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DDCMTK_WITH_OPENSSL=OFF -G "MinGW Makefiles"
         cmake --build . --target install
 
         # QtGStreamer
         set BOOST_DIR=<the path to boost headers>
-        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5  -DBoost_INCLUDE_DIR=%BOOST_DIR% -G "MinGW Makefiles"
+        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5 -DBoost_INCLUDE_DIR=%BOOST_DIR% -G "MinGW Makefiles"
         cmake --build . --target install
 
 3. Make Makefile
