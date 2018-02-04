@@ -1301,7 +1301,7 @@ void MainWindow::onStartStudy()
 #ifdef WITH_DICOM
     case SHOW_WORKLIST_RESULT:
         onShowWorkListClick();
-        // passthrouht
+        // falls through
 #endif
     case QDialog::Rejected:
         delete dlgPatient;
