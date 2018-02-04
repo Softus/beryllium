@@ -1,7 +1,7 @@
 Beryllium
 =========
 
-[![Buddy Pipeline](https://app.buddy.works/pbludov/beryllium/pipelines/pipeline/124168/badge.svg?token=bf26fe8fed990190f11227bb2aa0c7d1e71118737795eed7b5069fff7106a015)](https://app.buddy.works/pbludov/beryllium/pipelines/pipeline/124168)
+[![Buddy Pipeline](https://app.buddy.works/pbludov/beryllium/pipelines/pipeline/124169/badge.svg?token=bf26fe8fed990190f11227bb2aa0c7d1e71118737795eed7b5069fff7106a015)](https://app.buddy.works/pbludov/beryllium/pipelines/pipeline/124169)
 [![Build Status](https://api.travis-ci.org/Softus/beryllium.svg?branch=master)](https://travis-ci.org/Softus/beryllium)
 [![Build status](https://ci.appveyor.com/api/projects/status/ae09iex64d3bfgar?svg=true)](https://ci.appveyor.com/project/pbludov/beryllium)
 [![PPA](https://img.shields.io/badge/PPA-available-green.svg)](https://launchpad.net/~softus-team/+archive/ubuntu/ppa)
@@ -118,7 +118,7 @@ Fedora
 
 1. Install build dependecies
 
-        sudo dnf install make rpm-build gstreamer-devel libv4l-devel \
+        sudo dnf install redhat-lsb make rpm-build gstreamer-devel libv4l-devel \
         qt-devel qt5-gstreamer-devel qt5-linguist libgudev-devel libavc1394-devel \
         libmediainfo-devel dcmtk-devel openssl-devel tcp_wrappers-devel gcc-c++ 
 

@@ -5,7 +5,7 @@ skip_non_tags: true
 image: Visual Studio 2013
 
 environment:
-  DCMTK_VER: DCMTK-3.6.1_20170228
+  DCMTK_VER: DCMTK-3.6.2
   GSTREAMER_VER: 1.12.4
   MEDIAINFO_VER: 0.7.93
   BOOST_DIR: C:\Libraries\boost_1_59_0
@@ -27,7 +27,7 @@ init:
 install:
 - mkdir c:\usr
 - mkdir c:\usr\bin && mkdir c:\usr\include && mkdir c:\usr\lib
-- set PATH=%MINGW_DIR%\bin;%QT_DIR%\bin;c:\usr\bin;c:\msys64\mingw32\bin;%GSTREAMER_DIR%\bin;%PATH%
+- set PATH=%GSTREAMER_DIR%\bin;%MINGW_DIR%\bin;%QT_DIR%\bin;c:\usr\bin;c:\msys64\mingw32\bin;%PATH%
 
 # Qt
 - curl -kL %QT_URI% -o qt-installer.exe && start /wait qt-installer.exe --no-force-installations --script appveyor\unattended-qt-install.qs
@@ -62,14 +62,14 @@ install:
 - git clone -q %DCMTK_URI% -b %DCMTK_VER% && cd dcmtk
 - mkdir build && cd build
 - set PATH=%PATH:C:\Program Files\Git\usr\bin=%
-- cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "MinGW Makefiles"
+- cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DDCMTK_WITH_OPENSSL=OFF -G "MinGW Makefiles"
 - cmake --build . --target install
 - set PATH=%PATH%;C:\Program Files\Git\usr\bin
 - cd ..\..
 
 build_script:
 - lrelease *.ts
-- qmake INCLUDEPATH+=%BOOST_DIR% CONFIG+=dicom
+- qmake INCLUDEPATH+=%BOOST_DIR%
 - mingw32-make
 
 - copy \usr\bin\*.dll release\

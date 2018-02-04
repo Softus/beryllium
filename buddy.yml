@@ -2,29 +2,24 @@
   trigger_mode: "ON_EVERY_PUSH"
   ref_name: "master"
   actions:
-  - action: "Fedora 26"
+  - action: "Fedora"
     type: "BUILD"
     docker_image_name: "library/fedora"
-    docker_image_tag: "26"
+    docker_image_tag: "latest"
     execute_commands:
-    - "qmake-qt5 beryllium.pro"
-    - "make clean install"
-    - lrelease-qt5 *.ts
-    - tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1" -D"distro fedora" -D"rev 26" -ta ../beryllium.tar.gz
+    - tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1" -D"distro fedora" -D"rev $(lsb_release -rs)" -ta ../beryllium.tar.gz
     setup_commands:
-    - "dnf install -y make rpm-build gstreamer-devel libv4l-devel qt-devel qt5-gstreamer-devel qt5-linguist libgudev-devel libavc1394-devel libmediainfo-devel dcmtk-devel openssl-devel tcp_wrappers-devel gcc-c++"
+    - dnf install -y make redhat-lsb rpm-build gstreamer-devel libv4l-devel qt-devel qt5-gstreamer-devel qt5-linguist libgudev-devel libavc1394-devel libmediainfo-devel dcmtk-devel openssl-devel tcp_wrappers-devel gcc-c++
     trigger_condition: "ALWAYS"
-  - action: "Ubuntu 16.04"
+  - action: "Ubuntu"
     type: "BUILD"
     docker_image_name: "library/ubuntu"
-    docker_image_tag: "16.04"
+    docker_image_tag: "latest"
     execute_commands:
-    - "qmake beryllium.pro"
-    - "make clean install"
     - lrelease *.ts
     - cp docs/* debian/
     - dpkg-buildpackage -us -uc -I.git -I*.sh -rfakeroot
     setup_commands:
-    - "apt update -q"
-    - "apt install -y debhelper fakeroot libdcmtk2-dev libboost-dev libmediainfo-dev libssl-dev libwrap0-dev libgudev-1.0-dev libqt5opengl5-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libqt5gstreamer-1.0-0 libqt5gstreamer-dev libavc1394-dev libraw1394-dev libv4l-dev qttools5-dev-tools qt5-default libqt5x11extras5-dev"
+    - apt update -q
+    - apt install -y debhelper fakeroot libdcmtk2-dev libboost-dev libmediainfo-dev libssl-dev libwrap0-dev libgudev-1.0-dev libqt5opengl5-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libqt5gstreamer-1.0-0 libqt5gstreamer-dev libavc1394-dev libraw1394-dev libv4l-dev qttools5-dev-tools qt5-default libqt5x11extras5-dev
     trigger_condition: "ALWAYS"
