@@ -15,6 +15,7 @@
  */
 
 #include "videosourcedetails.h"
+#include "videosources.h"
 #include "elementproperties.h"
 #include "../defaults.h"
 #include "../qwaitcursor.h"
@@ -347,7 +348,7 @@ void VideoSourceDetails::updateDevice(const QString& device)
                 //
                 idx = selectedChannel.toInt() + 1;
             }
-            else if (deviceType == "ximagesrc")
+            else if (deviceType == PLATFORM_SPECIFIC_SCREEN_SOURCE)
             {
                 foreach (auto screen, QGuiApplication::screens())
                 {

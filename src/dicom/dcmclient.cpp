@@ -49,6 +49,10 @@
 #include <QProgressDialog>
 #include <QSettings>
 
+#ifdef Q_OS_WIN
+  #include <winsock2.h> // for gethostname
+#endif
+
 static void CopyPatientData(/*const*/ DcmDataset* src, DcmDataset* dst)
 {
     src->findAndInsertCopyOfElement(DCM_AccessionNumber, dst);

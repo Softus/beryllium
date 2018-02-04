@@ -134,7 +134,7 @@ static QWidget* createEditor
             auto spec = G_PARAM_SPEC_UINT64(static_cast<GParamSpec *>(prop));
             auto spin = new QSpinBox;
             spin->setMinimum(spec->minimum);
-            if (spec->maximum > std::numeric_limits<int>::max())
+            if (spec->maximum > (guint)std::numeric_limits<int>::max())
                 spec->maximum = std::numeric_limits<int>::max();
             spin->setMaximum(spec->maximum);
             spin->setValue(elmValue.toUInt64());

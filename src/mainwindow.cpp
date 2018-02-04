@@ -82,6 +82,8 @@ static DcmTagKey DCM_ClipNo(0x5000,  0x8002);
   #include <initguid.h>
   #include <qt_windows.h>
   #include <dbt.h>
+  #include <winternl.h> // for DEVICE_TYPE
+  #include <ntddstor.h> // for GUID_DEVINTERFACE_PARTITION
   #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     #include <qpa/qplatformnativeinterface.h>
   #endif
@@ -280,7 +282,7 @@ void MainWindow::showEvent(QShowEvent *evt)
 
             drvLetter[0] = drvPath[4] = 'A' + i;
 
-            if (GetDriveTypeW(drvLetter) != DRIVE_REMOVABLE)
+            if (GetDriveType(drvLetter) != DRIVE_REMOVABLE)
                 continue;
 
             HANDLE hDir = CreateFile(drvPath, 0, FILE_SHARE_READ|FILE_SHARE_DELETE|FILE_SHARE_WRITE,

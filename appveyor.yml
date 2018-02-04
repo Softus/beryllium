@@ -8,7 +8,7 @@ environment:
   QT_DIR: C:\Qt\Qt5.0.2\5.0.2\mingw47_32
   BOOST_DIR: C:\Libraries\boost_1_59_0
   GSTREAMER_VER: 1.12.4
-  DCMTK_VER: DCMTK-3.6.1_20150924
+  DCMTK_VER: DCMTK-3.6.2
   QTGSTREAMER_URI: https://github.com/detrout/qt-gstreamer.git
   PKG_CONFIG_PATH: C:\usr\lib\pkgconfig;%GSTREAMER_DIR%\lib\pkgconfig;%QT_DIR%\lib\pkgconfig
   MEDIAINFO_VER: 0.7.93

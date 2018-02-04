@@ -9,7 +9,7 @@
     # DCMTK isn't pgk-config compatible at all.
     LIBS       += -ldcmnet -ldcmdata -loflog -lofstd
     unix:LIBS  += -lwrap -lssl -lz
-    win32:LIBS += -lws2_32 -lzlibstatic -lnetapi32
+    win32:LIBS += -lws2_32 -lzlibstatic -lnetapi32 -liphlpapi -lcharset
 
     SOURCES   += \
         src/dicom/dcmclient.cpp \
