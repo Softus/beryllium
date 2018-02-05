@@ -61,7 +61,7 @@ SUSE/Open SUSE
 
 1. Install build dependecies
 
-        sudo zypper install make rpm-build qt-devel qt-gstreamer-devel \
+        sudo zypper install make rpm-build qt5-devel qt-gstreamer-devel \
         libQtGlib-devel dcmtk-devel tcp_wrappers-devel libgudev-devel \
         mediainfo-devel gstreamer-devel gstreamer-plugins-qt5-devel \
         libqt5-qtbase-devel qt5-qtx11extras-devel libavc-1394-devel libv4l-devel
@@ -90,24 +90,33 @@ CentOS
 
 1. Install build dependecies
 
-        sudo yum install make rpm-build gstreamer-devel libv4l-devel \
-        qt-devel qt5-qtx11extras-devel libgudev1-devel libavc1394-devel libmediainfo-devel \
-        dcmtk-devel openssl-devel
+        sudo yum install redhat-lsb make cmake boost-devel gstreamer1-plugins-base-devel \
+        qt5-qtdeclarative-devel rpm-build gstreamer-devel libv4l-devel git \
+        qt5-qtbase-devel qt5-linguist qt5-qtx11extras-devel libgudev1-devel \
+        libavc1394-devel libmediainfo-devel dcmtk-devel openssl-devel tcp_wrappers-devel gcc-c++
 
-2. Make Makefile
+2. Build 3-rd party libraries
+
+        # [QtGStreamer](https://github.com/detrout/qt-gstreamer.git)
+
+        mkdir build && cd build
+        cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=/usr -DQT_VERSION=5
+        cmake --build . --target install
+
+3. Make Makefile
 
         qmake-qt5 beryllium.pro
 
-3. Make Beryllium
+4. Make Beryllium
 
         lrelease-qt5 *.ts
         make
 
-4. Install Beryllium
+5. Install Beryllium
 
         sudo make install
 
-5. Create Package
+6. Create Package
 
         distro=$(lsb_release -is | awk '{print tolower($1)}')
         rev=$(lsb_release -rs)
@@ -119,7 +128,7 @@ Fedora
 1. Install build dependecies
 
         sudo dnf install redhat-lsb make rpm-build gstreamer-devel libv4l-devel \
-        qt-devel qt5-gstreamer-devel qt5-linguist qt5-qtx11extras-devel libgudev-devel \
+        qt5-qtbase-devel qt5-gstreamer-devel qt5-linguist qt5-qtx11extras-devel libgudev1-devel \
         libavc1394-devel libmediainfo-devel dcmtk-devel openssl-devel tcp_wrappers-devel gcc-c++ 
 
 2. Make Makefile
