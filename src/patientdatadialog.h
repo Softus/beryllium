@@ -52,7 +52,11 @@ class PatientDataDialog : public QDialog
     int          moveCounter;
 
 public:
-    explicit PatientDataDialog(bool noWorklist = false, const QString &settingsKey = QString(), QWidget *parent = 0);
+    explicit PatientDataDialog
+        ( bool noWorklist = false
+        , const QString &settingsKey = QString()
+        , QWidget *parent = 0
+        );
 
     void readPatientData(QSettings& settings);
     void savePatientData(QSettings& settings);

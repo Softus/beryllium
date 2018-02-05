@@ -5,7 +5,13 @@
 #include <QMetaMethod>
 #include <QStringList>
 
-int connectToDbusService(QObject *target, bool systemBus, const QString &service, const QString &path, const QString &interface)
+int connectToDbusService
+    ( QObject *target
+    , bool systemBus
+    , const QString &service
+    , const QString &path
+    , const QString &interface
+    )
 {
     auto succeeded = 0;
     auto bus = systemBus? QDBusConnection::systemBus(): QDBusConnection::sessionBus();
@@ -17,7 +23,8 @@ int connectToDbusService(QObject *target, bool systemBus, const QString &service
     for (int i = 0; i < obj->methodCount(); ++i)
     {
         auto method = obj->method(i);
-        if (0 == (method.attributes() & QMetaMethod::Scriptable) || method.methodType() != QMetaMethod::Signal)
+        if (0 == (method.attributes() & QMetaMethod::Scriptable)
+            || method.methodType() != QMetaMethod::Signal)
         {
             // Not a connectible signal
             //
@@ -32,7 +39,8 @@ int connectToDbusService(QObject *target, bool systemBus, const QString &service
         auto name = sign.split("(").front();
 #endif
 
-        if (bus.connect(service, path, interface, name,  target, QString("1").append(sign).toUtf8()))
+        if (bus.connect(
+            service, path, interface, name,  target, QString("1").append(sign).toUtf8()))
         {
             qDebug() << "Connected to signal" << sign;
             ++succeeded;

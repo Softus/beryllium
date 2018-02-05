@@ -118,7 +118,9 @@ void WorklistQuerySettings::save(QSettings& settings)
     settings.setValue("worklist-delta", spinDelta->value());
     settings.setValue("worklist-from", dateFrom->date());
     settings.setValue("worklist-to", dateTo->date());
-    settings.setValue("worklist-modality", checkModality->isChecked()? cbModality->currentText(): nullptr);
-    settings.setValue("worklist-aet", checkAeTitle->isChecked()? cbAeTitle->currentText(): nullptr);
+    settings.setValue("worklist-modality", checkModality->isChecked()
+        ? cbModality->currentText() : nullptr);
+    settings.setValue("worklist-aet", checkAeTitle->isChecked()
+        ? cbAeTitle->currentText() : nullptr);
     settings.endGroup();
 }

@@ -36,9 +36,10 @@ CT = Computed Tomography
 MR = Magnetic Resonance
 NM = Nuclear Medicine
 *US = Ultrasound
-    #define UID_UltrasoundImageStorage                                 "1.2.840.10008.5.1.4.1.1.6.1"
-    // Doesnt't work #define UID_UltrasoundMultiframeImageStorage                       "1.2.840.10008.5.1.4.1.1.3.1"
-    #define UID_RawDataStorage                                         "1.2.840.10008.5.1.4.1.1.66"
+#define UID_UltrasoundImageStorage                               "1.2.840.10008.5.1.4.1.1.6.1"
+// Doesnt't work
+//#define UID_UltrasoundMultiframeImageStorage                     "1.2.840.10008.5.1.4.1.1.3.1"
+#define UID_RawDataStorage                                       "1.2.840.10008.5.1.4.1.1.66"
 
 OT = Other
 BI = Biomagnetic imaging
@@ -46,8 +47,8 @@ CD = Color flow Doppler
 DD = Duplex Doppler
 DG = Diaphanography
 *ES = Endoscopy
-    #define UID_VLEndoscopicImageStorage                               "1.2.840.10008.5.1.4.1.1.77.1.1"
-    #define UID_VideoEndoscopicImageStorage                            "1.2.840.10008.5.1.4.1.1.77.1.1.1"
+#define UID_VLEndoscopicImageStorage                             "1.2.840.10008.5.1.4.1.1.77.1.1"
+#define UID_VideoEndoscopicImageStorage                          "1.2.840.10008.5.1.4.1.1.77.1.1.1"
 LS = Laser surface scan
 PT = Positron emission tomography (PET)
 RG = Radiographic imaging (conventional film/screen)
@@ -66,12 +67,12 @@ MG = Mammography
 IO = Intra-oral Radiography
 PX = Panoramic X-Ray
 *GM = General Microscopy
-    #define UID_VLMicroscopicImageStorage                              "1.2.840.10008.5.1.4.1.1.77.1.2"
-    #define UID_VideoMicroscopicImageStorage                           "1.2.840.10008.5.1.4.1.1.77.1.2.1"
+#define UID_VLMicroscopicImageStorage                            "1.2.840.10008.5.1.4.1.1.77.1.2"
+#define UID_VideoMicroscopicImageStorage                         "1.2.840.10008.5.1.4.1.1.77.1.2.1"
 SM = Slide Microscopy
 *XC = External-camera Photography
-    #define UID_VLPhotographicImageStorage                             "1.2.840.10008.5.1.4.1.1.77.1.4"
-    #define UID_VideoPhotographicImageStorage                          "1.2.840.10008.5.1.4.1.1.77.1.4.1"
+#define UID_VLPhotographicImageStorage                           "1.2.840.10008.5.1.4.1.1.77.1.4"
+#define UID_VideoPhotographicImageStorage                        "1.2.840.10008.5.1.4.1.1.77.1.4.1"
 PR = Presentation State
 AU = Audio
 ECG = Electrocardiography
@@ -87,7 +88,8 @@ OPV = Ophthalmic Visual Field
 OPM = Ophthalmic Mapping
 KO = Key Object Selection
 SEG = Segmentation
-REG = Registration */
+REG = Registration
+*/
 
 DicomDeviceSettings::DicomDeviceSettings(QWidget *parent) :
     QWidget(parent)
@@ -124,8 +126,10 @@ DicomDeviceSettings::DicomDeviceSettings(QWidget *parent) :
     }
     textIp->setText(strIps);
 
-    mainLayout->addRow(tr("&Organization"), textIssuer = new QLineEdit(settings.value("issuer", DEFAULT_ISSUER).toString()));
-    mainLayout->addRow(tr("AE &title"), textAet = new QLineEdit(settings.value("aet", localHost.toUpper()).toString()));
+    mainLayout->addRow(tr("&Organization"), textIssuer =
+        new QLineEdit(settings.value("issuer", DEFAULT_ISSUER).toString()));
+    mainLayout->addRow(tr("AE &title"), textAet =
+        new QLineEdit(settings.value("aet", localHost.toUpper()).toString()));
     mainLayout->addRow(tr("&Modality"), cbModality = new QComboBox);
     cbModality->addItem(tr("Endoscopy"), "ES");
     cbModality->addItem(tr("Ultrasound"), "US");
@@ -138,12 +142,17 @@ DicomDeviceSettings::DicomDeviceSettings(QWidget *parent) :
     spinPort->setRange(0, 65535);
     spinPort->setValue(settings.value("local-port").toInt());
 
-    mainLayout->addRow(nullptr, checkExportClips = new QCheckBox(tr("Export video &clips to DICOM")));
-    checkExportClips->setChecked(settings.value("export-clips", DEFAULT_EXPORT_CLIPS_TO_DICOM).toBool());
+    mainLayout->addRow(nullptr, checkExportClips =
+        new QCheckBox(tr("Export video &clips to DICOM")));
+    checkExportClips->setChecked(settings.value("export-clips",
+        DEFAULT_EXPORT_CLIPS_TO_DICOM).toBool());
     mainLayout->addRow(nullptr, checkExportVideo = new QCheckBox(tr("Export &video log to DICOM")));
-    checkExportVideo->setChecked(settings.value("export-video", DEFAULT_EXPORT_VIDEO_TO_DICOM).toBool());
-    mainLayout->addRow(nullptr, checkTransCyr = new QCheckBox(tr("DICOM server accepts 7-bit &ASCII only")));
-    checkTransCyr->setChecked(settings.value("translate-cyrillic", DEFAULT_TRANSLATE_CYRILLIC).toBool());
+    checkExportVideo->setChecked(settings.value("export-video",
+        DEFAULT_EXPORT_VIDEO_TO_DICOM).toBool());
+    mainLayout->addRow(nullptr, checkTransCyr =
+        new QCheckBox(tr("DICOM server accepts 7-bit &ASCII only")));
+    checkTransCyr->setChecked(settings.value("translate-cyrillic",
+        DEFAULT_TRANSLATE_CYRILLIC).toBool());
 
     setLayout(mainLayout);
 }

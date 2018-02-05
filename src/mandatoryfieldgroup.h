@@ -29,11 +29,11 @@ class MandatoryFieldGroup : public QObject
 {
     Q_OBJECT
 public:
-    MandatoryFieldGroup(QObject *parent = nullptr);
+    MandatoryFieldGroup(QObject* parent = nullptr);
 
-    void add(QWidget *widget);
-    void remove(QWidget *widget);
-    void setOkButton(QPushButton *button);
+    void add(QWidget* widget);
+    void remove(QWidget* widget);
+    void setOkButton(QPushButton* button);
 
 public slots:
     void clear();
@@ -42,8 +42,8 @@ private slots:
     void changed();
 
 private:
-    QList<QWidget *> widgets;
-    QPushButton *okButton;
+    QList<QWidget*> widgets;
+    QPushButton* okButton;
     QRgb mandatoryFieldColor;
     void setMandatory(QWidget* widget, bool mandatory);
 };

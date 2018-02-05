@@ -117,7 +117,8 @@ QString translateToCyrillic(const QString& str)
             ret.append(L'К').append(i < str.length() - 1 && str[i+1].isLower()? L'с': L'С');
             break;
         case 'C':
-            ret.append(next(str, i) == 'h'? ++i, L'Ч': L'К'); // Английская 'c' без 'h' не должна встречаться.
+            // Английская 'c' без 'h' не должна встречаться
+            ret.append(next(str, i) == 'h'? ++i, L'Ч': L'К');
             break;
         case 'Y':
             switch (next(str, i)) {
@@ -131,7 +132,7 @@ QString translateToCyrillic(const QString& str)
                 ++i, ret.append(L'Ю');
                 break;
             case 'i':
-                ret.append(L'Ь'); // Только для мягкого знака перед 'и', как Ilyin.
+                ret.append(L'Ь'); // Только для мягкого знака перед 'и', как Ilyin
                 break;
             case 'a':
                 ++i, ret.append(L'Я');
@@ -224,7 +225,8 @@ QString translateToCyrillic(const QString& str)
             ret.append(L'к').append(L'с');
             break;
         case 'c':
-            ret.append(next(str, i) == 'h'? ++i, L'ч': L'к'); // Английская 'c' без 'h' не должна встречаться.
+            // Английская 'c' без 'h' не должна встречаться
+            ret.append(next(str, i) == 'h'? ++i, L'ч': L'к');
             break;
         case 'y':
             switch (next(str, i)) {
@@ -238,7 +240,7 @@ QString translateToCyrillic(const QString& str)
                 ++i, ret.append(L'ю');
                 break;
             case 'i':
-                ret.append(L'ь'); // Только для мягкого знака перед 'и', как Ilyin.
+                ret.append(L'ь'); // Только для мягкого знака перед 'и', как Ilyin
                 break;
             case 'a':
                 ++i, ret.append(L'я');

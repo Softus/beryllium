@@ -115,7 +115,8 @@ static void BuildCFindDataSet(DcmDataset& ds)
             break;
         case 2: // Today +- days
             {
-                auto deltaDays = settings.value("worklist-delta", DEFAULT_WORKLIST_DAY_DELTA).toInt();
+                auto deltaDays = settings.value("worklist-delta",
+                    DEFAULT_WORKLIST_DAY_DELTA).toInt();
                 auto range = QDate::currentDate().addDays(-deltaDays).toString("yyyyMMdd") + "-" +
                     QDate::currentDate().addDays(+deltaDays).toString("yyyyMMdd");
                 sps->putAndInsertString(DCM_ScheduledProcedureStepStartDate, range.toUtf8());
@@ -138,7 +139,11 @@ static void BuildCFindDataSet(DcmDataset& ds)
     }
 }
 
-static void BuildCStoreDataSet(/*const*/ DcmDataset& patientDs, DcmDataset& cStoreDs, const QString& seriesUID)
+static void BuildCStoreDataSet
+    ( /*const*/ DcmDataset& patientDs
+    , DcmDataset& cStoreDs
+    , const QString& seriesUID
+    )
 {
     auto now = QDateTime::currentDateTime();
 
@@ -180,13 +185,16 @@ static void BuildNCreateDataSet(/*const*/ DcmDataset& patientDs, DcmDataset& nCr
     // The SCU have to create it but it doesn't have to be unique and the SCP
     // should not relay on its uniqueness. Here we use a timestamp
     //
-    nCreateDs.putAndInsertString(DCM_PerformedProcedureStepID, now.toString("yyyyMMddHHmmsszzz").toUtf8());
+    nCreateDs.putAndInsertString(DCM_PerformedProcedureStepID,
+        now.toString("yyyyMMddHHmmsszzz").toUtf8());
     nCreateDs.putAndInsertString(DCM_PerformedStationAETitle, aet.toUtf8());
 
     nCreateDs.insertEmptyElement(DCM_PerformedStationName);
     nCreateDs.insertEmptyElement(DCM_PerformedLocation);
-    nCreateDs.putAndInsertString(DCM_PerformedProcedureStepStartDate, now.toString("yyyyMMdd").toUtf8());
-    nCreateDs.putAndInsertString(DCM_PerformedProcedureStepStartTime, now.toString("HHmmss").toUtf8());
+    nCreateDs.putAndInsertString(DCM_PerformedProcedureStepStartDate,
+        now.toString("yyyyMMdd").toUtf8());
+    nCreateDs.putAndInsertString(DCM_PerformedProcedureStepStartTime,
+        now.toString("HHmmss").toUtf8());
     // Initial status must be 'IN PROGRESS'
     //
     nCreateDs.putAndInsertString(DCM_PerformedProcedureStepStatus, "IN PROGRESS");
@@ -224,13 +232,19 @@ static void BuildNCreateDataSet(/*const*/ DcmDataset& patientDs, DcmDataset& nCr
     }
 }
 
-static QString BuildNSetDataSet(/*const*/ DcmDataset& patientDs, DcmDataset& nSetDs, const char* seriesUID, bool completed)
+static QString BuildNSetDataSet
+    ( /*const*/ DcmDataset& patientDs
+    , DcmDataset& nSetDs
+    , const char* seriesUID
+    , bool completed
+    )
 {
     QDateTime now = QDateTime::currentDateTime();
     nSetDs.putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 192"); // UTF-8
     CopyPatientData(&patientDs, &nSetDs);
 
-    nSetDs.putAndInsertString(DCM_PerformedProcedureStepStatus, completed ? "COMPLETED" : "DISCONTINUED");
+    nSetDs.putAndInsertString(DCM_PerformedProcedureStepStatus,
+        completed ? "COMPLETED" : "DISCONTINUED");
     nSetDs.putAndInsertString(DCM_PerformedProcedureStepEndDate, now.toString("yyyyMMdd").toUtf8());
     nSetDs.putAndInsertString(DCM_PerformedProcedureStepEndTime, now.toString("HHmmss").toUtf8());
 
@@ -278,7 +292,8 @@ void DcmClient::loadCallback(void *callbackData,
     T_DIMSE_C_FindRQ* /*request*/, int /*responseCount*/,
     T_DIMSE_C_FindRSP* /*rsp*/, DcmDataset* dset)
 {
-    auto translateCyrillic = QSettings().value("dicom/translate-cyrillic", DEFAULT_TRANSLATE_CYRILLIC).toBool();
+    auto translateCyrillic = QSettings().value("dicom/translate-cyrillic",
+        DEFAULT_TRANSLATE_CYRILLIC).toBool();
     if (translateCyrillic)
     {
         DcmTagKey keys[] = { DCM_PatientName, DCM_ScheduledPerformingPhysicianName };
@@ -326,14 +341,20 @@ T_ASC_Parameters* DcmClient::initAssocParams(const QString& server, const char* 
     auto peerAet = values.takeFirst();
 
     auto peerAddress = values.isEmpty()? peerAet.toLower(): values.takeFirst();
-    peerAddress.append(':').append(values.isEmpty()? QString::number(DEFAULT_DICOM_PORT): values.takeFirst());
+    peerAddress.append(':').append(values.isEmpty()
+        ? QString::number(DEFAULT_DICOM_PORT) : values.takeFirst());
 
     auto timeout = values.isEmpty()? DEFAULT_TIMEOUT: values.takeFirst().toInt();
 
     return initAssocParams(peerAet.toUtf8(), peerAddress, timeout, transferSyntax);
 }
 
-T_ASC_Parameters* DcmClient::initAssocParams(const QString& peerAet, const QString& peerAddress, int timeout, const char* transferSyntax)
+T_ASC_Parameters* DcmClient::initAssocParams
+    ( const QString& peerAet
+    , const QString& peerAddress
+    , int timeout
+    , const char* transferSyntax
+    )
 {
     QSettings settings;
     settings.beginGroup("dicom");
@@ -344,10 +365,12 @@ T_ASC_Parameters* DcmClient::initAssocParams(const QString& peerAet, const QStri
     cond = ASC_initializeNetwork(NET_REQUESTOR, settings.value("local-port").toInt(), timeout, &net);
     if (cond.good())
     {
-        cond = ASC_createAssociationParameters(&params, settings.value("pdu-size", ASC_DEFAULTMAXPDU).toInt());
+        cond = ASC_createAssociationParameters(&params, settings.value("pdu-size",
+            ASC_DEFAULTMAXPDU).toInt());
         if (cond.good())
         {
-            ASC_setAPTitles(params, settings.value("aet", qApp->applicationName().toUpper()).toString().toUtf8(), peerAet.toUtf8(), nullptr);
+            ASC_setAPTitles(params, settings.value("aet",
+                qApp->applicationName().toUpper()).toString().toUtf8(), peerAet.toUtf8(), nullptr);
 
             /* Figure out the presentation addresses and copy the */
             /* corresponding values into the DcmAssoc parameters.*/
@@ -411,14 +434,16 @@ bool DcmClient::createAssociation(const QString& server, const char* transferSyn
         cond = ASC_requestAssociation(net, params, &assoc);
         if (cond.good())
         {
-            // Dump general information concerning the establishment of the network connection if required
+            // Dump general information concerning the establishment of the network connection
+            // if required
             //
             qDebug() << "DcmAssoc accepted (max send PDV: " << assoc->sendPDVLength << ")";
 
             // Figure out which of the accepted presentation contexts should be used
             //
-            presId = transferSyntax? ASC_findAcceptedPresentationContextID(assoc, abstractSyntax, transferSyntax):
-                                     ASC_findAcceptedPresentationContextID(assoc, abstractSyntax);
+            presId = transferSyntax
+                ? ASC_findAcceptedPresentationContextID(assoc, abstractSyntax, transferSyntax)
+                : ASC_findAcceptedPresentationContextID(assoc, abstractSyntax);
             if (presId != 0)
             {
                 // Main routine exit point is here.
@@ -426,7 +451,8 @@ bool DcmClient::createAssociation(const QString& server, const char* transferSyn
                 return true;
             }
 
-            cond = makeOFCondition(0, 1, OF_error, tr("Accepted presentation context ID not found").toUtf8());
+            cond = makeOFCondition(0, 1, OF_error,
+                tr("Accepted presentation context ID not found").toUtf8());
             ASC_releaseAssociation(assoc);
             ASC_destroyAssociation(&assoc);
             assoc = nullptr;
@@ -452,8 +478,8 @@ QString DcmClient::cEcho(const QString &peerAet, const QString &peerAddress, int
             timeout, &status, nullptr);
         if (cond.good())
         {
-            ret = QString::fromLocal8Bit(DU_cstoreStatusString(status))
-                .append(" ").append(QString::fromUtf8(assoc->params->theirImplementationVersionName));
+            ret = QString::fromLocal8Bit(DU_cstoreStatusString(status)).append(" ")
+                .append(QString::fromUtf8(assoc->params->theirImplementationVersionName));
         }
 
         ASC_releaseAssociation(assoc);
@@ -530,7 +556,8 @@ QString DcmClient::nCreateRQ(DcmDataset* dsPatient)
 
     // Send request to the server
     //
-    cond = DIMSE_sendMessageUsingMemoryData(assoc, presId, &req, nullptr, &dsNCreate, nullptr, nullptr);
+    cond = DIMSE_sendMessageUsingMemoryData(assoc, presId, &req, nullptr, &dsNCreate, nullptr,
+        nullptr);
     if (cond.bad())
     {
         return nullptr;
@@ -539,7 +566,8 @@ QString DcmClient::nCreateRQ(DcmDataset* dsPatient)
     // Receive response
     //
     int tout = timeout();
-    cond = DIMSE_receiveCommand(assoc, 0 == tout? DIMSE_BLOCKING: DIMSE_NONBLOCKING, tout, &presId, &rsp, nullptr);
+    cond = DIMSE_receiveCommand(assoc, 0 == tout? DIMSE_BLOCKING: DIMSE_NONBLOCKING, tout, &presId,
+        &rsp, nullptr);
     if (cond.bad())
     {
         return nullptr;
@@ -553,7 +581,8 @@ QString DcmClient::nCreateRQ(DcmDataset* dsPatient)
 
     if (rsp.msg.NCreateRSP.MessageIDBeingRespondedTo != req.msg.NCreateRQ.MessageID)
     {
-        qDebug() << "DIMSE: Unexpected Response MsgId: " << rsp.msg.NCreateRSP.MessageIDBeingRespondedTo
+        qDebug() << "DIMSE: Unexpected Response MsgId: "
+                 << rsp.msg.NCreateRSP.MessageIDBeingRespondedTo
                  << " (expected: " << req.msg.NCreateRQ.MessageID << ")";
         return nullptr;
     }
@@ -585,13 +614,21 @@ bool DcmClient::nSetRQ(const char* seriesUID, DcmDataset* patientDs, const QStri
     strcpy(req.msg.NSetRQ.RequestedSOPInstanceUID, sopInstance.toUtf8());
     req.msg.NSetRQ.DataSetType = DIMSE_DATASET_PRESENT;
 
-    OFCondition cond = DIMSE_sendMessageUsingMemoryData(assoc, presId, &req, nullptr, &nSetDs, nullptr, nullptr);
-    if (cond.bad()) return false;
+    OFCondition cond = DIMSE_sendMessageUsingMemoryData(assoc, presId, &req, nullptr, &nSetDs,
+        nullptr, nullptr);
+    if (cond.bad())
+    {
+        return false;
+    }
 
     /* receive response */
     int tout = timeout();
-    cond = DIMSE_receiveCommand(assoc, 0 == tout? DIMSE_BLOCKING: DIMSE_NONBLOCKING, tout, &presId, &rsp, nullptr);
-    if (cond.bad()) return false;
+    cond = DIMSE_receiveCommand(assoc, 0 == tout
+        ? DIMSE_BLOCKING : DIMSE_NONBLOCKING, tout, &presId, &rsp, nullptr);
+    if (cond.bad())
+    {
+        return false;
+    }
 
     if (rsp.CommandField != DIMSE_N_SET_RSP)
     {
@@ -601,7 +638,8 @@ bool DcmClient::nSetRQ(const char* seriesUID, DcmDataset* patientDs, const QStri
 
     if (rsp.msg.NSetRSP.MessageIDBeingRespondedTo != req.msg.NSetRQ.MessageID)
     {
-        qDebug() << "DIMSE: Unexpected Response MsgId: " << rsp.msg.NSetRSP.MessageIDBeingRespondedTo
+        qDebug() << "DIMSE: Unexpected Response MsgId: "
+                 << rsp.msg.NSetRSP.MessageIDBeingRespondedTo
                  << " (expected: " << req.msg.NSetRQ.MessageID << ")";
         return false;
     }
@@ -647,7 +685,8 @@ bool DcmClient::cStoreRQ(DcmDataset* dset, const char* sopInstance)
     if (rsp.DimseStatus)
     {
         OFString err;
-        if (!statusDetail || statusDetail->findAndGetOFString(DCM_ErrorComment, err).bad() || err.length() == 0)
+        if (!statusDetail || statusDetail->findAndGetOFString(DCM_ErrorComment, err).bad()
+            || err.length() == 0)
         {
             err.assign(QString::number(rsp.DimseStatus).toUtf8());
         }
@@ -659,8 +698,15 @@ bool DcmClient::cStoreRQ(DcmDataset* dset, const char* sopInstance)
     return cond.good();
 }
 
-bool DcmClient::sendToServer(const QString& server, DcmDataset* dsPatient, const QString& seriesUID,
-                             int seriesNumber, const QString& file, const QString& mimeType, int instanceNumber)
+bool DcmClient::sendToServer
+    ( const QString& server
+    , DcmDataset* dsPatient
+    , const QString& seriesUID
+    , int seriesNumber
+    , const QString& file
+    , const QString& mimeType
+    , int instanceNumber
+    )
 {
     E_TransferSyntax writeXfer = EXS_LittleEndianExplicit;
 
@@ -752,7 +798,11 @@ translateDcmObjectToLatin(DcmObject *parent)
     }
 }
 
-bool DcmClient::sendToServer(QWidget *parent, DcmDataset *dsPatient, const QFileInfoList& listFiles)
+bool DcmClient::sendToServer
+    ( QWidget *parent
+    , DcmDataset *dsPatient
+    , const QFileInfoList& listFiles
+    )
 {
     QProgressDialog pdlg(parent);
     progressDlg = &pdlg;
@@ -808,7 +858,8 @@ bool DcmClient::sendToServer(QWidget *parent, DcmDataset *dsPatient, const QFile
             if (mimeType.startsWith("video/"))
             {
                 auto thumbnailFileTemplate = QStringList("." + file.fileName() + ".*");
-                auto isClip = !dir.entryList(thumbnailFileTemplate, QDir::Hidden | QDir::Files).isEmpty();
+                auto isClip = !dir.entryList(thumbnailFileTemplate, QDir::Hidden | QDir::Files)
+                    .isEmpty();
 
                 if (isClip)
                 {
@@ -844,7 +895,8 @@ bool DcmClient::sendToServer(QWidget *parent, DcmDataset *dsPatient, const QFile
 
             // Do not bother user any more once she decided to send them all
             //
-            if (userChoice != QMessageBox::YesToAll && getFileExtAttribute(filePath, "dicom-status") == "ok")
+            if (userChoice != QMessageBox::YesToAll
+                && getFileExtAttribute(filePath, "dicom-status") == "ok")
             {
                 // Silently skip the file
                 //
@@ -857,8 +909,10 @@ bool DcmClient::sendToServer(QWidget *parent, DcmDataset *dsPatient, const QFile
                 // Ask user for directions
                 //
                 userChoice = QMessageBox::question(&pdlg, parent->windowTitle(),
-                    tr ("The file %1 has been already sent to a DICOM server.\n\nSend again?").arg(filePath),
-                    QMessageBox::No | QMessageBox::Yes | QMessageBox::NoToAll | QMessageBox::YesToAll);
+                    tr ("The file %1 has been already sent to a DICOM server.\n\nSend again?")
+                        .arg(filePath),
+                    QMessageBox::No | QMessageBox::Yes | QMessageBox::NoToAll
+                        | QMessageBox::YesToAll);
 
                 if (userChoice == QMessageBox::No || userChoice == QMessageBox::NoToAll)
                 {
@@ -873,8 +927,9 @@ bool DcmClient::sendToServer(QWidget *parent, DcmDataset *dsPatient, const QFile
                 result = false;
                 setFileExtAttribute(filePath, "dicom-status", lastError());
                 if (QMessageBox::Yes != QMessageBox::critical(&pdlg, parent->windowTitle(),
-                      tr("Failed to send '%1' to '%2':\n%3\nContinue?").arg(filePath, server, lastError()),
-                      QMessageBox::Yes, QMessageBox::No))
+                     tr("Failed to send '%1' to '%2':\n%3\nContinue?")
+                        .arg(filePath, server, lastError()),
+                     QMessageBox::Yes, QMessageBox::No))
                 {
                     // The user choose to cancel
                     //

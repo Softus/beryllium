@@ -30,7 +30,11 @@
 #include <QTreeWidgetItem>
 
 static QTreeWidgetItem*
-newItem(const QSettings& settings , const QString& title, const QString& settingsKey, int defaultValue)
+newItem
+    ( const QSettings& settings
+    , const QString& title
+    , const QString& settingsKey
+    , int defaultValue)
 {
     auto key = settings.value(settingsKey, defaultValue).toInt();
     auto item = new QTreeWidgetItem(QStringList()
@@ -50,8 +54,8 @@ newItem(const QSettings& settings , const QString& title, const QString& setting
     return item;
 }
 
-HotKeySettings::HotKeySettings(QWidget *parent) :
-    QWidget(parent)
+HotKeySettings::HotKeySettings(QWidget *parent)
+    : QWidget(parent)
 {
     QSettings settings;
     settings.beginGroup("hotkeys");
@@ -70,53 +74,83 @@ HotKeySettings::HotKeySettings(QWidget *parent) :
     itemCapture->setFlags(Qt::ItemIsEnabled);
     defaultColor = itemCapture->textColor(1);
     tree->addTopLevelItem(itemCapture);
-    itemCapture->addChild(newItem(settings, tr("Start/stop study"),     "capture-start",        DEFAULT_HOTKEY_START));
-    itemCapture->addChild(newItem(settings, tr("Take snapshot"),        "capture-snapshot",     DEFAULT_HOTKEY_SNAPSHOT));
-    itemCapture->addChild(newItem(settings, tr("Start clip"),           "capture-record-start", DEFAULT_HOTKEY_RECORD_START));
-    itemCapture->addChild(newItem(settings, tr("Clip done"),            "capture-record-stop",  DEFAULT_HOTKEY_RECORD_STOP));
-    itemCapture->addChild(newItem(settings, tr("Show the Archive window"),  "capture-archive",      DEFAULT_HOTKEY_ARCHIVE));
-    itemCapture->addChild(newItem(settings, tr("Show the Settings window"), "capture-settings",     DEFAULT_HOTKEY_SETTINGS));
+    itemCapture->addChild(newItem(settings, tr("Start/stop study"),         "capture-start",
+        DEFAULT_HOTKEY_START));
+    itemCapture->addChild(newItem(settings, tr("Take snapshot"),            "capture-snapshot",
+        DEFAULT_HOTKEY_SNAPSHOT));
+    itemCapture->addChild(newItem(settings, tr("Start clip"),               "capture-record-start",
+        DEFAULT_HOTKEY_RECORD_START));
+    itemCapture->addChild(newItem(settings, tr("Clip done"),                "capture-record-stop",
+        DEFAULT_HOTKEY_RECORD_STOP));
+    itemCapture->addChild(newItem(settings, tr("Show the Archive window"),  "capture-archive",
+        DEFAULT_HOTKEY_ARCHIVE));
+    itemCapture->addChild(newItem(settings, tr("Show the Settings window"), "capture-settings",
+        DEFAULT_HOTKEY_SETTINGS));
 #ifdef WITH_DICOM
-    itemCapture->addChild(newItem(settings, tr("Show the Worklist window"), "capture-worklist",     DEFAULT_HOTKEY_WORKLIST));
+    itemCapture->addChild(newItem(settings, tr("Show the Worklist window"), "capture-worklist",
+        DEFAULT_HOTKEY_WORKLIST));
 #endif
     auto itemArchive = new QTreeWidgetItem(QStringList(tr("Archive window")));
     itemArchive->setFlags(Qt::ItemIsEnabled);
     tree->addTopLevelItem(itemArchive);
-    itemArchive->addChild(newItem(settings, tr("Back"),      "archive-back",          DEFAULT_HOTKEY_BACK));
-    itemArchive->addChild(newItem(settings, tr("Delete"),    "archive-delete",        DEFAULT_HOTKEY_DELETE));
-    itemArchive->addChild(newItem(settings, tr("Restore"),   "archive-restore",       DEFAULT_HOTKEY_RESTORE));
+    itemArchive->addChild(newItem(settings, tr("Back"),          "archive-back",
+        DEFAULT_HOTKEY_BACK));
+    itemArchive->addChild(newItem(settings, tr("Delete"),        "archive-delete",
+        DEFAULT_HOTKEY_DELETE));
+    itemArchive->addChild(newItem(settings, tr("Restore"),       "archive-restore",
+        DEFAULT_HOTKEY_RESTORE));
 #ifdef WITH_DICOM
-    itemArchive->addChild(newItem(settings, tr("Upload"),    "archive-upload",        DEFAULT_HOTKEY_UPLOAD));
+    itemArchive->addChild(newItem(settings, tr("Upload"),        "archive-upload",
+        DEFAULT_HOTKEY_UPLOAD));
 #endif
-    itemArchive->addChild(newItem(settings, tr("to USB"),    "archive-usb",           DEFAULT_HOTKEY_USB));
-    itemArchive->addChild(newItem(settings, tr("Edit"),      "archive-edit",          DEFAULT_HOTKEY_EDIT));
-    itemArchive->addChild(newItem(settings, tr("Up"),        "archive-parent-folder", DEFAULT_HOTKEY_PARENT_FOLDER));
+    itemArchive->addChild(newItem(settings, tr("to USB"),        "archive-usb",
+        DEFAULT_HOTKEY_USB));
+    itemArchive->addChild(newItem(settings, tr("Edit"),          "archive-edit",
+        DEFAULT_HOTKEY_EDIT));
+    itemArchive->addChild(newItem(settings, tr("Up"),            "archive-parent-folder",
+        DEFAULT_HOTKEY_PARENT_FOLDER));
 
-    itemArchive->addChild(newItem(settings, tr("Switch mode"),  "archive-next-mode",     DEFAULT_HOTKEY_NEXT_MODE));
-    itemArchive->addChild(newItem(settings, tr("List mode"),    "archive-list-mode",     DEFAULT_HOTKEY_LIST_MODE));
-    itemArchive->addChild(newItem(settings, tr("Icon mode"),    "archive-icon-mode",     DEFAULT_HOTKEY_ICON_MODE));
-    itemArchive->addChild(newItem(settings, tr("Gallery mode"), "archive-gallery-mode",  DEFAULT_HOTKEY_GALLERY_MODE));
-    itemArchive->addChild(newItem(settings, tr("File browser"), "archive-browse",        DEFAULT_HOTKEY_BROWSE));
+    itemArchive->addChild(newItem(settings, tr("Switch mode"),   "archive-next-mode",
+        DEFAULT_HOTKEY_NEXT_MODE));
+    itemArchive->addChild(newItem(settings, tr("List mode"),     "archive-list-mode",
+        DEFAULT_HOTKEY_LIST_MODE));
+    itemArchive->addChild(newItem(settings, tr("Icon mode"),     "archive-icon-mode",
+        DEFAULT_HOTKEY_ICON_MODE));
+    itemArchive->addChild(newItem(settings, tr("Gallery mode"),  "archive-gallery-mode",
+        DEFAULT_HOTKEY_GALLERY_MODE));
+    itemArchive->addChild(newItem(settings, tr("File browser"),  "archive-browse",
+        DEFAULT_HOTKEY_BROWSE));
 
-    itemArchive->addChild(newItem(settings, tr("Seek backward"), "archive-seek-back",  DEFAULT_HOTKEY_SEEK_BACK));
-    itemArchive->addChild(newItem(settings, tr("Seek forward"),  "archive-seek-fwd",   DEFAULT_HOTKEY_SEEK_FWD));
-    itemArchive->addChild(newItem(settings, tr("Play video"),    "archive-play",       DEFAULT_HOTKEY_PLAY));
-    itemArchive->addChild(newItem(settings, tr("Select"),        "archive-select",     DEFAULT_HOTKEY_SELECT));
+    itemArchive->addChild(newItem(settings, tr("Seek backward"), "archive-seek-back",
+        DEFAULT_HOTKEY_SEEK_BACK));
+    itemArchive->addChild(newItem(settings, tr("Seek forward"),  "archive-seek-fwd",
+        DEFAULT_HOTKEY_SEEK_FWD));
+    itemArchive->addChild(newItem(settings, tr("Play video"),    "archive-play",
+        DEFAULT_HOTKEY_PLAY));
+    itemArchive->addChild(newItem(settings, tr("Select"),        "archive-select",
+        DEFAULT_HOTKEY_SELECT));
 
-    //itemArchive->addChild(newItem(settings, tr("Previous file"), "archive-prev",     DEFAULT_HOTKEY_PREV));
-    //itemArchive->addChild(newItem(settings, tr("Next file"),     "archive-next",     DEFAULT_HOTKEY_NEXT));
+    //itemArchive->addChild(newItem(settings, tr("Previous file"), "archive-prev",
+    //    DEFAULT_HOTKEY_PREV));
+    //itemArchive->addChild(newItem(settings, tr("Next file"),     "archive-next",
+    //    DEFAULT_HOTKEY_NEXT));
 
 #ifdef WITH_DICOM
     auto itemWorklist = new QTreeWidgetItem(QStringList(tr("Worklist window")));
     itemWorklist->setFlags(Qt::ItemIsEnabled);
     tree->addTopLevelItem(itemWorklist);
-    itemWorklist->addChild(newItem(settings, tr("Back"),            "worklist-back",         DEFAULT_HOTKEY_BACK));
-    itemWorklist->addChild(newItem(settings, tr("Start study"),     "worklist-start",        DEFAULT_HOTKEY_START));
-    itemWorklist->addChild(newItem(settings, tr("Show details"),    "worklist-show-details", DEFAULT_HOTKEY_SHOW_DETAILS));
-    itemWorklist->addChild(newItem(settings, tr("Reload worklist"), "worklist-refresh",      DEFAULT_HOTKEY_REFRESH));
+    itemWorklist->addChild(newItem(settings, tr("Back"),            "worklist-back",
+        DEFAULT_HOTKEY_BACK));
+    itemWorklist->addChild(newItem(settings, tr("Start study"),     "worklist-start",
+        DEFAULT_HOTKEY_START));
+    itemWorklist->addChild(newItem(settings, tr("Show details"),    "worklist-show-details",
+        DEFAULT_HOTKEY_SHOW_DETAILS));
+    itemWorklist->addChild(newItem(settings, tr("Reload worklist"), "worklist-refresh",
+        DEFAULT_HOTKEY_REFRESH));
 #endif
     tree->expandAll();
-    connect(tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(treeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    connect(tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this,
+        SLOT(treeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     auto layoutEditor = new QHBoxLayout;
     layoutMain->addLayout(layoutEditor);

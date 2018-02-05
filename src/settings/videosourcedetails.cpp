@@ -568,7 +568,7 @@ void VideoSourceDetails::widgetWithExtraButton
     widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);;
     layout->addWidget(widget);
 
-    auto btn = new QPushButton(tr("..."));
+    auto btn = new QPushButton("\u2026");
     connect(btn, SIGNAL(pressed()), this, SLOT(onExtraButtonPressed()));
     layout->addWidget(btn);
 

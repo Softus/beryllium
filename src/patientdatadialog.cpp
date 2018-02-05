@@ -63,7 +63,8 @@ PatientDataDialog::PatientDataDialog(bool noWorklist, const QString& settingsKey
     , moveCounter(0)
 {
     QSettings settings;
-    auto listMandatory = settings.value("ui/patient-data-mandatory-fields", DEFAULT_MANDATORY_FIELDS).toStringList();
+    auto listMandatory = settings.value("ui/patient-data-mandatory-fields",
+        DEFAULT_MANDATORY_FIELDS).toStringList();
     auto showAccessionNumber = settings.value("ui/patient-data-show-accession-number").toBool();
 
     setWindowTitle(tr("Patient data"));
@@ -108,7 +109,8 @@ PatientDataDialog::PatientDataDialog(bool noWorklist, const QString& settingsKey
     // Empty row
     layoutMain->addRow(new QLabel, new QLabel);
 
-    checkDontShow = new QCheckBox(tr("Show this dialog if the Shift key is down or some data is required."));
+    checkDontShow = new QCheckBox(
+        tr("Show this dialog if the Shift key is down or some data is required."));
     layoutMain->addRow(nullptr, checkDontShow);
     if (!qApp->keyboardModifiers().testFlag(Qt::ShiftModifier))
     {
@@ -318,8 +320,8 @@ void PatientDataDialog::setPatientSex(const QString& sex)
 {
     // For 'Female' search for text, for 'F' search for data
     //
-    auto idx = sex.length() != 1? cbPatientSex->findText(sex): cbPatientSex->findData(sex[0].toUpper());
-
+    auto idx = sex.length() != 1 ? cbPatientSex->findText(sex)
+                                 : cbPatientSex->findData(sex[0].toUpper());
     if (idx < 0)
     {
         cbPatientSex->setEditText(sex);
@@ -452,9 +454,11 @@ void PatientDataDialog::savePatientData(DcmDataset* patient)
 
     OFString studyInstanceUID;
     char uuid[100] = {0};
-    if (patient->findAndGetOFString(DCM_StudyInstanceUID, studyInstanceUID).bad() || studyInstanceUID.length() == 0)
+    if (patient->findAndGetOFString(DCM_StudyInstanceUID, studyInstanceUID).bad()
+        || studyInstanceUID.length() == 0)
     {
-        patient->putAndInsertString(DCM_StudyInstanceUID, dcmGenerateUniqueIdentifier(uuid, SITE_STUDY_UID_ROOT));
+        patient->putAndInsertString(DCM_StudyInstanceUID,
+            dcmGenerateUniqueIdentifier(uuid, SITE_STUDY_UID_ROOT));
     }
 
     patient->putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 192");
@@ -467,7 +471,8 @@ void PatientDataDialog::savePatientData(DcmDataset* patient)
     patient->putAndInsertString(DCM_PerformingPhysicianName, physician().toUtf8());
     patient->putAndInsertString(DCM_StudyDescription, studyDescription().toUtf8());
     patient->putAndInsertString(DCM_SeriesDescription, studyDescription().toUtf8());
-    patient->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uuid, SITE_INSTANCE_UID_ROOT));
+    patient->putAndInsertString(DCM_SOPInstanceUID,
+        dcmGenerateUniqueIdentifier(uuid, SITE_INSTANCE_UID_ROOT));
 }
 
 #endif

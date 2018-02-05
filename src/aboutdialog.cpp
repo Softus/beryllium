@@ -85,35 +85,44 @@ AboutDialog::AboutDialog(QWidget *parent) :
 
     layoutText->addWidget(new QLabel(tr("Based on:")));
 #ifdef WITH_DICOM
-    auto mediaInfoVer = QString::fromStdWString(MediaInfoLib::MediaInfo::Option_Static(__T("Info_Version")));
-    auto lblMediaInfo = new QLabel(tr("<a href=\"http://mediainfo.sourceforge.net/\">").append(mediaInfoVer.replace("- v", "")).append("</a>"));
+    auto mediaInfoVer = QString::fromStdWString(
+        MediaInfoLib::MediaInfo::Option_Static(__T("Info_Version")));
+    auto lblMediaInfo = new QLabel(tr("<a href=\"http://mediainfo.sourceforge.net/\">")
+        .append(mediaInfoVer.replace("- v", "")).append("</a>"));
     lblMediaInfo->setOpenExternalLinks(true);
     layoutText->addWidget(lblMediaInfo);
 
-    auto lblDcmtk = new QLabel(tr("<a href=\"http://dcmtk.org/\">DCMTK ").append(OFFIS_DCMTK_VERSION_STRING).append("</a>"));
+    auto lblDcmtk = new QLabel(tr("<a href=\"http://dcmtk.org/\">DCMTK ")
+        .append(OFFIS_DCMTK_VERSION_STRING).append("</a>"));
     lblDcmtk->setOpenExternalLinks(true);
     layoutText->addWidget(lblDcmtk);
 #endif
 
-    auto lblGstreamer = new QLabel(tr("<a href=\"http://gstreamer.freedesktop.org/\">").append(gst_version_string()).append("</a>"));
+    auto lblGstreamer = new QLabel(tr("<a href=\"http://gstreamer.freedesktop.org/\">")
+        .append(gst_version_string()).append("</a>"));
     lblGstreamer->setOpenExternalLinks(true);
     layoutText->addWidget(lblGstreamer);
 
 #if !GST_CHECK_VERSION(1,0,0)
-    auto lblOpencv = new QLabel(tr("<a href=\"http://opencv.org/\">OpenCV ").append(CV_VERSION).append("</a>"));
+    auto lblOpencv = new QLabel(tr("<a href=\"http://opencv.org/\">OpenCV ")
+        .append(CV_VERSION).append("</a>"));
     lblOpencv->setOpenExternalLinks(true);
     layoutText->addWidget(lblOpencv);
 #endif
 
-    auto lblQtGstreamer = new QLabel(tr("<a href=\"http://gstreamer.freedesktop.org/modules/qt-gstreamer.html/\">QtGStreamer ").append(QT_GST_VERSION_STR).append("</a>"));
+    auto lblQtGstreamer = new QLabel(
+        tr("<a href=\"http://gstreamer.freedesktop.org/modules/qt-gstreamer.html/\">QtGStreamer ")
+            .append(QT_GST_VERSION_STR).append("</a>"));
     lblQtGstreamer->setOpenExternalLinks(true);
     layoutText->addWidget(lblQtGstreamer);
 
-    auto lblQt = new QLabel(tr("<a href=\"http://qt-project.org/\">Qt ").append(QT_VERSION_STR).append("</a>"));
+    auto lblQt = new QLabel(tr("<a href=\"http://qt-project.org/\">Qt ")
+        .append(QT_VERSION_STR).append("</a>"));
     lblQt->setOpenExternalLinks(true);
     layoutText->addWidget(lblQt);
 
-    auto lblQxt = new QLabel(tr("<a href=\"http://libqxt.org/\">LibQxt ").append(QXT_VERSION_STR).append("</a>"));
+    auto lblQxt = new QLabel(tr("<a href=\"http://libqxt.org/\">LibQxt ")
+        .append(QXT_VERSION_STR).append("</a>"));
     lblQxt->setOpenExternalLinks(true);
     layoutText->addWidget(lblQxt);
 
@@ -121,7 +130,8 @@ AboutDialog::AboutDialog(QWidget *parent) :
     // Media
     //
 
-    auto lblIconsWin8 = new QLabel(tr("<a href=\"http://icons8.com/\">Icons8 icon set by VisualPharm</a>"));
+    auto lblIconsWin8 = new QLabel(
+        tr("<a href=\"http://icons8.com/\">Icons8 icon set by VisualPharm</a>"));
     lblIconsWin8->setOpenExternalLinks(true);
     layoutText->addWidget(lblIconsWin8);
     layoutText->addSpacing(16);
@@ -130,8 +140,9 @@ AboutDialog::AboutDialog(QWidget *parent) :
     // Copyright & warranty
     //
 
-    auto lblCopyright = new QLabel(tr("<p>Copyright (C) 2013-2018 <a href=\"%1\">%2</a>. All rights reserved.</p>")
-                                   .arg(PRODUCT_SITE_URL, tr("Softus Inc.")/*ORGANIZATION_FULL_NAME*/));
+    auto lblCopyright = new QLabel(
+        tr("<p>Copyright (C) 2013-2018 <a href=\"%1\">%2</a>. All rights reserved.</p>")
+            .arg(PRODUCT_SITE_URL, tr("Softus Inc.")/*ORGANIZATION_FULL_NAME*/));
     lblCopyright->setOpenExternalLinks(true);
     layoutText->addWidget(lblCopyright);
     layoutText->addSpacing(16);

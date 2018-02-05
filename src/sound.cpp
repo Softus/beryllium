@@ -24,8 +24,8 @@
 
 #include <QGst/ElementFactory>
 
-Sound::Sound(QObject *parent) :
-    QObject(parent)
+Sound::Sound(QObject *parent)
+    : QObject(parent)
 {
 }
 
@@ -44,8 +44,13 @@ bool Sound::play(const QString& filePath)
     pipeline->setState(QGst::StateReady);
     pipeline->getState(nullptr, nullptr, 1000000000L); // 1 sec
     pipeline->setProperty("uri", QUrl::fromLocalFile(filePath).toEncoded());
-    auto details = GstDebugGraphDetails(GST_DEBUG_GRAPH_SHOW_MEDIA_TYPE | GST_DEBUG_GRAPH_SHOW_NON_DEFAULT_PARAMS | GST_DEBUG_GRAPH_SHOW_STATES);
-    GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(pipeline.staticCast<QGst::Bin>(), details, qApp->applicationName().append(".video-edit-preview").toUtf8());
+    auto details = GstDebugGraphDetails
+        ( GST_DEBUG_GRAPH_SHOW_MEDIA_TYPE
+        | GST_DEBUG_GRAPH_SHOW_NON_DEFAULT_PARAMS
+        | GST_DEBUG_GRAPH_SHOW_STATES
+        );
+    GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(pipeline.staticCast<QGst::Bin>(), details,
+        qApp->applicationName().append(".video-edit-preview").toUtf8());
     return QGst::StateChangeFailure != pipeline->setState(QGst::StatePlaying);
 }
 

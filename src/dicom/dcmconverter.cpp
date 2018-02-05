@@ -253,7 +253,8 @@ public:
                 if (cond.bad())
                   return cond;
 
-                cond = dset->putAndInsertOFStringArray(DCM_LossyImageCompressionMethod, "ISO_10918_1");
+                cond = dset->putAndInsertOFStringArray(DCM_LossyImageCompressionMethod,
+                    "ISO_10918_1");
                 if (cond.bad())
                   return cond;
             }
@@ -274,11 +275,13 @@ public:
         else
         {
             auto frameRate = getStr(__T("FrameRate")).toDouble();
-            cond = dset->putAndInsertString(DCM_CineRate, QString::number((Uint16)(frameRate + 0.5)).toUtf8());
+            cond = dset->putAndInsertString(DCM_CineRate,
+                QString::number((Uint16)(frameRate + 0.5)).toUtf8());
             if (cond.bad())
               return cond;
 
-            cond = dset->putAndInsertString(DCM_FrameTime, QString::number(1000.0 / frameRate).toUtf8());
+            cond = dset->putAndInsertString(DCM_FrameTime,
+                QString::number(1000.0 / frameRate).toUtf8());
             if (cond.bad())
               return cond;
 
@@ -453,10 +456,24 @@ readAndInsertGenericData
 {
     OFCondition result = EC_Normal;
 
-    if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID,    getGenericSopClass(mimeType).toUtf8());
-    if (result.good()) result = dataset->putAndInsertString(DCM_ConversionType, "WSD");
-    if (result.good()) result = dataset->putAndInsertString(DCM_DocumentTitle,  QFileInfo(fileName).completeBaseName().toUtf8());
-    if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, mimeType.toUtf8());
+    if (result.good())
+    {
+        result = dataset->putAndInsertString(DCM_SOPClassUID,
+            getGenericSopClass(mimeType).toUtf8());
+    }
+    if (result.good())
+    {
+        result = dataset->putAndInsertString(DCM_ConversionType, "WSD");
+    }
+    if (result.good())
+    {
+        result = dataset->putAndInsertString(DCM_DocumentTitle,
+            QFileInfo(fileName).completeBaseName().toUtf8());
+    }
+    if (result.good())
+    {
+        result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, mimeType.toUtf8());
+    }
 
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly))
@@ -473,10 +490,12 @@ readAndInsertGenericData
         result = elem->createUint8Array(numBytes, bytes);
         if (result.good())
         {
-            // blank pad byte
+            // Blank pad byte
+            //
             bytes[numBytes - 1] = 0;
 
-            // read the content
+            // Read the content
+            //
             if (file.read((char*)bytes, file.size()) != file.size())
             {
                 qDebug() << "read error in file " << fileName;
@@ -489,7 +508,8 @@ readAndInsertGenericData
         result = EC_MemoryExhausted;
     }
 
-    // if successful, insert element into dataset
+    // If successful, insert the element into the dataset
+    //
     if (result.good())
     {
         result = dataset->insert(elem);

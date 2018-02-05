@@ -30,7 +30,8 @@ StudiesSettings::StudiesSettings(QWidget *parent) :
     listStudies->addItems(settings.value("studies").toStringList());
     for (int i = 0; i < listStudies->count(); ++i)
     {
-        listStudies->item(i)->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+        listStudies->item(i)->
+            setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     }
 
     mainLayout->addWidget(listStudies);

@@ -78,7 +78,8 @@ WorklistColumnSettings::WorklistColumnSettings(QWidget *parent) :
     for (size_t row = 0; row < rows; ++row)
     {
         auto tag = DcmTag(rowTags[row]);
-        auto text = QString("%1,%2").arg((ushort)tag.getGroup(), (int)4, (int)16, QChar('0')).arg((ushort)tag.getElement(), (int)4, (int)16, QChar('0'));
+        auto text = QString("%1,%2").arg((ushort)tag.getGroup(), (int)4, (int)16,
+            QChar('0')).arg((ushort)tag.getElement(), (int)4, (int)16, QChar('0'));
         auto item = new QTableWidgetItem(text);
         item->setCheckState(listChecked.contains(text)? Qt::Checked: Qt::Unchecked);
         listColumns->setItem(row, 0, item);

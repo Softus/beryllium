@@ -149,6 +149,7 @@ void ThumbnailList::keyReleaseEvent(QKeyEvent *e)
         return;
     }
 
-    QKeyEvent evt(QEvent::KeyRelease, key, e->modifiers(), e->text(), e->isAutoRepeat(), e->count());
+    QKeyEvent evt(QEvent::KeyRelease, key, e->modifiers(), e->text(), e->isAutoRepeat(),
+        e->count());
     QListWidget::keyReleaseEvent(&evt);
 }

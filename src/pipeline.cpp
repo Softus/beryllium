@@ -40,13 +40,13 @@
 
 #if defined (Q_OS_UNIX)
   #if GST_CHECK_VERSION(1,0,0)
-  #include <libv4l2.h>
-  #include <libv4l2rds.h>
+    #include <libv4l2.h>
+    #include <libv4l2rds.h>
   #else
-  #include <gst/interfaces/tuner.h>
+    #include <gst/interfaces/tuner.h>
   #endif
 #elif defined (Q_OS_WIN)
-#include <qt_windows.h>
+  #include <qt_windows.h>
 #endif
 
 static void ensurePathExist(const QString& filePath)
@@ -58,24 +58,28 @@ static void ensurePathExist(const QString& filePath)
     }
 }
 
-Pipeline::Pipeline(int index, QObject *parent) :
-    QObject(parent),
-    index(index),
-    motionDetected(false),
-    motionStart(false),
-    motionStop(false),
-    recording(false),
-    recordNotify(0),
-    countdown(0),
-    recordLimit(0),
-    recordTimerId(0)
+Pipeline::Pipeline
+    ( int index
+    , QObject *parent
+    )
+    : QObject(parent)
+    , index(index)
+    , motionDetected(false)
+    , motionStart(false)
+    , motionStop(false)
+    , recording(false)
+    , recordNotify(0)
+    , countdown(0)
+    , recordLimit(0)
+    , recordTimerId(0)
 {
     displayWidget = new VideoWidget();
     displayWidget->setProperty("index", index);
 
     // This magic required for updating timers from worker threads on Microsoft (R) Windows (TM)
     //
-    connect(this, SIGNAL(switchToUIThreadAndStartCountdownTimer()), this, SLOT(startCountdownTimer()), Qt::QueuedConnection);
+    connect(this, SIGNAL(switchToUIThreadAndStartCountdownTimer()), this,
+        SLOT(startCountdownTimer()), Qt::QueuedConnection);
 }
 
 Pipeline::~Pipeline()
@@ -163,15 +167,23 @@ The pipeline for software encoder:
 
 
 Sample:
-    v4l2src [! dvdemux ! ffdec_dvvideo | ! jpegdec] [! colorspace] [! deinterlace] ! tee name=splitter
+    v4l2src [! colorspace] [! deinterlace] ! tee name=splitter
         splitter. ! autovideosink name=displaysink async=0
-        splitter. ! valve name=encvalve drop=1 ! queue max-size-bytes=0 ! videorate max-rate=30/1 ! x264enc name=videoencoder ! tee name=videosplitter
-                videosplitter. ! identity  name=videoinspect drop-probability=1.0 ! queue ! valve name=videovalve drop=1 ! [mpegpsmux name=videomux ! filesink name=videosink]
-                videosplitter. ! queue ! rtph264pay ! udpsink name=rtpsink clients=127.0.0.1:5000 sync=0 async=0
-                videosplitter. ! queue ! mpegtsmux name=httpmux ! souphttpclientsink async=0 name=httpsink location="http://videoserver/channel"
-                videosplitter. ! queue ! flvmux name=rtmpmux ! rtmpsink async=0 name=rtmpsink location="rtmp://videoserver/app/channel"
-                videosplitter. ! identity  name=clipinspect drop-probability=1.0 ! queue ! valve name=clipvalve ! [ mpegpsmux name=clipmux ! filesink name=clipsink]
-        splitter. ! identity name=imagevalve drop-probability=1.0 ! jpegenc ! multifilesink name=imagesink post-messages=1 async=0 sync=0 location=/video/image
+        splitter. ! valve name=encvalve drop=1 ! queue max-size-bytes=0 ! videorate max-rate=30/1
+            ! x264enc name=videoencoder ! tee name=videosplitter
+                videosplitter. ! identity  name=videoinspect drop-probability=1.0 ! queue
+                    ! valve name=videovalve drop=1
+                    ! [mpegpsmux name=videomux ! filesink name=videosink]
+                videosplitter. ! queue ! rtph264pay
+                    ! udpsink name=rtpsink clients=127.0.0.1:5000 sync=0 async=0
+                videosplitter. ! queue ! mpegtsmux name=httpmux
+                    ! souphttpclientsink async=0 name=httpsink location="http://videoserver/channel"
+                videosplitter. ! queue ! flvmux name=rtmpmux
+                    ! rtmpsink async=0 name=rtmpsink location="rtmp://videoserver/app/channel"
+                videosplitter. ! identity  name=clipinspect drop-probability=1.0 ! queue
+                    ! valve name=clipvalve ! [ mpegpsmux name=clipmux ! filesink name=clipsink]
+        splitter. ! identity name=imagevalve drop-probability=1.0 ! jpegenc
+            ! multifilesink name=imagesink post-messages=1 async=0 sync=0 location=/video/image
 
 The pipeline for hardware encoder:
 
@@ -196,7 +208,11 @@ The pipeline for hardware encoder:
                                       [image writer]
 */
 
-QString appendVideo(QString& pipe, const QSettings& settings, bool enableVideoLog)
+QString appendVideo
+    ( QString& pipe
+    , const QSettings& settings
+    , bool enableVideoLog
+    )
 {
 /*
                        +----[video splitter]----+-------------+
@@ -231,7 +247,8 @@ QString appendVideo(QString& pipe, const QSettings& settings, bool enableVideoLo
     {
         if (enableVideoLog)
         {
-            pipe.append("\nvideosplitter. ! identity name=videoinspect drop-probability=1.0 ! queue ! valve name=videovalve ");
+            pipe.append("\nvideosplitter. ! identity name=videoinspect drop-probability=1.0")
+                .append(" ! queue ! valve name=videovalve ");
         }
 
         if (enableRtp)
@@ -254,19 +271,22 @@ QString appendVideo(QString& pipe, const QSettings& settings, bool enableVideoLo
         if (enableHttp && !httpPushUrl.isEmpty())
         {
             pipe.append("\nvideosplitter. ! queue ! mpegtsmux name=httpmux ! ").append(httpSinkDef)
-                .append(" async=0 name=httpsink location=\"").append(httpPushUrl).append("\" ").append(httpSinkParams);
+                .append(" async=0 name=httpsink location=\"").append(httpPushUrl).append("\" ")
+                .append(httpSinkParams);
         }
 
         if (enableRtmp && !rtmpPushUrl.isEmpty())
         {
             pipe.append("\nvideosplitter. ! queue ! flvmux name=rtmpmux ! ").append(rtmpSinkDef)
-                .append(" async=0 name=rtmpsink location=\"").append(rtmpPushUrl).append("\" ").append(rtmpSinkParams)
+                .append(" async=0 name=rtmpsink location=\"").append(rtmpPushUrl).append("\" ")
+                .append(rtmpSinkParams)
                 // Add fake audio channel to avoid any issues with dumb TV-boxes
                 .append(" audiotestsrc wave=silence ! queue ! voaacenc ! rtmpmux.");
         }
     }
 
-    return pipe.append("\nvideosplitter. ! identity name=clipinspect drop-probability=1.0 ! queue ! valve name=clipvalve drop=1");
+    return pipe.append("\nvideosplitter. ! identity name=clipinspect drop-probability=1.0")
+        .append(" ! queue ! valve name=clipvalve drop=1");
 }
 
 QString buildDetectMotion(const QSettings& settings)
@@ -277,10 +297,14 @@ QString buildDetectMotion(const QSettings& settings)
     if (detectMotion)
     {
         auto motionDebug       = settings.value("motion-debug", false).toString();
-        auto motionSensitivity = settings.value("motion-sensitivity", DEFAULT_MOTION_SENSITIVITY).toString();
-        auto motionThreshold   = settings.value("motion-threshold",   DEFAULT_MOTION_THRESHOLD).toString();
-        auto motionMinFrames   = settings.value("motion-min-frames",  DEFAULT_MOTION_MIN_FRAMES).toString();
-        auto motionGap         = settings.value("motion-gap",         DEFAULT_MOTION_GAP).toString();
+        auto motionSensitivity = settings.value("motion-sensitivity",
+                                    DEFAULT_MOTION_SENSITIVITY).toString();
+        auto motionThreshold   = settings.value("motion-threshold",
+                                    DEFAULT_MOTION_THRESHOLD).toString();
+        auto motionMinFrames   = settings.value("motion-min-frames",
+                                    DEFAULT_MOTION_MIN_FRAMES).toString();
+        auto motionGap         = settings.value("motion-gap",
+                                    DEFAULT_MOTION_GAP).toString();
 
         pipe.append(" ! motioncells name=motion-detector display=").append(motionDebug)
             .append(" sensitivity=").append(motionSensitivity)
@@ -291,10 +315,15 @@ QString buildDetectMotion(const QSettings& settings)
     return pipe;
 }
 
-QString Pipeline::buildPipeline(const QSettings &settings, const QString &outputPathDef,
-                                bool enableVideoLog, const QString &detectMotion)
+QString Pipeline::buildPipeline
+    ( const QSettings &settings
+    , const QString &outputPathDef
+    , bool enableVideoLog
+    , const QString &detectMotion
+    )
 {
-    // v4l2src device=/dev/video1 name=(channel) ! video/x-raw-yuv,format=YUY2,width=720,height=576 ! colorspace
+    // v4l2src device=/dev/video1 name=(channel) ! video/x-raw-yuv,format=YUY2,width=720,height=576
+    //     ! colorspace
     // dv1394src guid="9025895599807395" ! video/x-dv,format=PAL ! dvdemux ! dvdec ! colorspace
     //
     QString pipe;
@@ -314,7 +343,8 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
         alias = QString("src%1").arg(index);
     }
 
-    auto colorConverter = QString(" ! ").append(settings.value("color-converter", DEFAULT_VIDEO_CONVERTER).toString());
+    auto colorConverter = QString(" ! ").append(settings.value("color-converter",
+                              DEFAULT_VIDEO_CONVERTER).toString());
     auto videoCodec     = settings.value("video-encoder").toString();
     auto bitrate        = settings.value("bitrate").toString();
 
@@ -332,7 +362,7 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
         //
         if (inputChannel.toInt() > 0)
         {
-            pipe.append(" channel=").append(inputChannel).append("");
+            pipe.append(" channel=").append(inputChannel);
         }
         if (!deviceDef.isEmpty())
         {
@@ -341,9 +371,9 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
     }
     else if (deviceType == "ximagesrc")
     {
-        // Special handling for XOrg screen source
+        // Special handling for XOrg screen capture source
+        // pipe.append(" startx=100 starty=100 endx=739 endy=579");
         //
-        //pipe.append(" startx=100 starty=100 endx=739 endy=579").append("");
         if (!inputChannel.isEmpty())
         {
             foreach (auto screen, QGuiApplication::screens())
@@ -352,7 +382,7 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
                 {
                     auto geom = screen->geometry();
                     pipe = pipe.append(" startx=%1 starty=%2 endx=%3 endy=%4")
-                            .arg(geom.left()).arg(geom.top()).arg(geom.right()).arg(geom.bottom());
+                        .arg(geom.left()).arg(geom.top()).arg(geom.right()).arg(geom.bottom());
                     break;
                 }
             }
@@ -360,9 +390,9 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
     }
     else if (deviceType == "gdiscreencapsrc")
     {
-        // Special handling for Windows screen source
+        // Special handling for Windows screen capture source
+        // pipe.append(" x=100 y=100 width=640 height=480");
         //
-        //pipe.append(" x=100 y=100 width=640 height=480").append("");
         if (!inputChannel.isEmpty())
         {
             foreach (auto screen, QGuiApplication::screens())
@@ -371,7 +401,7 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
                 {
                     auto geom = screen->geometry();
                     pipe = pipe.append(" x=%1 y=%2 width=%3 height=%4")
-                            .arg(geom.x()).arg(geom.y()).arg(geom.width()).arg(geom.height());
+                        .arg(geom.x()).arg(geom.y()).arg(geom.width()).arg(geom.height());
                     break;
                 }
             }
@@ -383,7 +413,7 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
         //
         if (inputChannel.toInt() > 0)
         {
-            pipe.append(" pattern=").append(inputChannel).append("");
+            pipe.append(" pattern=").append(inputChannel);
         }
     }
     else
@@ -392,7 +422,7 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
         {
             // Hack: since channel name can't be set with attributes,
             // we set element name instead. The one reason is to
-            // make the pipeline text do not match with older one.
+            // make the pipeline text do not match the older one.
             //
             pipe.append(" name=\"").append(inputChannel).append("\"");
         }
@@ -445,9 +475,9 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
     if (!displaySinkDef.isEmpty())
     {
         pipe.append("\nsplitter.").append(colorConverter).append(detectMotion)
-            .append(" ! textoverlay name=displayoverlay color=-1 halignment=right valignment=top text=* xpad=8 ypad=0 font-desc=16")
-            .append(colorConverter)
-            .append(" ! " ).append(displaySinkDef).append(" name=displaysink async=0 ").append(displayParams);
+            .append(" ! textoverlay name=displayoverlay color=-1 halignment=right valignment=top")
+            .append(" text=* xpad=8 ypad=0 font-desc=16").append(colorConverter).append(" ! " )
+            .append(displaySinkDef).append(" name=displaysink async=0 ").append(displayParams);
     }
 
     // ... splitter. ! identity name=imagevalve ! jpegenc ! multifilesink splitter.
@@ -459,9 +489,9 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
     if (!imageSinkDef.isEmpty())
     {
         pipe.append("\nsplitter. ! identity name=imagevalve drop-probability=1.0")
-            .append(imageEncoderFixColor? colorConverter: "")
-            .append(" ! ").append(imageEncoderDef).append(" ").append(imageEncoderParams)
-            .append(" ! ").append(imageSinkDef).append(" name=imagesink post-messages=1 async=0 sync=0 location=\"")
+            .append(imageEncoderFixColor? colorConverter: "").append(" ! ").append(imageEncoderDef)
+            .append(" ").append(imageEncoderParams).append(" ! ").append(imageSinkDef)
+            .append(" name=imagesink post-messages=1 async=0 sync=0 location=\"")
             .append(outputPathDef).append("/image\"");
     }
 
@@ -473,16 +503,17 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
         //                videosplitter. ! queue ! rtph264pay ! udpsink
         //                videosplitter. ! identity name=clipinspect ! queue ! mpegpsmux ! filesink
         //
-        auto videoMaxRate       = settings.value("limit-video-fps", DEFAULT_LIMIT_VIDEO_FPS).toBool()?
-                                  settings.value("video-max-fps",  DEFAULT_VIDEO_MAX_FPS).toInt(): 0;
-        auto videoFixColor      = settings.value(videoCodec + "-colorspace").toBool();
-        auto videoEncoderParams = settings.value(videoCodec + "-parameters").toString();
-        auto noIdleStream       = settings.value("no-idle-stream").toBool();
+        auto videoMaxRate   = settings.value("limit-video-fps", DEFAULT_LIMIT_VIDEO_FPS).toBool()
+                              ? settings.value("video-max-fps", DEFAULT_VIDEO_MAX_FPS).toInt() : 0;
+        auto videoFixColor  = settings.value(videoCodec + "-colorspace").toBool();
+        auto videoEncParams = settings.value(videoCodec + "-parameters").toString();
+        auto noIdleStream   = settings.value("no-idle-stream").toBool();
 
         pipe.append("\nsplitter.");
         if (videoMaxRate > 0)
         {
-            pipe.append(" ! videorate skip-to-first=1 max-rate=").append(QString::number(videoMaxRate));
+            pipe.append(" ! videorate skip-to-first=1 max-rate=")
+                .append(QString::number(videoMaxRate));
         }
 
         if (noIdleStream)
@@ -495,7 +526,7 @@ QString Pipeline::buildPipeline(const QSettings &settings, const QString &output
         //
         pipe.append(" ! queue name=").append(bitrate).append(" max-size-bytes=0")
             .append(videoFixColor? colorConverter: "")
-            .append(" ! ").append(videoCodec).append(" name=videoencoder ").append(videoEncoderParams);
+            .append(" ! ").append(videoCodec).append(" name=videoencoder ").append(videoEncParams);
 
         appendVideo(pipe, settings, enableVideoLog);
     }
@@ -580,7 +611,8 @@ bool Pipeline::updatePipeline()
             }
         }
   #else
-        auto tuner = GST_TUNER(gst_bin_get_by_interface(pipeline.staticCast<QGst::Bin>(), GST_TYPE_TUNER));
+        auto tuner = GST_TUNER(gst_bin_get_by_interface(pipeline.staticCast<QGst::Bin>(),
+            GST_TYPE_TUNER));
         if (tuner)
         {
             auto walk = (GList *)gst_tuner_list_channels(tuner);
@@ -651,14 +683,25 @@ bool Pipeline::updatePipeline()
     auto videoInspect = pipeline->getElementByName("videoinspect");
     videoInspect && QGlib::connect(videoInspect, "handoff", this, &Pipeline::onVideoFrame);
 
-    auto flags = GST_DEBUG_GRAPH_SHOW_MEDIA_TYPE | GST_DEBUG_GRAPH_SHOW_NON_DEFAULT_PARAMS | GST_DEBUG_GRAPH_SHOW_STATES;
+    auto flags = GST_DEBUG_GRAPH_SHOW_MEDIA_TYPE
+               | GST_DEBUG_GRAPH_SHOW_NON_DEFAULT_PARAMS
+               | GST_DEBUG_GRAPH_SHOW_STATES;
     auto details = GstDebugGraphDetails(flags);
-    GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(pipeline.staticCast<QGst::Bin>(), details, qApp->applicationName().toUtf8());
+    GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(pipeline.staticCast<QGst::Bin>(), details,
+        qApp->applicationName().toUtf8());
 
-    motionStart  = !detectMotion.isEmpty() && settings.value("motion-start", DEFAULT_MOTION_START).toBool();
-    motionStop   = !detectMotion.isEmpty() && settings.value("motion-stop", DEFAULT_MOTION_STOP).toBool();
+    if (detectMotion.isEmpty())
+    {
+        motionStart = motionStop = false;
+    }
+    else
+    {
+        motionStart  = settings.value("motion-start", DEFAULT_MOTION_START).toBool();
+        motionStop   = settings.value("motion-stop", DEFAULT_MOTION_STOP).toBool();
+    }
 
     // Start the pipeline
+    //
     pipeline->setState(QGst::StatePlaying);
 
     settings.endGroup();
@@ -675,9 +718,14 @@ void Pipeline::errorGlib(const QGlib::ObjectPtr& obj, const QGlib::Error& ex)
     pipelineError(msg);
 }
 
-void Pipeline::setElementProperty(const char* elmName, const char* prop, const QGlib::Value& value, QGst::State minimumState)
+void Pipeline::setElementProperty
+    ( const char* elmName
+    , const char* prop
+    , const QGlib::Value& value
+    , QGst::State minimumState
+    )
 {
-    auto elm = pipeline? pipeline->getElementByName(elmName): QGst::ElementPtr();
+    auto elm = pipeline ? pipeline->getElementByName(elmName) : QGst::ElementPtr();
     if (!elm)
     {
         qDebug() << "Element " << elmName << " not found";
@@ -688,7 +736,12 @@ void Pipeline::setElementProperty(const char* elmName, const char* prop, const Q
     }
 }
 
-void Pipeline::setElementProperty(QGst::ElementPtr& elm, const char* prop, const QGlib::Value& value, QGst::State minimumState)
+void Pipeline::setElementProperty
+    ( QGst::ElementPtr& elm
+    , const char* prop
+    , const QGlib::Value& value
+    , QGst::State minimumState
+    )
 {
     if (elm)
     {
@@ -718,7 +771,12 @@ static QString getExt(QString str)
     return QString(".").append(str.remove('e').left(3));
 }
 
-QString Pipeline::appendVideoTail(const QDir& dir, const QString& prefix, QString clipFileName, bool split)
+QString Pipeline::appendVideoTail
+    ( const QDir& dir
+    , const QString& prefix
+    , QString clipFileName
+    , bool split
+    )
 {
     QSettings settings;
     settings.beginGroup("gst");
@@ -736,7 +794,8 @@ QString Pipeline::appendVideoTail(const QDir& dir, const QString& prefix, QStrin
         settings.endArray();
     }
 
-    auto maxSize = split? settings.value("video-max-file-size", DEFAULT_VIDEO_MAX_FILE_SIZE).toLongLong() * 1024 * 1024: 0;
+    auto maxSize = split ? settings.value("video-max-file-size",
+        DEFAULT_VIDEO_MAX_FILE_SIZE).toLongLong() * 1024 * 1024 : 0;
     settings.endGroup();
 
     QString videoExt;
@@ -776,7 +835,7 @@ QString Pipeline::appendVideoTail(const QDir& dir, const QString& prefix, QStrin
         else
         {
             split = false;
-            qDebug() << "multiflesink does not support 'max-file-size' property, replaced with filesink";
+            qDebug() << "multiflesink has no 'max-file-size' property, replaced with filesink";
             sink = QGst::ElementFactory::make("filesink", (prefix + "sink").toUtf8());
         }
     }
@@ -832,7 +891,8 @@ QString Pipeline::appendVideoTail(const QDir& dir, const QString& prefix, QStrin
         setFileExtAttribute(realFileName, "modality", modality);
     }
 
-    if (prefix == "clip" && settings.value("save-clip-thumbnails", DEFAULT_SAVE_CLIP_THUMBNAILS).toBool())
+    if (prefix == "clip"
+        && settings.value("save-clip-thumbnails", DEFAULT_SAVE_CLIP_THUMBNAILS).toBool())
     {
         QFileInfo fi(realFileName);
         clipPreviewFileName = fi.absolutePath()
@@ -1004,10 +1064,12 @@ void Pipeline::onBusMessage(const QGst::MessagePtr& msg)
         break;
 #ifdef QT_DEBUG
     case QGst::MessageInfo:
-        qDebug() << msg->source()->property("name").toString() << " " << msg.staticCast<QGst::InfoMessage>()->error();
+        qDebug() << msg->source()->property("name").toString() << " "
+                 << msg.staticCast<QGst::InfoMessage>()->error();
         break;
     case QGst::MessageWarning:
-        qDebug() << msg->source()->property("name").toString() << " " << msg.staticCast<QGst::WarningMessage>()->error();
+        qDebug() << msg->source()->property("name").toString() << " "
+                 << msg.staticCast<QGst::WarningMessage>()->error();
         break;
     case QGst::MessageEos:
     case QGst::MessageNewClock:
@@ -1125,15 +1187,18 @@ void Pipeline::onElementMessage(const QGst::ElementMessagePtr& msg)
         return;
     }
 
-    qDebug() << "Got unknown message " << s->toString() << " from " << msg->source()->property("name").toString();
+    qDebug() << "Got unknown message " << s->toString() << " from "
+             << msg->source()->property("name").toString();
 }
 
 void Pipeline::onImageReady(const QGst::BufferPtr& buf)
 {
 #if GST_CHECK_VERSION(1,0,0)
-    qDebug() << "imageValve handoff " << buf->size() << " " << buf->decodingTimeStamp() << " " << buf->flags();
+    qDebug() << "imageValve handoff " << buf->size() << " " << buf->decodingTimeStamp()
+             << " " << buf->flags();
 #else
-    qDebug() << "imageValve handoff " << buf->size() << " " << buf->timeStamp() << " " << buf->flags();
+    qDebug() << "imageValve handoff " << buf->size() << " " << buf->timeStamp() << " "
+             << buf->flags();
 #endif
     imageValve->setProperty("drop-probability", 1.0);
     imageReady();

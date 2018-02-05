@@ -161,8 +161,8 @@ bool grabKey(int key)
             for (int i = 0; !errorHandler.error && i < maskModifiers.size(); ++i)
             {
                 XGrabButton(display, btn, maskModifiers[i] | mod, appWindow, True,
-                            ButtonPressMask | ButtonReleaseMask, GrabModeAsync, GrabModeAsync, None, None);
-            }
+                    ButtonPressMask | ButtonReleaseMask, GrabModeAsync, GrabModeAsync, None, None);
+        }
         }
     }
     else
@@ -171,7 +171,7 @@ bool grabKey(int key)
         for (int i = 0; !errorHandler.error && i < maskModifiers.size(); ++i)
         {
             XGrabKey(display, xkey, maskModifiers[i] | mod, appWindow, True,
-                        GrabModeAsync, GrabModeAsync);
+                GrabModeAsync, GrabModeAsync);
         }
     }
 

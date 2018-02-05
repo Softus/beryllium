@@ -74,5 +74,6 @@ void VideoEncodingProgressDialog::onBusMessage(const QGst::MessagePtr& message)
 
 void VideoEncodingProgressDialog::onStateChange(const QGst::StateChangedMessagePtr& message)
 {
-    qDebug() << message->typeName() << " " << message->source()->property("name").toString() << " " << message->oldState() << " => " << message->newState();
+    qDebug() << message->typeName() << message->source()->property("name").toString()
+             << message->oldState() << " => " << message->newState();
 }

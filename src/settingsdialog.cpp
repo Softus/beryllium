@@ -93,7 +93,8 @@ SettingsDialog::SettingsDialog(const QString& pageTitle, QWidget *parent, Qt::Wi
 
     if (!settings.isWritable())
     {
-        layoutBtns->addWidget(new QLabel(tr("NOTE: all changes will be lost when the application closes.")));
+        layoutBtns->addWidget(new QLabel(
+            tr("NOTE: all changes will be lost when the application closes.")));
     }
     layoutBtns->addStretch(1);
 
@@ -119,7 +120,8 @@ SettingsDialog::SettingsDialog(const QString& pageTitle, QWidget *parent, Qt::Wi
     settings.beginGroup("ui");
     restoreGeometry(settings.value("settings-geometry").toByteArray());
     setWindowState((Qt::WindowState)settings.value("settings-state").toInt());
-    QString selectedPage = pageTitle.isEmpty()? settings.value("settings-page").toString(): pageTitle;
+    QString selectedPage = pageTitle.isEmpty() ? settings.value("settings-page").toString()
+                                               : pageTitle;
     settings.endGroup();
 
     if (!selectedPage.isEmpty())

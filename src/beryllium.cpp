@@ -104,7 +104,8 @@ cfgPathCallback(const gchar *, const gchar *value, gpointer, GError **)
     if (QFileInfo(path).isDir())
     {
         QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope, path);
-        QSettings fileSettings(QSettings::IniFormat, QSettings::SystemScope, ORGANIZATION_DOMAIN, PRODUCT_SHORT_NAME);
+        QSettings fileSettings(QSettings::IniFormat, QSettings::SystemScope,
+            ORGANIZATION_DOMAIN, PRODUCT_SHORT_NAME);
         // Copy settings from file to memory
         //
         foreach (auto key, fileSettings.allKeys())
@@ -139,12 +140,15 @@ setValueCallback(const gchar *name, const gchar *value, gpointer, GError **err)
         if (err)
         {
             *err = g_error_new(G_OPTION_ERROR,
-                G_OPTION_ERROR_BAD_VALUE, QT_TRANSLATE_NOOP_UTF8("cmdline", "Bad argument '%s' (must be name=value)"), value);
+                G_OPTION_ERROR_BAD_VALUE, QT_TRANSLATE_NOOP_UTF8("cmdline",
+                    "Bad argument '%s' (must be name=value)"),
+                value);
         }
         return false;
     }
 
-    QSettings().setValue(QString::fromLocal8Bit(value, idx - value), QString::fromLocal8Bit(idx + 1));
+    QSettings().setValue(QString::fromLocal8Bit(value, idx - value),
+                         QString::fromLocal8Bit(idx + 1));
     return true;
 }
 
@@ -209,8 +213,9 @@ void setupGstDebug(const QSettings& settings)
     {
         QFileInfo(debugLogFile).absoluteDir().mkpath(".");
 #if GST_CHECK_VERSION(1,2,0)
-        gst_debug_remove_log_function (gst_debug_log_default);
-        gst_debug_add_log_function (gst_debug_log_default, g_fopen (debugLogFile.toLocal8Bit(), "w"), nullptr);
+        gst_debug_remove_log_function(gst_debug_log_default);
+        gst_debug_add_log_function(gst_debug_log_default, g_fopen(debugLogFile.toLocal8Bit(), "w"),
+            nullptr);
 #else
         qputenv("GST_DEBUG_FILE", debugLogFile.toLocal8Bit());
         _gst_debug_init();
@@ -224,8 +229,10 @@ void setupGstDebug(const QSettings& settings)
     }
 #endif
 
-    gst_debug_set_colored(!settings.value("gst-debug-no-color", DEFAULT_GST_DEBUG_NO_COLOR).toBool());
-    auto gstDebugLevel = (GstDebugLevel)settings.value("gst-debug-level", DEFAULT_GST_DEBUG_LEVEL).toInt();
+    gst_debug_set_colored(
+        !settings.value("gst-debug-no-color", DEFAULT_GST_DEBUG_NO_COLOR).toBool());
+    auto gstDebugLevel =
+        (GstDebugLevel)settings.value("gst-debug-level", DEFAULT_GST_DEBUG_LEVEL).toInt();
     gst_debug_set_default_threshold(gstDebugLevel);
 }
 
@@ -260,13 +267,16 @@ dcmtkLogConfigCallback(const gchar *, const gchar *value, gpointer, GError **)
 //
 static GOptionEntry dcmtkOptions[] = {
     {"dcmtk-log-file", '\x0', 0, G_OPTION_ARG_CALLBACK, (gpointer)dcmtkLogFileCallback,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "DCMTK log output file."), QT_TRANSLATE_NOOP_UTF8("cmdline", "FILE")},
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "DCMTK log output file."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "FILE")},
     {"dcmtk-log-level", '\x0', 0, G_OPTION_ARG_CALLBACK, (gpointer)dcmtkLogLevelCallback,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "DCMTK logging level: fatal, error, warn, info, debug, trace."), QT_TRANSLATE_NOOP_UTF8("cmdline", "LEVEL")},
+        QT_TRANSLATE_NOOP_UTF8("cmdline",
+            "DCMTK logging level: fatal, error, warn, info, debug, trace."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "LEVEL")},
     {"dcmtk-log-config", '\x0', 0, G_OPTION_ARG_CALLBACK, (gpointer)dcmtkLogConfigCallback,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "Config file for DCMTK logger."), QT_TRANSLATE_NOOP_UTF8("cmdline", "FILE")},
-    {nullptr, '\x0', 0, G_OPTION_ARG_NONE, nullptr,
-        nullptr, nullptr},
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "Config file for DCMTK logger."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "FILE")},
+    {nullptr, '\x0', 0, G_OPTION_ARG_NONE, nullptr, nullptr, nullptr},
 };
 
 void setupDcmtkDebug(const QSettings& settings)
@@ -283,7 +293,8 @@ void setupDcmtkDebug(const QSettings& settings)
         auto value = settings.value(o->long_name).toString();
         if (!value.isEmpty())
         {
-            ((GOptionArgFunc)o->arg_data)(o->long_name, value.toLocal8Bit().constData(), nullptr, nullptr);
+            ((GOptionArgFunc)o->arg_data)(o->long_name, value.toLocal8Bit().constData(), nullptr,
+                nullptr);
         }
     }
 }
@@ -300,12 +311,18 @@ static gboolean autoStart = false;
 static gboolean printVersion = false;
 
 static GOptionEntry options[] = {
-    {"archive", '\x0', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK, (gpointer)setModeCallback,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "Show the archive window."), QT_TRANSLATE_NOOP_UTF8("cmdline", "PATH")},
-    {"edit-video", '\x0', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK, (gpointer)setModeCallback,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "Show the video editor window."), QT_TRANSLATE_NOOP_UTF8("cmdline", "FILE")},
-    {"settings", '\x0', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK, (gpointer)setModeCallback,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "Show the settings window."), QT_TRANSLATE_NOOP_UTF8("cmdline", "PAGE")},
+    {"archive", '\x0', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK,
+        (gpointer)setModeCallback,
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "Show the archive window."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "PATH")},
+    {"edit-video", '\x0', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK,
+        (gpointer)setModeCallback,
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "Show the video editor window."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "FILE")},
+    {"settings", '\x0', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK,
+        (gpointer)setModeCallback,
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "Show the settings window."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "PAGE")},
     {"safe-mode", '\x0', G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK, (gpointer)setValueCallback,
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Run the program in safe mode."), nullptr},
 #ifdef WITH_QT_X11EXTRAS
@@ -313,22 +330,30 @@ static GOptionEntry options[] = {
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Run the program in X synchronous mode."), nullptr},
 #endif
     {"config-path", 'c', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_CALLBACK, (gpointer)cfgPathCallback,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "Set root path to the settings file."), QT_TRANSLATE_NOOP_UTF8("cmdline", "PATH")},
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "Set root path to the settings file."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "PATH")},
 
     {"study-id", 'a', 0, G_OPTION_ARG_STRING, (gpointer)&accessionNumber,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "Study accession number (id)."), QT_TRANSLATE_NOOP_UTF8("cmdline", "ID")},
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "Study accession number (id)."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "ID")},
     {"patient-birthdate", 'b', 0, G_OPTION_ARG_STRING, (gpointer)&patientBirthdate,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "Patient birthdate."), QT_TRANSLATE_NOOP_UTF8("cmdline", "YYYYMMDD")},
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "Patient birthdate."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "YYYYMMDD")},
     {"study-description", 'd', 0, G_OPTION_ARG_STRING, (gpointer)&studyDescription,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "Study description."), QT_TRANSLATE_NOOP_UTF8("cmdline", "STRING")},
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "Study description."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "STRING")},
     {"patient-id", 'i', 0, G_OPTION_ARG_STRING, (gpointer)&patientId,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "Patient id."), QT_TRANSLATE_NOOP_UTF8("cmdline", "ID")},
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "Patient id."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "ID")},
     {"patient-name", 'n', 0, G_OPTION_ARG_STRING, (gpointer)&patientName,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "Patient name."), QT_TRANSLATE_NOOP_UTF8("cmdline", "STRING")},
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "Patient name."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "STRING")},
     {"physician", 'p', 0, G_OPTION_ARG_STRING, (gpointer)&physician,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "Performing physician name."), QT_TRANSLATE_NOOP_UTF8("cmdline", "STRING")},
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "Performing physician name."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "STRING")},
     {"patient-sex", 's', 0, G_OPTION_ARG_STRING, (gpointer)&patientSex,
-        QT_TRANSLATE_NOOP_UTF8("cmdline", "Patient sex."), QT_TRANSLATE_NOOP_UTF8("cmdline", "F|M|O|U")},
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "Patient sex."),
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "F|M|O|U")},
     {"auto-start", '\x0', 0, G_OPTION_ARG_NONE, (gpointer)&autoStart,
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Automatically start the study."), nullptr},
     {"version", '\x0', 0, G_OPTION_ARG_NONE, (gpointer)&printVersion,
@@ -343,17 +368,10 @@ static GOptionEntry options[] = {
 #ifdef WITH_QT_DBUS
 bool switchToRunningInstance()
 {
-    auto msg = QDBusInterface(PRODUCT_NAMESPACE, "/org/softus/Beryllium/Main", "org.softus.beryllium.Main")
-         .call("startStudy"
-            , accessionNumber
-            , patientId
-            , patientName
-            , patientSex
-            , patientBirthdate
-            , physician
-            , studyDescription
-            , (bool)autoStart
-            );
+    auto msg = QDBusInterface(PRODUCT_NAMESPACE, "/org/softus/Beryllium/Main",
+            "org.softus.beryllium.Main")
+         .call("startStudy", accessionNumber, patientId, patientName, patientSex, patientBirthdate,
+               physician, studyDescription, (bool)autoStart);
     //qDebug() << msg;
     return msg.type() == QDBusMessage::ReplyMessage && msg.arguments().first().toBool();
 }
@@ -398,7 +416,8 @@ int main(int argc, char *argv[])
     g_option_context_add_main_entries(ctx, options, PRODUCT_SHORT_NAME);
 
 #ifdef WITH_DICOM
-    auto dcmtkGroup = g_option_group_new ("dcmtk", QT_TRANSLATE_NOOP_UTF8("cmdline", "DCMTK Options"),
+    auto dcmtkGroup = g_option_group_new ("dcmtk",
+        QT_TRANSLATE_NOOP_UTF8("cmdline", "DCMTK Options"),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Show DCMTK Options"), nullptr, nullptr);
     g_option_context_add_group(ctx, dcmtkGroup);
     g_option_group_add_entries (dcmtkGroup, dcmtkOptions);
@@ -416,7 +435,8 @@ int main(int argc, char *argv[])
 
     if (err)
     {
-        g_print(QT_TRANSLATE_NOOP_UTF8("cmdline", "Error initializing: %s\n"), GST_STR_NULL(err->message));
+        g_print(QT_TRANSLATE_NOOP_UTF8("cmdline", "Error initializing: %s\n"),
+            GST_STR_NULL(err->message));
         g_error_free(err);
         return 1;
     }
@@ -426,8 +446,8 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    qDebug() << "Built by " AUX_STR(USERNAME) " on " \
-                AUX_STR(OS_DISTRO) " " AUX_STR(OS_REVISION) " at " __DATE__ " " __TIME__;
+    qDebug() << "Built by " AUX_STR(USERNAME) " on " AUX_STR(OS_DISTRO)
+             << AUX_STR(OS_REVISION) " at " __DATE__ " " __TIME__;
 
     // At this time it is safe to use QSettings
     //
@@ -536,20 +556,15 @@ int main(int argc, char *argv[])
             //
             if (bus.registerService(PRODUCT_NAMESPACE) || !switchToRunningInstance())
             {
-                adapter->startStudy(accessionNumber
-                                    , patientId
-                                    , patientName
-                                    , patientSex
-                                    , patientBirthdate
-                                    , physician
-                                    , studyDescription
-                                    , (bool)autoStart);
+                adapter->startStudy(accessionNumber, patientId, patientName, patientSex,
+                    patientBirthdate, physician, studyDescription, (bool)autoStart);
 
                 auto dbusService = settings.value("connect-to-dbus-service").toStringList();
                 if (dbusService.length() >= 4)
                 {
-                    if (!connectToDbusService(adapter, 0 == dbusService.at(0).compare("system", Qt::CaseInsensitive)
-                        , dbusService.at(1), dbusService.at(2), dbusService.at(3)))
+                    if (!connectToDbusService(adapter,
+                        0 == dbusService.at(0).compare("system", Qt::CaseInsensitive),
+                        dbusService.at(1), dbusService.at(2), dbusService.at(3)))
                     {
                         qDebug() << "Failed to connect to" << dbusService;
                     }

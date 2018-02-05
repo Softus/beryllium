@@ -38,8 +38,8 @@ namespace dcmtk{}
 using namespace dcmtk;
 #endif
 
-DebugSettings::DebugSettings(QWidget *parent) :
-    QWidget(parent)
+DebugSettings::DebugSettings(QWidget *parent)
+    : QWidget(parent)
 {
     QSettings settings;
     settings.beginGroup("debug");
@@ -51,7 +51,8 @@ DebugSettings::DebugSettings(QWidget *parent) :
     auto layoutGst = new QFormLayout;
 
     layoutGst->addRow(tr("&Log level"), cbGstLogLevel = new QComboBox);
-    auto gstDebugLevel = (GstDebugLevel)settings.value("gst-debug-level", DEFAULT_GST_DEBUG_LEVEL).toInt();
+    auto gstDebugLevel = (GstDebugLevel)settings.value("gst-debug-level",
+        DEFAULT_GST_DEBUG_LEVEL).toInt();
     for (int i = GST_LEVEL_ERROR; i < GST_LEVEL_COUNT; ++i)
     {
         auto name = QString::fromUtf8(gst_debug_level_get_name((GstDebugLevel)i));
@@ -73,11 +74,13 @@ DebugSettings::DebugSettings(QWidget *parent) :
     textGstOutput->setButtonIcon(QIcon(":/buttons/folder"));
     textGstOutput->setButtonPosition(QxtLineEdit::OuterRight);
     textGstOutput->setResetButtonMode(QxtLineEdit::ShowResetNotEmpty);
-    textGstOutput->setText(settings.value("gst-debug-log-file", DEFAULT_GST_DEBUG_LOG_FILE).toString());
+    textGstOutput->setText(settings.value("gst-debug-log-file",
+        DEFAULT_GST_DEBUG_LOG_FILE).toString());
     connect(textGstOutput, SIGNAL(buttonClicked()), this, SLOT(onClickBrowse()));
 
     layoutGst->addRow(nullptr, checkGstNoColor = new QCheckBox(tr("Ou&tput no color")));
-    checkGstNoColor->setChecked(settings.value("gst-debug-no-color", DEFAULT_GST_DEBUG_NO_COLOR).toBool());
+    checkGstNoColor->setChecked(
+        settings.value("gst-debug-no-color", DEFAULT_GST_DEBUG_NO_COLOR).toBool());
 
 #if !GST_CHECK_VERSION(1,0,0)
     layoutGst->addRow(tr("&Pipelines dump folder"), textGstDot = new QxtLineEdit());
@@ -114,7 +117,8 @@ DebugSettings::DebugSettings(QWidget *parent) :
     auto dicomDebugLevel = settings.value("dcmtk-log-level", DEFAULT_DCMTK_DEBUG_LEVEL).toString();
     for (size_t i = 0; i < sizeof(levels)/sizeof(levels[0]); ++i)
     {
-        auto name = QString::fromStdString(log4cplus::getLogLevelManager().toString(levels[i]).c_str());
+        auto name = QString::fromStdString(
+            log4cplus::getLogLevelManager().toString(levels[i]).c_str());
         cbDicomLogLevel->addItem(name);
         if (dicomDebugLevel == name)
         {
@@ -126,21 +130,24 @@ DebugSettings::DebugSettings(QWidget *parent) :
     textDicomOutput->setButtonIcon(QIcon(":/buttons/folder"));
     textDicomOutput->setButtonPosition(QxtLineEdit::OuterRight);
     textDicomOutput->setResetButtonMode(QxtLineEdit::ShowResetNotEmpty);
-    textDicomOutput->setText(settings.value("dcmtk-log-file", DEFAULT_DCMTK_DEBUG_LOG_FILE).toString());
+    textDicomOutput->setText(
+        settings.value("dcmtk-log-file", DEFAULT_DCMTK_DEBUG_LOG_FILE).toString());
     connect(textDicomOutput, SIGNAL(buttonClicked()), this, SLOT(onClickBrowse()));
 
     layoutDicom->addRow(tr("Co&nfig file"), textDicomConfig = new QxtLineEdit());
     textDicomConfig->setButtonIcon(QIcon(":/buttons/folder"));
     textDicomConfig->setButtonPosition(QxtLineEdit::OuterRight);
     textDicomConfig->setResetButtonMode(QxtLineEdit::ShowResetNotEmpty);
-    textDicomConfig->setText(settings.value("dcmtk-log-config", DEFAULT_DCMTK_LOG_CONFIG_FILE).toString());
+    textDicomConfig->setText(
+        settings.value("dcmtk-log-config", DEFAULT_DCMTK_LOG_CONFIG_FILE).toString());
     connect(textDicomConfig, SIGNAL(buttonClicked()), this, SLOT(onClickBrowse()));
 
     grpDicom->setLayout(layoutDicom);
 #endif
 
     layoutMain->addStretch();
-    layoutMain->addWidget(new QLabel(tr("NOTE: some changes on this page will take effect the next time the application starts.")));
+    layoutMain->addWidget(new QLabel(tr("NOTE: some changes on this page will take effect" \
+        " the next time the application starts.")));
     setLayout(layoutMain);
 }
 
@@ -167,7 +174,8 @@ void DebugSettings::save(QSettings& settings)
     settings.beginGroup("debug");
 
     settings.setValue("gst-debug-on", grpGst->isChecked());
-    settings.setValue("gst-debug-level", cbGstLogLevel->itemData(cbGstLogLevel->currentIndex()).toInt());
+    settings.setValue("gst-debug-level",
+        cbGstLogLevel->itemData(cbGstLogLevel->currentIndex()).toInt());
     settings.setValue("gst-debug-log-file", textGstOutput->text());
     settings.setValue("gst-debug-no-color", checkGstNoColor->isChecked());
 #if !GST_CHECK_VERSION(1,0,0)

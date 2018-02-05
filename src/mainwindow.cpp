@@ -97,26 +97,27 @@ static inline QBoxLayout::Direction bestDirection(const QSize &s)
     return s.width() >= s.height()? QBoxLayout::LeftToRight: QBoxLayout::TopToBottom;
 }
 
-MainWindow::MainWindow(QWidget *parent) :
-    QWidget(parent),
-    dlgPatient(nullptr),
-    archiveWindow(nullptr),
+MainWindow::MainWindow(QWidget *parent)
+    : QWidget(parent)
+    , dlgPatient(nullptr)
+    , archiveWindow(nullptr)
 #ifdef WITH_DICOM
-    pendingPatient(nullptr),
-    worklist(nullptr),
+    , pendingPatient(nullptr)
+    , worklist(nullptr)
 #endif
-    imageNo(0),
-    clipNo(0),
-    studyNo(0),
-    running(false),
-    activePipeline(nullptr)
+    , imageNo(0)
+    , clipNo(0)
+    , studyNo(0)
+    , running(false)
+    , activePipeline(nullptr)
 {
     QSettings settings;
     studyNo = settings.value("study-no").toInt();
 
     // This magic required for updating widgets from worker threads on Microsoft (R) Windows (TM)
     //
-    connect(this, SIGNAL(enableWidget(QWidget*, bool)), this, SLOT(onEnableWidget(QWidget*, bool)), Qt::QueuedConnection);
+    connect(this, SIGNAL(enableWidget(QWidget*, bool)), this,
+        SLOT(onEnableWidget(QWidget*, bool)), Qt::QueuedConnection);
 
     auto layoutMain = new QVBoxLayout();
     extraTitle = new QLabel;
@@ -238,7 +239,8 @@ void MainWindow::showEvent(QShowEvent *evt)
     if (!activePipeline || !activePipeline->pipeline)
     {
         QSettings settings;
-        auto safeMode    = settings.value("ui/enable-settings", DEFAULT_ENABLE_SETTINGS).toBool() && (
+        auto safeMode = settings.value("ui/enable-settings", DEFAULT_ENABLE_SETTINGS).toBool()
+            && (
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 8, 0))
                        qApp->queryKeyboardModifiers() == SAFE_MODE_KEYS ||
 #else
@@ -264,7 +266,8 @@ void MainWindow::showEvent(QShowEvent *evt)
         dbd.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
         dbd.dbcc_classguid = GUID_DEVINTERFACE_PARTITION;
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
-        HWND hWnd  = (HWND)qApp->platformNativeInterface()->nativeResourceForWindow(QByteArrayLiteral("handle"), windowHandle());
+        HWND hWnd  = (HWND)qApp->platformNativeInterface()->nativeResourceForWindow(
+            QByteArrayLiteral("handle"), windowHandle());
 #else
         HWND hWnd  = (HWND)winId();
 #endif
@@ -297,7 +300,8 @@ void MainWindow::showEvent(QShowEvent *evt)
             dbh.dbch_devicetype = DBT_DEVTYP_HANDLE;
             dbh.dbch_handle = hDir;
 
-            qDebug() << drvLetter << RegisterDeviceNotification(hWnd, &dbh, DEVICE_NOTIFY_WINDOW_HANDLE);
+            qDebug() << drvLetter << RegisterDeviceNotification(hWnd, &dbh,
+                DEVICE_NOTIFY_WINDOW_HANDLE);
             CloseHandle(hDir);
         }
 #endif
@@ -435,21 +439,22 @@ QToolBar* MainWindow::createToolBar()
                                     this, SLOT(onShowWorkListClick()));
 #endif
 
-    actionArchive = bar->addAction(QIcon(":/buttons/database"), tr("&Archive"), this, SLOT(onShowArchiveClick()));
+    actionArchive = bar->addAction(QIcon(":/buttons/database"), tr("&Archive"), this,
+        SLOT(onShowArchiveClick()));
     actionArchive->setToolTip(tr("Show studies archive"));
 
     actionSettings = bar->addAction(QIcon(":/buttons/settings"), tr("&Preferences").append(0x2026),
-                                    this, SLOT(onShowSettingsClick()));
+        this, SLOT(onShowSettingsClick()));
     actionSettings->setToolTip(tr("Edit settings"));
 
-    actionAbout = bar->addAction(QIcon(":/buttons/about"), tr("A&bout %1").arg(PRODUCT_FULL_NAME).append(0x2026),
-                                 this, SLOT(onShowAboutClick()));
+    actionAbout = bar->addAction(QIcon(":/buttons/about"),
+        tr("A&bout %1").arg(PRODUCT_FULL_NAME).append(0x2026), this, SLOT(onShowAboutClick()));
     actionAbout->setToolTip(tr("About %1").arg(PRODUCT_FULL_NAME));
 
     return bar;
 }
 
-// mpegpsmux => mpg, jpegenc => jpg, pngenc => png, oggmux => ogg, avimux => avi, matrosskamux => mat
+// mpegpsmux > mpg, jpegenc > jpg, pngenc > png, oggmux > ogg, avimux > avi, matrosskamux > mat
 //
 static QString getExt(QString str)
 {
@@ -578,13 +583,16 @@ Pipeline* MainWindow::findPipeline(const QString& alias)
 void MainWindow::createPipeline(int index, int order)
 {
     auto p = new Pipeline(index, this);
-    connect(p, SIGNAL(imageSaved(const QString&, const QString&, const QPixmap&)),
-            this, SLOT(onImageSaved(const QString&, const QString&, const QPixmap&)), Qt::QueuedConnection);
+    connect(p, SIGNAL(imageSaved(const QString&, const QString&, const QPixmap&)), this,
+        SLOT(onImageSaved(const QString&, const QString&, const QPixmap&)), Qt::QueuedConnection);
     connect(p, SIGNAL(clipFrameReady()), this, SLOT(onClipFrameReady()), Qt::QueuedConnection);
-    connect(p, SIGNAL(clipRecordComplete()), this, SLOT(onClipRecordComplete()), Qt::QueuedConnection);
-    connect(p, SIGNAL(pipelineError(const QString&)), this, SLOT(onPipelineError(const QString&)), Qt::QueuedConnection);
+    connect(p, SIGNAL(clipRecordComplete()), this,
+        SLOT(onClipRecordComplete()), Qt::QueuedConnection);
+    connect(p, SIGNAL(pipelineError(const QString&)), this,
+        SLOT(onPipelineError(const QString&)), Qt::QueuedConnection);
     connect(p, SIGNAL(playSound(QString)), this, SLOT(playSound(QString)), Qt::QueuedConnection);
-    connect(p->displayWidget, SIGNAL(swapWith(QWidget*,QWidget*)), this, SLOT(onSwapSources(QWidget*,QWidget*)));
+    connect(p->displayWidget, SIGNAL(swapWith(QWidget*,QWidget*)), this,
+        SLOT(onSwapSources(QWidget*,QWidget*)));
     connect(p->displayWidget, SIGNAL(click()), this, SLOT(onSourceClick()));
     connect(p->displayWidget, SIGNAL(copy()), this, SLOT(onSourceSnapshot()));
     pipelines.push_back(p);
@@ -600,7 +608,8 @@ void MainWindow::createPipeline(int index, int order)
     {
         p->displayWidget->setMinimumSize(altSrcSize);
         p->displayWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        layoutSources->insertWidget(order < 0? layoutSources->count(): order, p->displayWidget, 0, Qt::AlignTop);
+        layoutSources->insertWidget(order < 0 ? layoutSources->count() : order,
+            p->displayWidget, 0, Qt::AlignTop);
     }
 
     p->updatePipeline();
@@ -645,7 +654,8 @@ void MainWindow::rebuildPipelines()
     {
         activePipeline = pipelines.front();
         activePipeline->displayWidget->setMinimumSize(mainSrcSize);
-        activePipeline->displayWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        activePipeline->displayWidget->setSizePolicy(QSizePolicy::Expanding,
+            QSizePolicy::Expanding);
         layoutSources->removeWidget(activePipeline->displayWidget);
         layoutVideo->insertWidget(0, activePipeline->displayWidget);
     }
@@ -694,14 +704,20 @@ void MainWindow::applySettings()
     actionSettings->setVisible(showSettings);
 
     settings.beginGroup("hotkeys");
-    updateShortcut(btnStart,    settings.value("capture-start",    DEFAULT_HOTKEY_START).toInt());
-    updateShortcut(btnSnapshot, settings.value("capture-snapshot", DEFAULT_HOTKEY_SNAPSHOT).toInt());
-    updateShortcut(btnRecordStart, settings.value("capture-record-start", DEFAULT_HOTKEY_RECORD_START).toInt());
-    updateShortcut(btnRecordStop,  settings.value("capture-record-stop",  DEFAULT_HOTKEY_RECORD_STOP).toInt());
-
-    updateShortcut(actionArchive,  settings.value("capture-archive",   DEFAULT_HOTKEY_ARCHIVE).toInt());
-    updateShortcut(actionSettings, settings.value("capture-settings",  DEFAULT_HOTKEY_SETTINGS).toInt());
-    updateShortcut(actionAbout,    settings.value("capture-about",     DEFAULT_HOTKEY_ABOUT).toInt());
+    updateShortcut(btnStart,       settings.value("capture-start",
+        DEFAULT_HOTKEY_START).toInt());
+    updateShortcut(btnSnapshot,    settings.value("capture-snapshot",
+        DEFAULT_HOTKEY_SNAPSHOT).toInt());
+    updateShortcut(btnRecordStart, settings.value("capture-record-start",
+        DEFAULT_HOTKEY_RECORD_START).toInt());
+    updateShortcut(btnRecordStop,  settings.value("capture-record-stop",
+        DEFAULT_HOTKEY_RECORD_STOP).toInt());
+    updateShortcut(actionArchive,  settings.value("capture-archive",
+        DEFAULT_HOTKEY_ARCHIVE).toInt());
+    updateShortcut(actionSettings, settings.value("capture-settings",
+        DEFAULT_HOTKEY_SETTINGS).toInt());
+    updateShortcut(actionAbout,    settings.value("capture-about",
+        DEFAULT_HOTKEY_ABOUT).toInt());
 
 #ifdef WITH_DICOM
     // Recreate worklist just in case the columns/servers were changed
@@ -711,7 +727,8 @@ void MainWindow::applySettings()
     connect(worklist, SIGNAL(startStudy(DcmDataset*)), this, SLOT(onStartStudy(DcmDataset*)));
     worklist->setObjectName("Worklist");
     mainStack->addWidget(worklist);
-    updateShortcut(actionWorklist, settings.value("capture-worklist",   DEFAULT_HOTKEY_WORKLIST).toInt());
+    updateShortcut(actionWorklist, settings.value("capture-worklist",
+        DEFAULT_HOTKEY_WORKLIST).toInt());
 #endif
     settings.endGroup();
 
@@ -764,7 +781,8 @@ QDir MainWindow::checkPath(const QString tpl, bool needUnique)
 {
     QDir dir(tpl);
 
-    if (needUnique && dir.exists() && !dir.entryList(QDir::NoDotAndDotDot | QDir::AllEntries).isEmpty())
+    if (needUnique && dir.exists()
+        && !dir.entryList(QDir::NoDotAndDotDot | QDir::AllEntries).isEmpty())
     {
         int cnt = 1;
         QString alt;
@@ -773,7 +791,8 @@ QDir MainWindow::checkPath(const QString tpl, bool needUnique)
             alt = dir.absolutePath()
                 .append(" (").append(QString::number(++cnt)).append(')');
         }
-        while (dir.exists(alt) && !dir.entryList(QDir::NoDotAndDotDot | QDir::AllEntries).isEmpty());
+        while (dir.exists(alt)
+            && !dir.entryList(QDir::NoDotAndDotDot | QDir::AllEntries).isEmpty());
         dir.setPath(alt);
     }
     qDebug() << "Output path" << dir.absolutePath();
@@ -840,7 +859,11 @@ void MainWindow::onPipelineError(const QString& text)
     onStopStudy();
 }
 
-void MainWindow::onImageSaved(const QString& filename, const QString &tooltip, const QPixmap& pixmap)
+void MainWindow::onImageSaved
+    ( const QString& filename
+    , const QString &tooltip
+    , const QPixmap& pixmap
+    )
 {
     QPixmap pm = pixmap.copy();
 
@@ -850,7 +873,8 @@ void MainWindow::onImageSaved(const QString& filename, const QString &tooltip, c
         baseName = QFileInfo(baseName.mid(1)).completeBaseName();
     }
     auto existent = listImagesAndClips->findItems(baseName, Qt::MatchExactly);
-    auto item = !existent.isEmpty()? existent.first(): new QListWidgetItem(baseName, listImagesAndClips);
+    auto item = !existent.isEmpty()
+        ? existent.first() : new QListWidgetItem(baseName, listImagesAndClips);
     item->setToolTip(tooltip);
     item->setIcon(QIcon(pm));
     item->setSizeHint(QSize(176, 144));
@@ -867,7 +891,8 @@ bool MainWindow::startVideoRecord()
         // How we get here?
         //
         QMessageBox::critical(this, windowTitle(),
-            tr("Failed to start recording.\nPlease, adjust the video source settings."), QMessageBox::Ok);
+            tr("Failed to start recording.\nPlease, adjust the video source settings."),
+            QMessageBox::Ok);
         return false;
     }
 
@@ -875,8 +900,10 @@ bool MainWindow::startVideoRecord()
     auto ok = true;
     if (settings.value("gst/enable-video").toBool())
     {
-        auto split = settings.value("gst/split-video-files", DEFAULT_SPLIT_VIDEO_FILES).toBool();
-        auto fileTemplate = settings.value("storage/video-template", DEFAULT_VIDEO_TEMPLATE).toString();
+        auto split = settings.value("gst/split-video-files",
+            DEFAULT_SPLIT_VIDEO_FILES).toBool();
+        auto fileTemplate = settings.value("storage/video-template",
+            DEFAULT_VIDEO_TEMPLATE).toString();
 
         foreach (auto p, pipelines)
         {
@@ -886,7 +913,8 @@ bool MainWindow::startVideoRecord()
             if (videoFileName.isEmpty())
             {
                 QMessageBox::critical(this, windowTitle(),
-                    tr("Failed to start recording.\nCheck the error log for details."), QMessageBox::Ok);
+                    tr("Failed to start recording.\nCheck the error log for details."),
+                    QMessageBox::Ok);
                 ok = false;
                 break;
             }
@@ -923,7 +951,8 @@ void MainWindow::onStartClick()
         else
         {
             QMessageBox::critical(this, windowTitle(),
-                tr("Failed to start recording.\nPlease, adjust the video source settings."), QMessageBox::Ok);
+                tr("Failed to start recording.\nPlease, adjust the video source settings."),
+                QMessageBox::Ok);
         }
     }
     else
@@ -1031,7 +1060,8 @@ bool MainWindow::takeSnapshot(Pipeline* pipeline, const QString& imageTemplate)
                 //
                 continue;
             }
-            auto imageExt = getExt(settings.value("image-encoder", DEFAULT_IMAGE_ENCODER).toString());
+            auto imageExt = getExt(settings.value("image-encoder",
+                DEFAULT_IMAGE_ENCODER).toString());
             p->takeSnapshot(outputPath.absoluteFilePath(imageFileName).append(imageExt));
         }
     }
@@ -1053,7 +1083,11 @@ void MainWindow::onRecordStopClick()
     stopRecord();
 }
 
-bool MainWindow::startRecord(int duration, Pipeline* pipeline, const QString &clipFileTemplate)
+bool MainWindow::startRecord
+    ( int duration
+    , Pipeline* pipeline
+    , const QString &clipFileTemplate
+    )
 {
     if (!running)
     {
@@ -1066,11 +1100,12 @@ bool MainWindow::startRecord(int duration, Pipeline* pipeline, const QString &cl
     actualTemplate = replace(actualTemplate, ++clipNo);
 
     settings.beginGroup("gst");
-    auto saveThumbnails = settings.value("save-clip-thumbnails", DEFAULT_SAVE_CLIP_THUMBNAILS).toBool();
+    auto saveThumbnails = settings.value("save-clip-thumbnails",
+        DEFAULT_SAVE_CLIP_THUMBNAILS).toBool();
 
-    auto recordLimit = duration > 0? duration:
-        settings.value("clip-limit", DEFAULT_CLIP_LIMIT).toBool()?
-            settings.value("clip-countdown", DEFAULT_CLIP_COUNTDOWN).toInt(): 0;
+    auto recordLimit = duration > 0 ? duration:
+        settings.value("clip-limit", DEFAULT_CLIP_LIMIT).toBool() ?
+            settings.value("clip-countdown", DEFAULT_CLIP_COUNTDOWN).toInt() : 0;
 
     if (pipeline)
     {
@@ -1099,7 +1134,12 @@ bool MainWindow::startRecord(int duration, Pipeline* pipeline, const QString &cl
     return true;
 }
 
-void MainWindow::doRecord(int recordLimit, bool saveThumbnails, Pipeline* pipeline, const QString &actualTemplate)
+void MainWindow::doRecord
+    ( int recordLimit
+    , bool saveThumbnails
+    , Pipeline* pipeline
+    , const QString &actualTemplate
+    )
 {
     pipeline->recordLimit = recordLimit;
 
@@ -1112,7 +1152,8 @@ void MainWindow::doRecord(int recordLimit, bool saveThumbnails, Pipeline* pipeli
         {
             if (!saveThumbnails)
             {
-                auto item = new QListWidgetItem(QFileInfo(clipFileName).baseName(), listImagesAndClips);
+                auto item = new QListWidgetItem(QFileInfo(clipFileName).baseName(),
+                    listImagesAndClips);
                 item->setToolTip(clipFileName);
                 item->setIcon(QIcon(":/buttons/movie"));
                 listImagesAndClips->setItemSelected(item, true);
@@ -1129,7 +1170,8 @@ void MainWindow::doRecord(int recordLimit, bool saveThumbnails, Pipeline* pipeli
         {
             pipeline->removeVideoTail("clip");
             QMessageBox::critical(this, windowTitle(),
-                tr("Failed to start recording.\nCheck the error log for details."), QMessageBox::Ok);
+                tr("Failed to start recording.\nCheck the error log for details."),
+                QMessageBox::Ok);
         }
     }
     else
@@ -1271,7 +1313,8 @@ void MainWindow::onStartStudy()
 
     if (running)
     {
-        QMessageBox::warning(this, windowTitle(), tr("Failed to start a study.\nAnother study is in progress."));
+        QMessageBox::warning(this, windowTitle(),
+            tr("Failed to start a study.\nAnother study is in progress."));
         return;
     }
 
@@ -1359,7 +1402,8 @@ void MainWindow::onStartStudy()
         ds.findAndGetUint16(DCM_ClipNo, clipNo);
     }
 
-    auto cond = pendingPatient->saveFile((const char*)localPatientInfoFile.toLocal8Bit(), writeXfer);
+    auto cond = pendingPatient->saveFile((const char*)localPatientInfoFile.toLocal8Bit(),
+        writeXfer);
     if (cond.bad())
     {
         QMessageBox::critical(this, windowTitle(), QString::fromLocal8Bit(cond.text()));
@@ -1372,7 +1416,8 @@ void MainWindow::onStartStudy()
 #endif
 
     settings.beginGroup("dicom");
-    if (settings.value("start-with-mpps", true).toBool() && !settings.value("mpps-server").toString().isEmpty())
+    if (settings.value("start-with-mpps", true).toBool()
+        && !settings.value("mpps-server").toString().isEmpty())
     {
         DcmClient client(UID_ModalityPerformedProcedureStepSOPClass);
         pendingSOPInstanceUID = client.nCreateRQ(pendingPatient);
@@ -1424,7 +1469,8 @@ void MainWindow::onStopStudy()
         char seriesUID[100] = {0};
         dcmGenerateUniqueIdentifier(seriesUID, SITE_SERIES_UID_ROOT);
 
-        if (!pendingSOPInstanceUID.isEmpty() && settings.value("dicom/complete-with-mpps", true).toBool())
+        if (!pendingSOPInstanceUID.isEmpty()
+            && settings.value("dicom/complete-with-mpps", true).toBool())
         {
             DcmClient client(UID_ModalityPerformedProcedureStepSOPClass);
             if (!client.nSetRQ(seriesUID, pendingPatient, pendingSOPInstanceUID))

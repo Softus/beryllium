@@ -25,14 +25,15 @@
 #include <QSettings>
 #include <QxtLineEdit>
 
-MandatoryFieldGroup::MandatoryFieldGroup(QObject *parent)
-    : QObject(parent), okButton(nullptr)
+MandatoryFieldGroup::MandatoryFieldGroup(QObject* parent)
+    : QObject(parent)
+    , okButton(nullptr)
 {
     mandatoryFieldColor = QColor(QSettings()
         .value("ui/mandatory-field-color", DEFAULT_MANDATORY_FIELD_COLOR).toString()).rgba();
 }
 
-void MandatoryFieldGroup::add(QWidget *widget)
+void MandatoryFieldGroup::add(QWidget* widget)
 {
     // For comboboxes, datepicker and like that we shuld use inner text edit widget
     //
@@ -63,7 +64,7 @@ void MandatoryFieldGroup::add(QWidget *widget)
     changed();
 }
 
-void MandatoryFieldGroup::remove(QWidget *widget)
+void MandatoryFieldGroup::remove(QWidget* widget)
 {
     if (widget->inherits("QComboBox"))
     {
@@ -78,7 +79,7 @@ void MandatoryFieldGroup::remove(QWidget *widget)
 }
 
 
-void MandatoryFieldGroup::setOkButton(QPushButton *button)
+void MandatoryFieldGroup::setOkButton(QPushButton* button)
 {
     if (okButton && okButton != button)
     {
@@ -127,7 +128,8 @@ void MandatoryFieldGroup::setMandatory(QWidget* widget, bool mandatory)
         widget->setToolTip(tr("This is a mandatory field"));
         if (widget->inherits("QxtLineEdit"))
         {
-            ((QxtLineEdit*)widget->qt_metacast("QxtLineEdit"))->setSampleText(tr("This is a mandatory field"));
+            ((QxtLineEdit*)widget->qt_metacast("QxtLineEdit"))->
+                setSampleText(tr("This is a mandatory field"));
         }
     }
     else
@@ -151,8 +153,11 @@ void MandatoryFieldGroup::changed()
     bool enable = true;
     foreach (auto widget, widgets)
     {
-        if ((widget->inherits("QCheckBox") && ((QCheckBox*)widget->qt_metacast("QCheckBox"))->checkState() == Qt::PartiallyChecked)
-            || (widget->inherits("QLineEdit") && ((QLineEdit*)widget->qt_metacast("QLineEdit"))->text().isEmpty()))
+        if ((widget->inherits("QCheckBox")
+                && ((QCheckBox*)widget->qt_metacast("QCheckBox"))->checkState()
+                    == Qt::PartiallyChecked)
+            || (widget->inherits("QLineEdit")
+                && ((QLineEdit*)widget->qt_metacast("QLineEdit"))->text().isEmpty()))
         {
             enable = false;
             setMandatory(widget, true);

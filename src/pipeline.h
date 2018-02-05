@@ -42,16 +42,26 @@ class Pipeline : public QObject
     void onImageReady(const QGst::BufferPtr&);
     void onClipFrame(const QGst::BufferPtr&);
     void onVideoFrame(const QGst::BufferPtr&);
-    QString buildPipeline(const QSettings& settings, const QString& outputPathDef,
-                          bool enableVideoLog, const QString &detectMotion);
+    QString buildPipeline
+        ( const QSettings& settings
+        , const QString& outputPathDef
+        , bool enableVideoLog
+        , const QString &detectMotion
+        );
     void releasePipeline();
     void errorGlib(const QGlib::ObjectPtr& obj, const QGlib::Error& ex);
-    void setElementProperty(const char* elm, const char* prop = nullptr,
-                            const QGlib::Value& value = nullptr,
-                            QGst::State minimumState = QGst::StatePlaying);
-    void setElementProperty(QGst::ElementPtr& elm, const char* prop = nullptr,
-                            const QGlib::Value& value = nullptr,
-                            QGst::State minimumState = QGst::StatePlaying);
+    void setElementProperty
+        ( const char* elm
+        , const char* prop = nullptr
+        , const QGlib::Value& value = nullptr
+        , QGst::State minimumState = QGst::StatePlaying
+        );
+    void setElementProperty
+        ( QGst::ElementPtr& elm
+        , const char* prop = nullptr
+        , const QGlib::Value& value = nullptr
+        , QGst::State minimumState = QGst::StatePlaying
+        );
     void setImageLocation(QString filename);
 
 public:
@@ -59,7 +69,12 @@ public:
     ~Pipeline();
 
     bool updatePipeline();
-    QString appendVideoTail(const QDir &dir, const QString& prefix, QString clipFileName, bool split);
+    QString appendVideoTail
+        ( const QDir &dir
+        , const QString& prefix
+        , QString clipFileName
+        , bool split
+        );
     void removeVideoTail(const QString& prefix);
     void enableEncoder(bool enable);
     void enableClip(bool enable);

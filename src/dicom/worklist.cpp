@@ -74,13 +74,16 @@ Worklist::Worklist(QWidget *parent) :
     settings.endGroup();
 
     table = new QTableWidget(0, cols.size());
-    connect(table, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(onItemDoubleClicked(QTableWidgetItem*)));
-    connect(table, SIGNAL(currentItemChanged(QTableWidgetItem*,QTableWidgetItem*)), this, SLOT(onCurrentItemChanged(QTableWidgetItem*,QTableWidgetItem*)));
+    connect(table, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this,
+        SLOT(onItemDoubleClicked(QTableWidgetItem*)));
+    connect(table, SIGNAL(currentItemChanged(QTableWidgetItem*,QTableWidgetItem*)), this,
+        SLOT(onCurrentItemChanged(QTableWidgetItem*,QTableWidgetItem*)));
 
     for (auto i = 0; i < cols.size(); ++i)
     {
         DcmTag tag;
-        auto text = DcmTag::findTagFromName(cols[i].toUtf8(), tag).good()? QString::fromUtf8(tag.getTagName()): cols[i];
+        auto text = DcmTag::findTagFromName(cols[i].toUtf8(), tag).good()
+            ? QString::fromUtf8(tag.getTagName()) : cols[i];
         auto item = new QTableWidgetItem(text);
         item->setData(Qt::UserRole, (tag.getGroup() << 16) | tag.getElement());
         table->setHorizontalHeaderItem(i, item);
@@ -112,10 +115,14 @@ Worklist::Worklist(QWidget *parent) :
     settings.endGroup();
 
     settings.beginGroup("hotkeys");
-    updateShortcut(actionDetail,     settings.value("worklist-show-details", DEFAULT_HOTKEY_SHOW_DETAILS).toInt());
-    updateShortcut(actionStartStudy, settings.value("worklist-start",        DEFAULT_HOTKEY_START).toInt());
-    updateShortcut(actionLoad,       settings.value("worklist-refresh",      DEFAULT_HOTKEY_REFRESH).toInt());
-    updateShortcut(actionBack,       settings.value("worklist-back",         DEFAULT_HOTKEY_BACK).toInt());
+    updateShortcut(actionDetail,     settings.value("worklist-show-details",
+        DEFAULT_HOTKEY_SHOW_DETAILS).toInt());
+    updateShortcut(actionStartStudy, settings.value("worklist-start",
+        DEFAULT_HOTKEY_START).toInt());
+    updateShortcut(actionLoad,       settings.value("worklist-refresh",
+        DEFAULT_HOTKEY_REFRESH).toInt());
+    updateShortcut(actionBack,       settings.value("worklist-back",
+        DEFAULT_HOTKEY_BACK).toInt());
     settings.endGroup();
 
     setAttribute(Qt::WA_DeleteOnClose, false);
@@ -126,11 +133,15 @@ QToolBar* Worklist::createToolBar()
     QToolBar* bar = new QToolBar(tr("Worklist"));
     bar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    actionBack   = bar->addAction(QIcon(":buttons/back"), tr("Back"), this, SLOT(onBackToMainWindowClick()));
-    actionLoad   = bar->addAction(QIcon(":/buttons/refresh"), tr("&Refresh"), this, SLOT(onLoadClick()));
-    actionDetail = bar->addAction(QIcon(":/buttons/details"), tr("&Details"), this, SLOT(onShowDetailsClick()));
+    actionBack   = bar->addAction(QIcon(":buttons/back"), tr("Back"), this,
+        SLOT(onBackToMainWindowClick()));
+    actionLoad   = bar->addAction(QIcon(":/buttons/refresh"), tr("&Refresh"), this,
+        SLOT(onLoadClick()));
+    actionDetail = bar->addAction(QIcon(":/buttons/details"), tr("&Details"), this,
+        SLOT(onShowDetailsClick()));
     actionDetail->setEnabled(false);
-    actionStartStudy = bar->addAction(QIcon(":/buttons/start"), tr("Start &study"), this, SLOT(onStartStudyClick()));
+    actionStartStudy = bar->addAction(QIcon(":/buttons/start"), tr("Start &study"), this,
+        SLOT(onStartStudyClick()));
     actionStartStudy->setEnabled(false);
 
     return bar;
@@ -298,7 +309,8 @@ void Worklist::onStartStudyClick()
 
 void Worklist::onBackToMainWindowClick()
 {
-    auto stackWidget = static_cast<SlidingStackedWidget*>(parent()->qt_metacast("SlidingStackedWidget"));
+    auto stackWidget = static_cast<SlidingStackedWidget*>(parent()->
+        qt_metacast("SlidingStackedWidget"));
     if (stackWidget)
     {
         stackWidget->slideInWidget("Main");

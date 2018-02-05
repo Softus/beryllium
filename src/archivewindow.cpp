@@ -165,11 +165,13 @@ static QStringList collectRemovableDrives()
         //
         foreach (auto path, paths)
         {
-            QDBusInterface iface("org.freedesktop.UDisks", path.path(), "org.freedesktop.DBus.Properties", bus);
+            QDBusInterface iface("org.freedesktop.UDisks", path.path(),
+                "org.freedesktop.DBus.Properties", bus);
             if (!iface.isValid())
                 continue;
 
-            QDBusReply<QVariant> reply = iface.call("Get", "org.freedesktop.UDisks.Device", "DeviceIsRemovable");
+            QDBusReply<QVariant> reply = iface.call("Get", "org.freedesktop.UDisks.Device",
+                "DeviceIsRemovable");
             if (reply.isValid() && reply.value().toBool())
             {
                 removableDrives << path;
@@ -180,12 +182,14 @@ static QStringList collectRemovableDrives()
         //
         foreach (auto path, paths)
         {
-            QDBusInterface iface("org.freedesktop.UDisks", path.path(), "org.freedesktop.DBus.Properties", bus);
+            QDBusInterface iface("org.freedesktop.UDisks", path.path(),
+                "org.freedesktop.DBus.Properties", bus);
 
             if (!iface.isValid())
                 continue;
 
-            QDBusReply<QVariant> reply = iface.call("Get", "org.freedesktop.UDisks.Device", "PartitionSlave");
+            QDBusReply<QVariant> reply = iface.call("Get", "org.freedesktop.UDisks.Device",
+                "PartitionSlave");
             if (!reply.isValid() || !removableDrives.contains(reply.value().value<QDBusObjectPath>()))
             {
                 // Not a partition of a removable drive
@@ -254,21 +258,26 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
     root = QDir::root();
 
     dirWatcher = new QFileSystemWatcher(this);
-    connect(dirWatcher, SIGNAL(directoryChanged(const QString &)), this, SLOT(onDirectoryChanged(const QString &)));
+    connect(dirWatcher, SIGNAL(directoryChanged(const QString &)), this,
+        SLOT(onDirectoryChanged(const QString &)));
 
     auto layoutMain = new QVBoxLayout;
 
     auto barArchive = new QToolBar(tr("Archive"));
     barArchive->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    actionBack = barArchive->addAction(QIcon(":buttons/back"), tr("Back"), this, SLOT(onBackToMainWindowClick()));
+    actionBack = barArchive->addAction(QIcon(":buttons/back"), tr("Back"), this,
+        SLOT(onBackToMainWindowClick()));
 
-    actionDelete = barArchive->addAction(QIcon(":buttons/delete"), tr("Delete"), this, SLOT(onDeleteClick()));
+    actionDelete = barArchive->addAction(QIcon(":buttons/delete"), tr("Delete"), this,
+        SLOT(onDeleteClick()));
     actionDelete->setEnabled(false);
-    actionRestore = barArchive->addAction(QIcon(":/buttons/undo"), tr("Restore"), this, SLOT(onRestoreClick()));
+    actionRestore = barArchive->addAction(QIcon(":/buttons/undo"), tr("Restore"), this,
+        SLOT(onRestoreClick()));
     actionRestore->setEnabled(false);
 
 #ifdef WITH_DICOM
-    actionStore = barArchive->addAction(QIcon(":buttons/dicom"), tr("Upload"), this, SLOT(onStoreClick()));
+    actionStore = barArchive->addAction(QIcon(":buttons/dicom"), tr("Upload"), this,
+        SLOT(onStoreClick()));
 #endif
     btnUsbStore = new QToolButton;
     btnUsbStore->setIcon(QIcon(":buttons/usb"));
@@ -279,9 +288,11 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
     connect(btnUsbStore, SIGNAL(triggered(QAction*)), this, SLOT(onUsbStoreMenuClick(QAction*)));
     barArchive->addWidget(btnUsbStore);
 
-    actionEdit = barArchive->addAction(QIcon(":buttons/edit"), tr("Edit"), this, SLOT(onEditClick()));
+    actionEdit = barArchive->addAction(QIcon(":buttons/edit"), tr("Edit"), this,
+        SLOT(onEditClick()));
     actionEdit->setEnabled(false);
-    actionUp = barArchive->addAction(QIcon(":/buttons/up"), tr("Up"), this, SLOT(onUpFolderClick()));
+    actionUp = barArchive->addAction(QIcon(":/buttons/up"), tr("Up"), this,
+        SLOT(onUpFolderClick()));
     actionUp->setEnabled(false);
 
     auto spacer = new QWidget;
@@ -303,8 +314,8 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
     actionMode->setMenu(menuMode);
     barArchive->addAction(actionMode);
 
-    actionBrowse = barArchive->addAction(QIcon(":buttons/folder"), tr("File browser"), this, SLOT(onShowFolderClick()));
-
+    actionBrowse = barArchive->addAction(QIcon(":buttons/folder"), tr("File browser"), this,
+        SLOT(onShowFolderClick()));
 
     barPath = new QToolBar(tr("Path"));
     layoutMain->addWidget(barPath);
@@ -353,12 +364,15 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
     playerLayout->addLayout(playerInnerLayout);
 
     barMediaControls = new QToolBar(tr("Media"));
-    actionSeekBack = barMediaControls->addAction(QIcon(":buttons/rewind"), tr("Rewing"), this, SLOT(onSeekClick()));
+    actionSeekBack = barMediaControls->addAction(QIcon(":buttons/rewind"), tr("Rewing"), this,
+        SLOT(onSeekClick()));
     actionSeekBack->setVisible(false);
     actionSeekBack->setData(-40000000);
-    actionPlay = barMediaControls->addAction(QIcon(":buttons/play"), tr("Play"), this, SLOT(onPlayPauseClick()));
+    actionPlay = barMediaControls->addAction(QIcon(":buttons/play"), tr("Play"), this,
+        SLOT(onPlayPauseClick()));
     actionPlay->setVisible(false);
-    actionSeekFwd = barMediaControls->addAction(QIcon(":buttons/forward"),  tr("Forward"), this, SLOT(onSeekClick()));
+    actionSeekFwd = barMediaControls->addAction(QIcon(":buttons/forward"),  tr("Forward"), this,
+        SLOT(onSeekClick()));
     actionSeekFwd->setVisible(false);
     actionSeekFwd->setData(+40000000);
     barMediaControls->setMinimumSize(48, 48);
@@ -374,8 +388,10 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
 //    listFiles->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     listFiles->setMovement(QListView::Snap);
     connect(listFiles, SIGNAL(currentRowChanged(int)), this, SLOT(onListRowChanged(int)));
-    connect(listFiles, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(onListItemDoubleClicked(QListWidgetItem*)));
-    connect(listFiles, SIGNAL(itemDraggedOut(QListWidgetItem*)), this, SLOT(onListItemDraggedOut(QListWidgetItem*)));
+    connect(listFiles, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
+        SLOT(onListItemDoubleClicked(QListWidgetItem*)));
+    connect(listFiles, SIGNAL(itemDraggedOut(QListWidgetItem*)), this,
+        SLOT(onListItemDraggedOut(QListWidgetItem*)));
     actionEnter = new QAction(listFiles);
     connect(actionEnter, SIGNAL(triggered()), this, SLOT(onListKey()));
     listFiles->addAction(actionEnter);
@@ -391,12 +407,15 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
     auto svc = "org.freedesktop.UDisks2";
     auto path = "/org/freedesktop/UDisks2";
     auto iface = "org.freedesktop.DBus.ObjectManager";
-    if (bus.connect(svc, path, iface, "InterfacesAdded",  this, SLOT(InterfacesAdded(QDBusObjectPath,QVariantMapMap)))
-        && bus.connect(svc, path, iface, "InterfacesRemoved",  this, SLOT(InterfacesRemoved(QDBusObjectPath,QStringList))))
+    if (bus.connect(svc, path, iface, "InterfacesAdded",  this,
+            SLOT(InterfacesAdded(QDBusObjectPath,QVariantMapMap)))
+        && bus.connect(svc, path, iface, "InterfacesRemoved",  this,
+            SLOT(InterfacesRemoved(QDBusObjectPath,QStringList))))
     {
         qDebug() << "Connected to" << svc;
     }
-    else if (connectToDbusService(this, true, "org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks"))
+    else if (connectToDbusService(this, true, "org.freedesktop.UDisks", "/org/freedesktop/UDisks",
+        "org.freedesktop.UDisks"))
     {
         qDebug() << "Connected to" << "org.freedesktop.UDisks";
     }
@@ -410,31 +429,49 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
 void ArchiveWindow::updateHotkeys(QSettings& settings)
 {
     settings.beginGroup("hotkeys");
-    updateShortcut(actionBack,        settings.value("archive-back",          DEFAULT_HOTKEY_BACK).toInt());
-    updateShortcut(actionDelete,      settings.value("archive-delete",        DEFAULT_HOTKEY_DELETE).toInt());
-    updateShortcut(actionRestore,     settings.value("archive-restore",       DEFAULT_HOTKEY_RESTORE).toInt());
+    updateShortcut(actionBack,        settings.value("archive-back",
+        DEFAULT_HOTKEY_BACK).toInt());
+    updateShortcut(actionDelete,      settings.value("archive-delete",
+        DEFAULT_HOTKEY_DELETE).toInt());
+    updateShortcut(actionRestore,     settings.value("archive-restore",
+        DEFAULT_HOTKEY_RESTORE).toInt());
 #ifdef WITH_DICOM
-    updateShortcut(actionStore,       settings.value("archive-upload",        DEFAULT_HOTKEY_UPLOAD).toInt());
+    updateShortcut(actionStore,       settings.value("archive-upload",
+        DEFAULT_HOTKEY_UPLOAD).toInt());
 #endif
-    updateShortcut(btnUsbStore,       settings.value("archive-usb",           DEFAULT_HOTKEY_USB).toInt());
-    updateShortcut(actionEdit,        settings.value("archive-edit",          DEFAULT_HOTKEY_EDIT).toInt());
-    updateShortcut(actionUp,          settings.value("archive-parent-folder", DEFAULT_HOTKEY_PARENT_FOLDER).toInt());
+    updateShortcut(btnUsbStore,       settings.value("archive-usb",
+        DEFAULT_HOTKEY_USB).toInt());
+    updateShortcut(actionEdit,        settings.value("archive-edit",
+        DEFAULT_HOTKEY_EDIT).toInt());
+    updateShortcut(actionUp,          settings.value("archive-parent-folder",
+        DEFAULT_HOTKEY_PARENT_FOLDER).toInt());
 
-    updateShortcut(actionMode,        settings.value("archive-next-mode",     DEFAULT_HOTKEY_NEXT_MODE).toInt());
-    updateShortcut(actionListMode,    settings.value("archive-list-mode",     DEFAULT_HOTKEY_LIST_MODE).toInt());
-    updateShortcut(actionIconMode,    settings.value("archive-icon-mode",     DEFAULT_HOTKEY_ICON_MODE).toInt());
-    updateShortcut(actionGalleryMode, settings.value("archive-gallery-mode",  DEFAULT_HOTKEY_GALLERY_MODE).toInt());
+    updateShortcut(actionMode,        settings.value("archive-next-mode",
+        DEFAULT_HOTKEY_NEXT_MODE).toInt());
+    updateShortcut(actionListMode,    settings.value("archive-list-mode",
+        DEFAULT_HOTKEY_LIST_MODE).toInt());
+    updateShortcut(actionIconMode,    settings.value("archive-icon-mode",
+        DEFAULT_HOTKEY_ICON_MODE).toInt());
+    updateShortcut(actionGalleryMode, settings.value("archive-gallery-mode",
+        DEFAULT_HOTKEY_GALLERY_MODE).toInt());
 
-    updateShortcut(actionBrowse,      settings.value("archive-browse",        DEFAULT_HOTKEY_BROWSE).toInt());
+    updateShortcut(actionBrowse,      settings.value("archive-browse",
+        DEFAULT_HOTKEY_BROWSE).toInt());
 
-    updateShortcut(actionSeekBack,    settings.value("archive-seek-back",     DEFAULT_HOTKEY_SEEK_BACK).toInt());
-    updateShortcut(actionSeekFwd,     settings.value("archive-seek-fwd",      DEFAULT_HOTKEY_SEEK_FWD).toInt());
-    updateShortcut(actionPlay,        settings.value("archive-play",          DEFAULT_HOTKEY_PLAY).toInt());
-    updateShortcut(actionEnter,       settings.value("archive-select",        DEFAULT_HOTKEY_SELECT).toInt());
+    updateShortcut(actionSeekBack,    settings.value("archive-seek-back",
+        DEFAULT_HOTKEY_SEEK_BACK).toInt());
+    updateShortcut(actionSeekFwd,     settings.value("archive-seek-fwd",
+        DEFAULT_HOTKEY_SEEK_FWD).toInt());
+    updateShortcut(actionPlay,        settings.value("archive-play",
+        DEFAULT_HOTKEY_PLAY).toInt());
+    updateShortcut(actionEnter,       settings.value("archive-select",
+        DEFAULT_HOTKEY_SELECT).toInt());
 
     // Not a real keys
-    // updateShortcut(btnPrev,        settings.value("archive-prev",        DEFAULT_HOTKEY_PREV).toInt());
-    // updateShortcut(btnNext,        settings.value("archive-next",        DEFAULT_HOTKEY_NEXT).toInt());
+    // updateShortcut(btnPrev,        settings.value("archive-prev",
+    //     DEFAULT_HOTKEY_PREV).toInt());
+    // updateShortcut(btnNext,        settings.value("archive-next",
+    //     DEFAULT_HOTKEY_NEXT).toInt());
     settings.endGroup();
 }
 
@@ -578,7 +615,12 @@ void ArchiveWindow::preparePathPopupMenu()
     }
 }
 
-static QString addStatusOverlay(const QString& filePath, QIcon& icon, const QString& attr, const QString& iconPath)
+static QString addStatusOverlay
+    ( const QString& filePath
+    , QIcon& icon
+    , const QString& attr
+    , const QString& iconPath
+    )
 {
     //qDebug() << filePath;
 
@@ -648,7 +690,8 @@ void ArchiveWindow::updateList()
             auto caps = typeDetect(fi.absoluteFilePath());
             if (caps.startsWith("video/"))
             {
-                auto thumbnailList = curr.entryInfoList(QStringList("." + fi.fileName() + ".*"), QDir::Hidden | QDir::Files);
+                auto thumbnailList = curr.entryInfoList(QStringList("." + fi.fileName() + ".*"),
+                    QDir::Hidden | QDir::Files);
                 if (thumbnailList.isEmpty() || !pm.load(thumbnailList.first().absoluteFilePath()))
                 {
                     icon.addFile(":/buttons/movie");
@@ -677,7 +720,8 @@ void ArchiveWindow::updateList()
         auto toolTip = fi.absoluteFilePath();
 
 #ifdef WITH_DICOM
-        auto dicomStatus = addStatusOverlay(fi.absoluteFilePath(),  icon, "dicom-status", ":/buttons/database");
+        auto dicomStatus = addStatusOverlay(fi.absoluteFilePath(),  icon, "dicom-status",
+            ":/buttons/database");
         if (!dicomStatus.isEmpty())
         {
             if (dicomStatus == "ok")
@@ -689,7 +733,8 @@ void ArchiveWindow::updateList()
         }
 #endif
 
-        auto usbStatus = addStatusOverlay(fi.absoluteFilePath(),  icon, "usb-status", ":/buttons/usb");
+        auto usbStatus = addStatusOverlay(fi.absoluteFilePath(), icon, "usb-status",
+            ":/buttons/usb");
         if (!usbStatus.isEmpty())
         {
             if (usbStatus == "ok")
@@ -742,11 +787,13 @@ void ArchiveWindow::selectFile(const QString& fileName)
 
 void ArchiveWindow::onListRowChanged(int idx)
 {
-    auto selectedSomething = listFiles->selectedItems().count() > 1 || (idx >= 0 && listFiles->item(idx)->text() != "..");
+    auto selectedSomething = listFiles->selectedItems().count() > 1
+        || (idx >= 0 && listFiles->item(idx)->text() != "..");
     actionDelete->setEnabled(selectedSomething);
 
 #ifdef WITH_DICOM
-    actionStore->setEnabled(selectedSomething && !QSettings().value("dicom/storage-servers").toStringList().isEmpty());
+    actionStore->setEnabled(selectedSomething
+        && !QSettings().value("dicom/storage-servers").toStringList().isEmpty());
 #endif
 
     stopMedia();
@@ -856,7 +903,8 @@ void static removeFileOrFolder(const QString& path)
     }
 
     QDir dir(path);
-    foreach (auto file, dir.entryList(QDir::AllEntries | QDir::Hidden | QDir::System | QDir::NoDotAndDotDot))
+    foreach (auto file, dir.entryList(
+        QDir::AllEntries | QDir::Hidden | QDir::System | QDir::NoDotAndDotDot))
     {
         removeFileOrFolder(dir.absoluteFilePath(file));
     }
@@ -1055,10 +1103,12 @@ void ArchiveWindow::copyToFolder(const QString& targetPath)
         }
 
         pdlg.setValue(i);
-        pdlg.setLabelText(tr("Copying '%1' to '%2'").arg(file.fileName(), targetDir.absolutePath()));
+        pdlg.setLabelText(tr("Copying '%1' to '%2'")
+            .arg(file.fileName(), targetDir.absolutePath()));
         qApp->processEvents();
-        auto targetFileName = targetDir.absoluteFilePath(curr.relativeFilePath(file.absoluteFilePath()));
-        if (!QFileInfo(targetFileName).dir().mkpath(".") ||  !QFile::copy(filePath, targetFileName))
+        auto targetFileName = targetDir.absoluteFilePath(
+            curr.relativeFilePath(file.absoluteFilePath()));
+        if (!QFileInfo(targetFileName).dir().mkpath(".") || !QFile::copy(filePath, targetFileName))
         {
             auto error = QString::fromLocal8Bit(strerror(errno));
             setFileExtAttribute(filePath, "usb-status", error);
@@ -1106,7 +1156,8 @@ void ArchiveWindow::onStoreClick()
     QWaitCursor wait(this);
     PatientDataDialog dlg(true, "archive-store", this);
     DcmDataset patientDs;
-    auto cond = patientDs.loadFile((const char*)curr.absoluteFilePath(".patient.dcm").toLocal8Bit());
+    auto cond = patientDs.loadFile(
+            (const char*)curr.absoluteFilePath(".patient.dcm").toLocal8Bit());
     if (cond.good())
     {
         dlg.readPatientData(&patientDs);
@@ -1131,7 +1182,8 @@ void ArchiveWindow::onStoreClick()
     if (client.sendToServer(this, &patientDs, files))
     {
         int userChoice = QMessageBox::information(this, windowTitle(),
-            tr("All files were successfully stored."), QMessageBox::Close | QMessageBox::Ok, QMessageBox::Close);
+            tr("All files were successfully stored."),
+            QMessageBox::Close | QMessageBox::Ok, QMessageBox::Close);
         if (QMessageBox::Close == userChoice)
         {
             onBackToMainWindowClick();
@@ -1151,8 +1203,10 @@ void ArchiveWindow::onEditClick()
 
     QSettings settings;
     auto filePath = curr.absoluteFilePath(listFiles->currentItem()->text());
-    auto editorExecutable = settings.value("video-editor-app", qApp->applicationFilePath()).toString();
-    auto editorSwitches = settings.value("video-editor-switches", QStringList() << "--edit-video").toStringList();
+    auto editorExecutable = settings.value("video-editor-app",
+        qApp->applicationFilePath()).toString();
+    auto editorSwitches = settings.value("video-editor-switches", QStringList()
+        << "--edit-video").toStringList();
     editorSwitches.append(filePath);
 
     if (!QProcess::startDetached(editorExecutable, editorSwitches))
@@ -1214,7 +1268,8 @@ void ArchiveWindow::onSeekClick()
 
 void ArchiveWindow::onPlayPauseClick()
 {
-    pipeline && pipeline->setState(pipeline->currentState() == QGst::StatePlaying? QGst::StatePaused: QGst::StatePlaying);
+    pipeline && pipeline->setState(pipeline->currentState()
+        == QGst::StatePlaying? QGst::StatePaused: QGst::StatePlaying);
 }
 
 void ArchiveWindow::stopMedia()
@@ -1258,20 +1313,30 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
 
     try
     {
-//      auto pipeDef = QString("filesrc location=\"%1\" ! decodebin ! " DEFAULT_VIDEO_CONVERTER " ! autovideosink name=displaysink async=0").arg(fi.absoluteFilePath());
-        auto pipeDef = QString("uridecodebin uri=\"%1\" ! " DEFAULT_VIDEO_CONVERTER " ! %2 autovideosink name=displaysink async=0")
+//      auto pipeDef = QString("filesrc location=\"%1\" ! decodebin ! " \
+//          DEFAULT_VIDEO_CONVERTER " ! autovideosink name=displaysink async=0")
+//          .arg(fi.absoluteFilePath());
+        auto pipeDef = QString("uridecodebin uri=\"%1\" ! " DEFAULT_VIDEO_CONVERTER \
+                    " ! %2 autovideosink name=displaysink async=0")
                 .arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toEncoded().constData())
                 .arg(isVideo? "": IMAGEFREEZE_ELEMENT " ! ");
-//      auto pipeDef = QString(PLAYBIN_ELEMENT " uri=\"%1\"").arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toEncoded().constData());
+//      auto pipeDef = QString(PLAYBIN_ELEMENT " uri=\"%1\"")
+//          .arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toEncoded().constData());
         pipeline = QGst::Parse::launch(pipeDef).dynamicCast<QGst::Pipeline>();
-        auto hiddenVideoWidget = static_cast<QGst::Ui::VideoWidget*>(pagesWidget->widget(1 - pagesWidget->currentIndex()));
+        auto hiddenVideoWidget = static_cast<QGst::Ui::VideoWidget*>(pagesWidget->
+            widget(1 - pagesWidget->currentIndex()));
         hiddenVideoWidget->watchPipeline(pipeline);
         QGlib::connect(pipeline->bus(), "message", this, &ArchiveWindow::onBusMessage);
         pipeline->bus()->addSignalWatch();
         pipeline->setState(QGst::StatePaused);
         pipeline->getState(nullptr, nullptr, GST_SECOND * 10); // 10 sec
-        auto details = GstDebugGraphDetails(GST_DEBUG_GRAPH_SHOW_MEDIA_TYPE | GST_DEBUG_GRAPH_SHOW_NON_DEFAULT_PARAMS | GST_DEBUG_GRAPH_SHOW_STATES);
-        GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(pipeline.staticCast<QGst::Bin>(), details, qApp->applicationName().append(".archive").toUtf8());
+        auto details = GstDebugGraphDetails
+            ( GST_DEBUG_GRAPH_SHOW_MEDIA_TYPE
+            | GST_DEBUG_GRAPH_SHOW_NON_DEFAULT_PARAMS
+            | GST_DEBUG_GRAPH_SHOW_STATES
+            );
+        GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(pipeline.staticCast<QGst::Bin>(), details,
+            qApp->applicationName().append(".archive").toUtf8());
     }
     catch (const QGlib::Error& ex)
     {
@@ -1365,10 +1430,12 @@ void ArchiveWindow::onBusMessage(const QGst::MessagePtr& message)
     break;
 #endif
     case QGst::MessageInfo:
-        qDebug() << message->source()->property("name").toString() << " " << message.staticCast<QGst::InfoMessage>()->error();
+        qDebug() << message->source()->property("name").toString()
+                 << message.staticCast<QGst::InfoMessage>()->error();
         break;
     case QGst::MessageWarning:
-        qDebug() << message->source()->property("name").toString() << " " << message.staticCast<QGst::WarningMessage>()->error();
+        qDebug() << message->source()->property("name").toString()
+                 << message.staticCast<QGst::WarningMessage>()->error();
         break;
     case QGst::MessageAsyncDone:
     case QGst::MessageNewClock:
@@ -1415,7 +1482,8 @@ void ArchiveWindow::onStateChangedMessage(const QGst::StateChangedMessagePtr& me
                     if (caps)
                     {
                         auto s = caps->internalStructure(0);
-                        gst_structure_get_fraction (s.data()->operator const GstStructure *(), "framerate", &numerator, &denominator);
+                        gst_structure_get_fraction(s.data()->operator const GstStructure *(),
+                            "framerate", &numerator, &denominator);
                     }
                 }
             }
@@ -1424,7 +1492,6 @@ void ArchiveWindow::onStateChangedMessage(const QGst::StateChangedMessagePtr& me
             {
                 qDebug() << GST_SECOND;
                 auto frameDuration = (GST_SECOND * denominator) / numerator + 1;
-                //qDebug() << "Framerate " << denominator << "/" << numerator << " duration" << frameDuration;
                 actionSeekFwd->setData((int)frameDuration);
                 actionSeekBack->setData((int)-frameDuration);
             }
@@ -1445,7 +1512,8 @@ void ArchiveWindow::onStateChangedMessage(const QGst::StateChangedMessagePtr& me
 
         // Make sure the play/pause button is in consistent state
         //
-        actionPlay->setIcon(QIcon(message->newState() == QGst::StatePlaying? ":buttons/pause": ":buttons/play"));
+        actionPlay->setIcon(QIcon(message->newState() == QGst::StatePlaying
+            ? ":buttons/pause" : ":buttons/play"));
         actionPlay->setText(message->newState() == QGst::StatePlaying? tr("Pause"): tr("Play"));
     }
 }
@@ -1453,7 +1521,8 @@ void ArchiveWindow::onStateChangedMessage(const QGst::StateChangedMessagePtr& me
 void ArchiveWindow::onBackToMainWindowClick()
 {
     reallyDeleteFiles();
-    auto stackWidget = static_cast<SlidingStackedWidget*>(parent()->qt_metacast("SlidingStackedWidget"));
+    auto stackWidget = static_cast<SlidingStackedWidget*>(parent()->
+        qt_metacast("SlidingStackedWidget"));
     if (stackWidget)
     {
         stackWidget->slideInWidget("Main");

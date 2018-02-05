@@ -38,8 +38,10 @@ DicomServerSettings::DicomServerSettings(QWidget *parent) :
     };
 
     mainLayout->addWidget(listServers = new QTableWidget);
-    connect(listServers, SIGNAL(currentItemChanged(QTableWidgetItem*,QTableWidgetItem*)), this, SLOT(onCellChanged(QTableWidgetItem*,QTableWidgetItem*)));
-    connect(listServers, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(onCellDoubleClicked(QTableWidgetItem*)));
+    connect(listServers, SIGNAL(currentItemChanged(QTableWidgetItem*,QTableWidgetItem*)), this,
+        SLOT(onCellChanged(QTableWidgetItem*,QTableWidgetItem*)));
+    connect(listServers, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this,
+        SLOT(onCellDoubleClicked(QTableWidgetItem*)));
 
     size_t columns = sizeof(columnNames)/sizeof(columnNames[0]);
     listServers->setColumnCount(columns);

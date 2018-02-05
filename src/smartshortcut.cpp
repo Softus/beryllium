@@ -61,7 +61,8 @@ static bool isActiveTarget(const SmartTarget& t)
         if (action->isEnabled())
         {
             auto widget = action->parentWidget();
-            if (t.global || !widget || (widget->isVisible() && widget->window() == qApp->activeWindow()))
+            if (t.global || !widget
+                || (widget->isVisible() && widget->window() == qApp->activeWindow()))
             {
                 return true;
             }
@@ -70,7 +71,8 @@ static bool isActiveTarget(const SmartTarget& t)
     else if (t.target->inherits("QAbstractButton"))
     {
         auto btn = static_cast<QAbstractButton*>(t.target);
-        if (btn->isEnabled() && (t.global || (btn->isVisible() && btn->window() == qApp->activeWindow())))
+        if (btn->isEnabled()
+            && (t.global || (btn->isVisible() && btn->window() == qApp->activeWindow())))
         {
             return true;
         }
@@ -92,7 +94,8 @@ static bool triggerTarget(bool longPress, const SmartTarget& t)
         if (action->isEnabled())
         {
             auto widget = action->parentWidget();
-            if (t.global || !widget || (widget->isVisible() && widget->window() == qApp->activeWindow()))
+            if (t.global || !widget
+                || (widget->isVisible() && widget->window() == qApp->activeWindow()))
             {
                 action->trigger();
                 return true;
@@ -102,7 +105,8 @@ static bool triggerTarget(bool longPress, const SmartTarget& t)
     else if (t.target->inherits("QAbstractButton"))
     {
         auto btn = static_cast<QAbstractButton*>(t.target);
-        if (btn->isEnabled() && (t.global || (btn->isVisible() && btn->window() == qApp->activeWindow())))
+        if (btn->isEnabled()
+            && (t.global || (btn->isVisible() && btn->window() == qApp->activeWindow())))
         {
             btn->click();
             return true;
@@ -334,7 +338,8 @@ SmartShortcut::SmartShortcut(QObject *parent)
 {
     if (!longPressTimeoutInMsec)
     {
-        longPressTimeoutInMsec = QSettings().value("long-press-timeout", DEFAULT_LONG_PRESS_TIMEOUT).toLongLong();
+        longPressTimeoutInMsec = QSettings().value("long-press-timeout",
+            DEFAULT_LONG_PRESS_TIMEOUT).toLongLong();
     }
 
     qApp->installEventFilter(this);

@@ -17,6 +17,7 @@
 #include "videosources.h"
 #include "../defaults.h"
 #include "videosourcedetails.h"
+#include "../qwaitcursor.h"
 #include "../gstcompat.h"
 #include "../gst/enumsrc.h"
 
@@ -91,22 +92,12 @@ VideoSources::VideoSources(QWidget *parent) :
 
     settings.beginGroup("gst");
     auto cnt = settings.beginReadArray("src");
-    if (cnt == 0)
+    for (int i = 0; i < cnt; ++i)
     {
-        settings.endArray();
-        // Migration from version < 1.2
-        //
+        settings.setArrayIndex(i);
         addItem(settings);
     }
-    else
-    {
-        for (int i = 0; i < cnt; ++i)
-        {
-            settings.setArrayIndex(i);
-            addItem(settings);
-        }
-        settings.endArray();
-    }
+    settings.endArray();
     settings.endGroup();
 
     btnDetails->setEnabled(false);
@@ -161,10 +152,12 @@ void VideoSources::showEvent(QShowEvent *e)
 
 void VideoSources::updateDeviceList(const char* elmName, const char* propName)
 {
+    QWaitCursor wait(this);
     auto src = QGst::ElementFactory::make(elmName);
     if (!src)
     {
-        QMessageBox::critical(this, windowTitle(), tr("Failed to create element '%1'").arg(elmName));
+        QMessageBox::critical(this, windowTitle(),
+            tr("Failed to create element '%1'").arg(elmName));
         return;
     }
 
@@ -263,6 +256,7 @@ void VideoSources::onEditClicked()
     auto device     = item->data(0, Qt::UserRole).toString();
     auto parameters = item->data(2, Qt::UserRole).toMap();
 
+    QWaitCursor wait(this);
     VideoSourceDetails dlg(parameters, this);
     dlg.setWindowTitle(item->text(0));
     dlg.updateDevice(device);
@@ -301,6 +295,7 @@ void VideoSources::onAddTestClicked()
 
 void VideoSources::save(QSettings& settings)
 {
+    QWaitCursor wait(this);
     settings.beginGroup("gst");
     settings.beginWriteArray("src");
 

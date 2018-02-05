@@ -25,7 +25,8 @@ DicomMppsMwlSettings::DicomMppsMwlSettings(QWidget *parent) :
     QWidget(parent)
 {
     auto mainLayout = new QFormLayout;
-    mainLayout->addRow(checkUseMwl = new QCheckBox(tr("MWL &Function")), cbMwlServer = new ComboBoxWithPopupSignal);
+    mainLayout->addRow(checkUseMwl = new QCheckBox(tr("MWL &Function")),
+        cbMwlServer = new ComboBoxWithPopupSignal);
     connect(checkUseMwl, SIGNAL(toggled(bool)), this, SLOT(onUseToggle(bool)));
 
     QSettings settings;
@@ -49,10 +50,13 @@ DicomMppsMwlSettings::DicomMppsMwlSettings(QWidget *parent) :
     spacer->setMinimumHeight(16);
     mainLayout->addWidget(spacer);
 
-    mainLayout->addRow(checkUseMpps = new QCheckBox(tr("MPPS F&unction")), cbMppsServer = new ComboBoxWithPopupSignal);
+    mainLayout->addRow(checkUseMpps = new QCheckBox(tr("MPPS F&unction")), cbMppsServer =
+        new ComboBoxWithPopupSignal);
     connect(checkUseMpps, SIGNAL(toggled(bool)), this, SLOT(onUseToggle(bool)));
-    mainLayout->addRow(checkStartWithMpps = new QCheckBox(tr("Send \"&In Progress\" signal upon examination start")));
-    mainLayout->addRow(checkCompleteWithMpps = new QCheckBox(tr("Send \"&Completed\" signal upon examination end")));
+    mainLayout->addRow(checkStartWithMpps =
+        new QCheckBox(tr("Send \"&In Progress\" signal upon examination start")));
+    mainLayout->addRow(checkCompleteWithMpps =
+        new QCheckBox(tr("Send \"&Completed\" signal upon examination end")));
 
     QString mppsServer = settings.value("mpps-server").toString();
     if (mppsServer.isEmpty())
@@ -65,8 +69,10 @@ DicomMppsMwlSettings::DicomMppsMwlSettings(QWidget *parent) :
         cbMppsServer->setCurrentIndex(0);
         checkUseMpps->setChecked(true);
     }
-    checkStartWithMpps->setChecked(settings.value("start-with-mpps", DEFAULT_START_WITH_MPPS).toBool());
-    checkCompleteWithMpps->setChecked(settings.value("complete-with-mpps", DEFAULT_COMPLETE_WITH_MPPS).toBool());
+    checkStartWithMpps->setChecked(settings.value("start-with-mpps",
+        DEFAULT_START_WITH_MPPS).toBool());
+    checkCompleteWithMpps->setChecked(settings.value("complete-with-mpps",
+        DEFAULT_COMPLETE_WITH_MPPS).toBool());
 
     connect(cbMppsServer, SIGNAL(beforePopup()), this, SLOT(onUpdateServers()));
 
@@ -109,8 +115,10 @@ void DicomMppsMwlSettings::onUseToggle(bool checked)
 void DicomMppsMwlSettings::save(QSettings& settings)
 {
     settings.beginGroup("dicom");
-    settings.setValue("mwl-server", checkUseMwl->isChecked()? cbMwlServer->currentText(): nullptr);
-    settings.setValue("mpps-server", checkUseMpps->isChecked()? cbMppsServer->currentText(): nullptr);
+    settings.setValue("mwl-server", checkUseMwl->isChecked()
+        ? cbMwlServer->currentText() : nullptr);
+    settings.setValue("mpps-server", checkUseMpps->isChecked()
+        ? cbMppsServer->currentText() : nullptr);
     settings.setValue("start-with-mpps", checkStartWithMpps->isChecked());
     settings.setValue("complete-with-mpps", checkCompleteWithMpps->isChecked());
     settings.endGroup();

@@ -187,7 +187,8 @@ QImage extractImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int w
     QGst::State   state;
     auto structure = caps->internalStructure(0);
 #if GST_CHECK_VERSION(1,0,0)
-    if (structure->name() == "video/x-raw" && structure->value("format").toString() == "RGB" && structure->value("bpp").toInt() == 24)
+    if (structure->name() == "video/x-raw" && structure->value("format").toString() == "RGB"
+        && structure->value("bpp").toInt() == 24)
 #else
     if (structure->name() == "video/x-raw-rgb" && structure->value("bpp").toInt() == 24)
 #endif
@@ -220,7 +221,8 @@ QImage extractImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int w
 #endif
         sink->setProperty("async", false);
 
-        if (vaapi? QGst::Element::linkMany(src, vaapi, cvt, sink): QGst::Element::linkMany(src, cvt, sink))
+        if (vaapi ? QGst::Element::linkMany(src, vaapi, cvt, sink)
+                  : QGst::Element::linkMany(src, cvt, sink))
         {
             pipeline->setState(QGst::StatePaused);
             QGst::ClockTime timeout(200ULL * 1000 * 1000); // 200 msec

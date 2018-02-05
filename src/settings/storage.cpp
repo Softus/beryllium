@@ -40,18 +40,22 @@ StorageSettings::StorageSettings(QWidget *parent)
 
     auto grpImages = new QGroupBox(tr("Images and clips"));
 
-    layoutImages->addRow(tr("&Output path"), textOutputPath = new QxtLineEdit(settings.value("output-path", DEFAULT_OUTPUT_PATH).toString()));
+    layoutImages->addRow(tr("&Output path"), textOutputPath =
+        new QxtLineEdit(settings.value("output-path", DEFAULT_OUTPUT_PATH).toString()));
     textOutputPath->setButtonIcon(QIcon(":/buttons/folder"));
     textOutputPath->setButtonPosition(QxtLineEdit::OuterRight);
     textOutputPath->setResetButtonMode(QxtLineEdit::ShowResetNotEmpty);
     connect(textOutputPath, SIGNAL(buttonClicked()), this, SLOT(onClickBrowse()));
 
-    textFolderTemplate = new QxtLineEdit(settings.value("folder-template", DEFAULT_FOLDER_TEMPLATE).toString());
+    textFolderTemplate =
+        new QxtLineEdit(settings.value("folder-template", DEFAULT_FOLDER_TEMPLATE).toString());
     layoutImages->addRow(tr("&Folder template"), textFolderTemplate);
 
-    layoutImages->addRow(tr("&Pictures template"), textImageTemplate = new QLineEdit(settings.value("image-template", DEFAULT_IMAGE_TEMPLATE).toString()));
+    layoutImages->addRow(tr("&Pictures template"), textImageTemplate =
+        new QLineEdit(settings.value("image-template", DEFAULT_IMAGE_TEMPLATE).toString()));
     connect(textImageTemplate, SIGNAL(textChanged(QString)), this, SLOT(checkForSerialNo(QString)));
-    layoutImages->addRow(tr("&Clips template"), textClipTemplate = new QLineEdit(settings.value("clip-template", DEFAULT_CLIP_TEMPLATE).toString()));
+    layoutImages->addRow(tr("&Clips template"), textClipTemplate =
+        new QLineEdit(settings.value("clip-template", DEFAULT_CLIP_TEMPLATE).toString()));
     connect(textClipTemplate, SIGNAL(textChanged(QString)), this, SLOT(checkForSerialNo(QString)));
 
     grpImages->setLayout(layoutImages);
@@ -60,7 +64,8 @@ StorageSettings::StorageSettings(QWidget *parent)
     auto grpVideo = new QGroupBox(tr("Video logs"));
     auto layoutVideoLog = new QFormLayout;
 
-    layoutVideoLog->addRow(tr("O&utput path"), textVideoOutputPath = new QxtLineEdit(settings.value("video-output-path").toString()));
+    layoutVideoLog->addRow(tr("O&utput path"), textVideoOutputPath =
+        new QxtLineEdit(settings.value("video-output-path").toString()));
     textVideoOutputPath->setSampleText(tr("(share with images and clips)"));
     textVideoOutputPath->setButtonIcon(QIcon(":/buttons/folder"));
     textVideoOutputPath->setButtonPosition(QxtLineEdit::OuterRight);
@@ -70,7 +75,8 @@ StorageSettings::StorageSettings(QWidget *parent)
     textVideoFolderTemplate = new QxtLineEdit(settings.value("video-folder-template").toString());
     textVideoFolderTemplate->setSampleText(tr("(share with images and clips)"));
     layoutVideoLog->addRow(tr("Fol&der template"), textVideoFolderTemplate);
-    layoutVideoLog->addRow(tr("&Video template"), textVideoTemplate = new QLineEdit(settings.value("video-template", DEFAULT_VIDEO_TEMPLATE).toString()));
+    layoutVideoLog->addRow(tr("&Video template"), textVideoTemplate =
+        new QLineEdit(settings.value("video-template", DEFAULT_VIDEO_TEMPLATE).toString()));
     grpVideo->setLayout(layoutVideoLog);
 
     layoutMain->addWidget(grpVideo);
@@ -135,8 +141,9 @@ void StorageSettings::checkForSerialNo(const QString &)
 
     if (invalidField != nullptr)
     {
-        lblWarning->setText(tr("The field \"%1\" does not contain a serial number (template %nn%).\n"\
-                               "This may lead to overwriting of files.").arg(invalidField));
+        lblWarning->setText(
+            tr("The field \"%1\" does not contain a serial number (template %nn%).\n" \
+               "This may lead to overwriting of files.").arg(invalidField));
     }
     else
     {

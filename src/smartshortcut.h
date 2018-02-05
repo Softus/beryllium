@@ -43,7 +43,10 @@ public:
     static void removeAll();
     static void setShortcut(QObject *parent, int key);
     static void setEnabled(bool enable);
-    static QString toString(int key, QKeySequence::SequenceFormat format = QKeySequence::PortableText);
+    static QString toString
+        ( int key
+        , QKeySequence::SequenceFormat format = QKeySequence::PortableText
+        );
     static bool isGlobal(int key);
     static bool isLongPress(int key);
     static bool isMouse(int key);

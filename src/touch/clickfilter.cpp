@@ -24,7 +24,8 @@
 
 ClickFilter::ClickFilter(QObject *parent)
     : QObject(parent)
-    , me(QEvent::MouseButtonDblClick, QPoint(), QPoint(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier)
+    , me(QEvent::MouseButtonDblClick, QPoint(), QPoint(),
+         Qt::LeftButton, Qt::LeftButton, Qt::NoModifier)
 {
     parent->installEventFilter(this);
 }
