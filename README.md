@@ -61,10 +61,9 @@ SUSE/Open SUSE
 
 1. Install build dependecies
 
-        sudo zypper install make rpm-build qt5-devel qt-gstreamer-devel \
-        libQtGlib-devel dcmtk-devel tcp_wrappers-devel libgudev-devel \
-        mediainfo-devel gstreamer-devel gstreamer-plugins-qt5-devel \
-        libqt5-qtbase-devel qt5-qtx11extras-devel libavc-1394-devel libv4l-devel
+        sudo zypper install rpm-build lsb-release libqt5-linguist libqt5-qtbase-devel \
+        gstreamer-plugins-qt5-devel dcmtk-devel libmediainfo-devel libqt5-qtx11extras-devel \
+        openssl-devel libgudev-1_0-devel libavc1394-devel libv4l-devel
 
 2. Make Makefile
 
@@ -81,8 +80,8 @@ SUSE/Open SUSE
 
 5. Create Package
 
-        distro=$(lsb_release -is | awk '{print tolower($1)}')
-        rev=$(lsb_release -rs)
+        export distro=$(lsb_release -is | awk '{print tolower($1)}')
+        export rev=$(lsb_release -rs)
         tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1" -D"distro $distro" -D"rev $rev" -ta ../beryllium.tar.gz
 
 CentOS
@@ -91,7 +90,7 @@ CentOS
 1. Install build dependecies
 
         sudo yum install redhat-lsb make cmake boost-devel gstreamer1-plugins-base-devel \
-        qt5-qtdeclarative-devel rpm-build gstreamer-devel libv4l-devel git \
+        qt5-qtdeclarative-devel rpm-build gstreamer1-devel libv4l-devel git \
         qt5-qtbase-devel qt5-linguist qt5-qtx11extras-devel libgudev1-devel \
         libavc1394-devel libmediainfo-devel dcmtk-devel openssl-devel tcp_wrappers-devel gcc-c++
 
@@ -118,8 +117,8 @@ CentOS
 
 6. Create Package
 
-        distro=$(lsb_release -is | awk '{print tolower($1)}')
-        rev=$(lsb_release -rs)
+        export distro=$(lsb_release -is | awk '{print tolower($1)}')
+        export rev=$(lsb_release -rs)
         tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1" -D"distro $distro" -D"rev $rev" -ta ../beryllium.tar.gz
 
 Fedora
@@ -127,7 +126,7 @@ Fedora
 
 1. Install build dependecies
 
-        sudo dnf install redhat-lsb make rpm-build gstreamer-devel libv4l-devel \
+        sudo dnf install redhat-lsb make rpm-build gstreamer1-devel libv4l-devel \
         qt5-qtbase-devel qt5-gstreamer-devel qt5-linguist qt5-qtx11extras-devel libgudev1-devel \
         libavc1394-devel libmediainfo-devel dcmtk-devel openssl-devel tcp_wrappers-devel gcc-c++ 
 
@@ -146,8 +145,8 @@ Fedora
 
 5. Create Package
 
-        distro=$(lsb_release -is | awk '{print tolower($1)}')
-        rev=$(lsb_release -rs)
+        export distro=$(lsb_release -is | awk '{print tolower($1)}')
+        export rev=$(lsb_release -rs)
         tar czf ../beryllium.tar.gz * --exclude=.git --exclude=*.sh && rpmbuild -D"dicom 1" -D"distro $distro" -D"rev $rev" -ta ../beryllium.tar.gz
 
 Windows (Visual Studio)

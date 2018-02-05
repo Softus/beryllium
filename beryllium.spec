@@ -1,7 +1,7 @@
 Summary: Beryllium DICOM edition.
 Name: beryllium
 Provides: beryllium
-Version: 1.3.10
+Version: 1.4.0
 Release: 1
 License: LGPL-2.1+
 Source: %{name}.tar.gz
@@ -10,46 +10,43 @@ URL: http://softus.org/products/beryllium
 Vendor: Softus Inc. <contact@softus.org>
 Packager: Softus Inc. <contact@softus.org>
 
-BuildRequires: make, libv4l-devel
+BuildRequires: make, libv4l-devel, libavc1394-devel
 
 %if %distro == fedora
-BuildRequires: gstreamer1-devel, qt-devel, qt5-gstreamer-devel
-BuildRequires: libgudev-devel, libavc1394-devel
+BuildRequires: gstreamer1-devel, qt5-qtbase-devel, qt5-qtx11extras-devel, libgudev1-devel
+BuildRequires: qt5-gstreamer1-devel
 Requires: gstreamer1, qt5
-Requires: gstreamer1-plugins-base, gstreamer1-plugins-good
-Requires: gstreamer1-plugins-bad-free, gnonlin
+Requires: gstreamer1-plugins-base, gstreamer1-plugins-good, gstreamer1-plugins-bad-free
 %endif
 
 %if %distro == centos
-BuildRequires: gstreamer-devel, qt-devel
-BuildRequires: libgudev1-devel, libavc1394-devel
-Requires: gstreamer >= 0.10.35, qt4 >= 4.6.0
-Requires: gstreamer-plugins-base >= 0.10.31, gstreamer-plugins-good >= 0.10.23
-Requires: gstreamer-plugins-bad >= 0.10.19, gstreamer-plugins-ugly >= 0.10.18
-Requires: gstreamer-ffmpeg, gnonlin
+BuildRequires: gstreamer1-devel, qt5-qtbase-devel, qt5-qtx11extras-devel, libgudev1-devel
+Requires: gstreamer1, qt5
+Requires: gstreamer1-plugins-base, gstreamer1-plugins-good, gstreamer1-plugins-bad-free
 %endif
 
 %if %distro == opensuse
-BuildRequires: gstreamer-devel, libqt5-qtbase-devel, gstreamer-plugins-qt5-devel
-BuildRequires: libgudev-devel, libavc-1394-devel, opencv-devel, libsoup-devel
+BuildRequires: libqt5-linguist, libqt5-qtbase-devel, libqt5-qtx11extras-devel, libgudev-1_0-devel
+BuildRequires: gstreamer-plugins-qt5-devel
 Requires: gstreamer-plugins-base, gstreamer-plugins-good
 Requires: gstreamer-plugins-bad, gstreamer-plugins-ugly
-Requires: gstreamer-plugin-gnonlin
+Requires: gstreamer-plugins-qt5, gstreamer-plugin-gnonlin
 %endif
 
 %if %dicom == 1
 BuildRequires: libmediainfo-devel, dcmtk-devel, openssl-devel
+Requires: dcmtk
 
 %if %distro == fedora
-Requires: dcmtk, openssl, libmediainfo, libzen
+Requires: libmediainfo, libzen
 %endif
 
 %if %distro == centos
-Requires: dcmtk, openssl, libmediainfo, libzen
+Requires: libmediainfo, libzen
 %endif
 
 %if %distro == opensuse
-Requires: dcmtk, libmediainfo0, libzen0
+Requires: libmediainfo0, libzen0
 %endif
 
 %endif
