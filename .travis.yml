@@ -24,8 +24,8 @@ before_install:
 
  - |
    if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-     sudo brew install boost@1.59 dcmtk gstreamer pkg-config qt
-     sudo brew link qt --force
+     brew install pkg-config boost dcmtk gstreamer gst-plugins-base qt media-info git cmake
+     brew link qt --force
    fi
 
 install:
@@ -34,6 +34,11 @@ install:
 
  - if [ "${TRAVIS_OS_NAME}" = "osx" -a "${CXX}" = "clang++" ]; then export MKSPEC=macx-clang; fi
  - if [ "${TRAVIS_OS_NAME}" = "osx" -a "${CXX}" = "g++" ]; then export MKSPEC=macx-g++; fi
+
+ - |
+   if [ "${TRAVIS_OS_NAME}" = "osx" ]
+     then .ci/git-install.sh git://anongit.freedesktop.org/gstreamer/qt-gstreamer master "-DQT_VERSION=5"
+   fi
 
 script:
  - echo "Building for ${MKSPEC} in ${BUILD_MODE} mode..."

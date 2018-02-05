@@ -27,9 +27,7 @@ win32 {
     USERNAME    = $$(USERNAME)
     OS_DISTRO   = windows
     OS_REVISION = $$system($$quote("cmd.exe /c ver | gawk 'match($0,/[0-9]+\.[0-9]/){print substr($0,RSTART,RLENGTH)}'"))
-}
-
-unix {
+} linux {
     LIBS += -lX11
 
     USERNAME    = $$(USER)
@@ -52,7 +50,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 
     PKGCONFIG += Qt5GLib-2.0 Qt5GStreamer-1.0 Qt5GStreamerUi-1.0 \
         gstreamer-1.0 gstreamer-base-1.0 gstreamer-pbutils-1.0
-    unix:PKGCONFIG += libavc1394 libraw1394 gudev-1.0 libv4l2
+    linux:PKGCONFIG += libavc1394 libraw1394 gudev-1.0 libv4l2
 }
 else {
     QT += dbus opengl
@@ -127,15 +125,17 @@ SOURCES += \
     src/settings/confirmations.cpp \
     src/settings/elementproperties.cpp
 
-unix {
+win32 {
+    SOURCES += \
+        gst/enumsrc_1_4.cpp \
+        src/smartshortcut_win.cpp
+} linux {
     SOURCES += src/smartshortcut_x11.cpp
     greaterThan(QT_MAJOR_VERSION, 4): SOURCES += gst/enumsrc_tux.cpp
     lessThan(QT_MAJOR_VERSION, 5):    SOURCES += gst/enumsrc_0_10.cpp
-}
+} macx {
 
-win32:SOURCES += \
-    gst/enumsrc_1_4.cpp \
-    src/smartshortcut_win.cpp
+}
 
 contains(QT, dbus): {
     SOURCES += \
@@ -200,7 +200,7 @@ RESOURCES    += \
     beryllium.qrc
 TRANSLATIONS += beryllium_ru.ts
 
-unix {
+linux {
     INSTALLS += target
     target.path = $$PREFIX/bin
 

@@ -4,7 +4,7 @@ builddir:
 	mkdir -p builddir
 
 builddir/Makefile: builddir
-        cd builddir && lrelease ../*.ts && qmake PREFIX=/usr ../$(APPNAME).pro
+	cd builddir && lrelease ../*.ts && qmake PREFIX=/usr ../$(APPNAME).pro
 
 build: build-stamp
 

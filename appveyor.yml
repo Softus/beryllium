@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 1.4.{build}
 pull_requests:
   do_not_increment_build_number: true
 skip_non_tags: true
@@ -15,7 +15,7 @@ environment:
   DCMTK_URI: https://github.com/DCMTK/dcmtk.git
   GSTREAMER_URI: https://gstreamer.freedesktop.org/data/pkg/windows
   MEDIAINFO_URI: https://mediaarea.net/download/source/libmediainfo
-  QTGSTREAMER_URI: https://github.com/detrout/qt-gstreamer.git
+  QTGSTREAMER_URI: git://anongit.freedesktop.org/gstreamer/qt-gstreamer
   QT_URI: https://download.qt.io/archive/qt/5.0/5.0.2/qt-windows-opensource-5.0.2-mingw47_32-x86-offline.exe
   QT_RUNTIME: qt-5.0.2_mingw-4.7.wxi
   PKG_CONFIG_PATH: C:\usr\lib\pkgconfig;%GSTREAMER_DIR%\lib\pkgconfig;%QT_DIR%\lib\pkgconfig
@@ -30,7 +30,7 @@ install:
 - set PATH=%GSTREAMER_DIR%\bin;%MINGW_DIR%\bin;%QT_DIR%\bin;c:\usr\bin;c:\msys64\mingw32\bin;%PATH%
 
 # Qt
-- curl -kL %QT_URI% -o qt-installer.exe && start /wait qt-installer.exe --no-force-installations --script appveyor\unattended-qt-install.qs
+- curl -kL %QT_URI% -o qt-installer.exe && start /wait qt-installer.exe --no-force-installations --script .ci\unattended-qt-install.qs
 
 # GStreamer
 - curl -kLO %GSTREAMER_URI%/%GSTREAMER_VER%/gstreamer-1.0-x86-%GSTREAMER_VER%.msi && msiexec /quiet /i gstreamer-1.0-x86-%GSTREAMER_VER%.msi
@@ -45,7 +45,7 @@ install:
 - mkdir build && cd build
 - set PATH=%PATH:C:\Program Files\Git\usr\bin=%
 - cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -G "MinGW Makefiles"
-- cmake --build . --target install
+- cmake --build . --target install -- -j 4
 - set PATH=%PATH%;C:\Program Files\Git\usr\bin
 - cd ..\..\..\..\..
 
@@ -54,7 +54,7 @@ install:
 - mkdir build && cd build
 - set PATH=%PATH:C:\Program Files\Git\usr\bin=%
 - cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DQT_VERSION=5  -DBoost_INCLUDE_DIR=%BOOST_DIR% -G "MinGW Makefiles"
-- cmake --build . --target install
+- cmake --build . --target install -- -j 4
 - set PATH=%PATH%;C:\Program Files\Git\usr\bin
 - cd ..\..
 
@@ -63,7 +63,7 @@ install:
 - mkdir build && cd build
 - set PATH=%PATH:C:\Program Files\Git\usr\bin=%
 - cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DDCMTK_WITH_OPENSSL=OFF -G "MinGW Makefiles"
-- cmake --build . --target install
+- cmake --build . --target install -- -j 4
 - set PATH=%PATH%;C:\Program Files\Git\usr\bin
 - cd ..\..
 

@@ -49,7 +49,7 @@
 #include <QGst/Structure>
 #include <gst/gst.h>
 
-#if defined (Q_OS_UNIX)
+#if defined (Q_OS_LINUX)
   #if GST_CHECK_VERSION(1,0,0)
   #include <libv4l2.h>
   #include <libv4l2rds.h>
@@ -282,10 +282,10 @@ void VideoSourceDetails::updateDevice(const QString& device)
         qDebug() << caps->toString();
         auto selectedChannelLabel = selectedChannel.toString();
 
-#if defined (Q_OS_UNIX)
+#if defined (Q_OS_LINUX)
   #if GST_CHECK_VERSION(1,0,0)
         int fd = src->property("device-fd").toInt();
-        int n = 0;
+        uint n = 0;
         struct v4l2_input input;
 
         for (;;)
@@ -296,7 +296,7 @@ void VideoSourceDetails::updateDevice(const QString& device)
             {
                 break;
             }
-            auto label = QString::fromUtf8((const char*)input.name);
+            auto label = QString::fromUtf8(reinterpret_cast<const char*>(input.name));
             if (selectedChannelLabel == label)
             {
                 idx = listChannels->count();
@@ -379,10 +379,9 @@ static QString valueToString(const QGlib::Value& value)
 {
     return
 #if !GST_CHECK_VERSION(1,0,0)
-       GST_TYPE_FOURCC == value.type()? "(fourcc)" + value.toString():
+       GST_TYPE_FOURCC == value.type() ? "(fourcc)" + value.toString() : value.toString();
 #endif
-       G_TYPE_STRING == value.type()?   "(string)" + value.toString():
-       value.toString();
+       G_TYPE_STRING == value.type() ? "(string)" + value.toString() : value.toString();
 }
 
 static QList<QGlib::Value> getFormats(const QGlib::Value& value)

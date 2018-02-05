@@ -66,6 +66,7 @@ void VideoEncodingProgressDialog::onBusMessage(const QGst::MessagePtr& message)
 #endif
             cancel();
         }
+        break;
     default:
         qDebug() << message->typeName() << " " << message->source()->property("name").toString();
         break;

@@ -38,15 +38,17 @@
 //
 #include <gst/gstdebugutils.h>
 
-#if defined (Q_OS_UNIX)
+#if defined(Q_OS_OSX)
+  #warning TODO: osx
+#elif defined (Q_OS_WIN)
+  #include <qt_windows.h>
+#elif defined (Q_OS_LINUX)
   #if GST_CHECK_VERSION(1,0,0)
     #include <libv4l2.h>
     #include <libv4l2rds.h>
   #else
     #include <gst/interfaces/tuner.h>
   #endif
-#elif defined (Q_OS_WIN)
-  #include <qt_windows.h>
 #endif
 
 static void ensurePathExist(const QString& filePath)
@@ -585,7 +587,7 @@ bool Pipeline::updatePipeline()
     auto videoInputChannel = settings.value("video-channel").toString();
     if (!videoInputChannel.isEmpty())
     {
-#if defined (Q_OS_UNIX)
+#if defined (Q_OS_LINUX)
   #if GST_CHECK_VERSION(1,0,0)
         auto src = pipeline->getElementByName(videoInputChannel.toUtf8());
         if (src)

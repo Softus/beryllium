@@ -18,3 +18,4 @@ debian/copyright
 /ipch
 /obj
 /release
+/cache

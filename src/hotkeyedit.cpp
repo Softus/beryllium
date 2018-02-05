@@ -127,7 +127,7 @@ void HotKeyEdit::focusInEvent(QFocusEvent *evt)
     {
     case Qt::MouseFocusReason:
         m_ignoreNextMouseEvent = true;
-        // passthrough
+        // falls through
     case Qt::TabFocusReason:
     case Qt::BacktabFocusReason:
     case Qt::ShortcutFocusReason:

@@ -92,11 +92,6 @@ static DcmTagKey DCM_ClipNo(0x5000,  0x8002);
   #define DATA_FOLDER qApp->applicationDirPath() + "/../share/" PRODUCT_SHORT_NAME
 #endif
 
-static inline QBoxLayout::Direction bestDirection(const QSize &s)
-{
-    return s.width() >= s.height()? QBoxLayout::LeftToRight: QBoxLayout::TopToBottom;
-}
-
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
     , dlgPatient(nullptr)

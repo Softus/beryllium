@@ -14,7 +14,7 @@ BuildRequires: make, libv4l-devel, libavc1394-devel
 
 %if %distro == fedora
 BuildRequires: gstreamer1-devel, qt5-qtbase-devel, qt5-qtx11extras-devel, libgudev1-devel
-BuildRequires: qt5-gstreamer1-devel
+BuildRequires: qt5-gstreamer-devel
 Requires: gstreamer1, qt5
 Requires: gstreamer1-plugins-base, gstreamer1-plugins-good, gstreamer1-plugins-bad-free
 %endif
@@ -34,11 +34,11 @@ Requires: gstreamer-plugins-qt5, gstreamer-plugin-gnonlin
 %endif
 
 %if %dicom == 1
-BuildRequires: libmediainfo-devel, dcmtk-devel, openssl-devel
+BuildRequires: libmediainfo-devel, openssl-devel
 Requires: dcmtk
 
 %if %distro == fedora
-Requires: libmediainfo, libzen
+Requires: libmediainfo, libzen, dcmtk-devel
 %endif
 
 %if %distro == centos
@@ -46,7 +46,7 @@ Requires: libmediainfo, libzen
 %endif
 
 %if %distro == opensuse
-Requires: libmediainfo0, libzen0
+Requires: libmediainfo0, libzen0, dcmtk-devel
 %endif
 
 %endif
@@ -67,7 +67,7 @@ Video and image capturing for medicine.
 %build
 qmake-qt5 PREFIX=%{_prefix} QMAKE_CFLAGS+="%optflags" QMAKE_CXXFLAGS+="%optflags";
 lrelease-qt5 *.ts
-make -j 2 %{?_smp_mflags};
+make %{?_smp_mflags};
 
 %install
 make install INSTALL_ROOT="%buildroot";

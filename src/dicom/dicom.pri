@@ -1,4 +1,4 @@
-!nodicom {
+isEmpty(nodicom) {
     QT         += network
     DEFINES    += WITH_DICOM
 
@@ -8,8 +8,13 @@
 
     # DCMTK isn't pgk-config compatible at all.
     LIBS       += -ldcmnet -ldcmdata -loflog -lofstd
-    unix:LIBS  += -lssl -lz
-    win32:LIBS += -lws2_32 -lzlibstatic -lnetapi32 -liphlpapi -lcharset
+    win32 {
+        LIBS += -lws2_32 -lzlibstatic -lnetapi32 -liphlpapi -lcharset
+    } linux {
+        LIBS += -lssl -lz
+    } macx {
+
+    }
 
     SOURCES   += \
         src/dicom/dcmclient.cpp \
