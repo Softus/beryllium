@@ -36,7 +36,6 @@ class HotKeySettings : public QWidget
     HotKeyEdit  *editor;
     QTreeWidget *tree;
     QCheckBox   *checkGlobal;
-    QColor      defaultColor;
 
     void checkKeys(QTreeWidgetItem *top);
 

@@ -72,7 +72,6 @@ HotKeySettings::HotKeySettings(QWidget *parent)
     layoutMain->addWidget(tree);
     auto itemCapture = new QTreeWidgetItem(QStringList(tr("Capture window")));
     itemCapture->setFlags(Qt::ItemIsEnabled);
-    defaultColor = itemCapture->textColor(1);
     tree->addTopLevelItem(itemCapture);
     itemCapture->addChild(newItem(settings, tr("Start/stop study"),         "capture-start",
         DEFAULT_HOTKEY_START));
@@ -208,17 +207,17 @@ void HotKeySettings::checkKeys(QTreeWidgetItem *top)
     for (auto keyIdx = 0; keyIdx < top->childCount(); ++keyIdx)
     {
         auto item = top->child(keyIdx);
-        auto key = item->data(1, Qt::UserRole).toInt();
+        auto key = item->data(1, Qt::UserRole).toInt() & ~GLOBAL_SHORTCUT_MASK;
         auto otherItem = keys[key];
         if (key && otherItem)
         {
-            item->setTextColor(1, QColor(196, 0, 0));
-            otherItem->setTextColor(1, QColor(196, 0, 0));
+            item->setData(1, Qt::TextColorRole, QColor(Qt::red));
+            otherItem->setData(1, Qt::TextColorRole, QColor(Qt::red));
         }
         else
         {
             keys[key] = item;
-            item->setTextColor(1, defaultColor);
+            item->setData(1, Qt::TextColorRole, QVariant());
         }
     }
 }
