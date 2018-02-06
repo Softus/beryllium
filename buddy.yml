@@ -17,7 +17,7 @@
     - ../.ci/git-install.sh https://github.com/DCMTK/dcmtk.git DCMTK-3.6.2 "-DDCMTK_WITH_OPENSSL=OFF -DDCMTK_WITH_WRAP=OFF"
     - cd ..
     - export RPM_BUILD_NCPUS=2
-    - tar czf ../beryllium.tar.gz * --exclude=./builddir --exclude=./cache --exclude=./.git --exclude=*.sh && rpmbuild -D"dicom 1" -D"distro centos" -D"rev $(lsb_release -rs)" -ta ../beryllium.tar.gz
+    - .ci/make-rpm.sh
     setup_commands:
     - yum install -y epel-release
     - yum update -y
@@ -30,9 +30,8 @@
     docker_image_name: "library/fedora"
     docker_image_tag: "latest"
     execute_commands:
-    - ls -la
     - export RPM_BUILD_NCPUS=2
-    - tar czf ../beryllium.tar.gz * --exclude=./builddir --exclude=./cache --exclude=./.git --exclude=*.sh && rpmbuild -D"dicom 1" -D"distro fedora" -D"rev $(lsb_release -rs)" -ta ../beryllium.tar.gz
+    - .ci/make-rpm.sh
     setup_commands:
     - dnf install -y make redhat-lsb rpm-build gstreamer1-devel libv4l-devel qt5-qtbase-devel qt5-gstreamer-devel qt5-linguist qt5-qtx11extras-devel libgudev1-devel libavc1394-devel libmediainfo-devel dcmtk-devel openssl-devel gcc-c++
     trigger_condition: "ALWAYS"
@@ -44,7 +43,7 @@
     docker_image_tag: "latest"
     execute_commands:
     - export RPM_BUILD_NCPUS=2
-    - tar czf ../beryllium.tar.gz * --exclude=./builddir --exclude=./cache --exclude=./.git --exclude=*.sh && rpmbuild -D"dicom 1" -D"distro opensuse" -D"rev $(lsb_release -rs)" -ta ../beryllium.tar.gz
+    - .ci/make-rpm.sh
     setup_commands:
     - zypper install -y make rpm-build lsb-release libqt5-linguist libqt5-qtbase-devel gstreamer-plugins-qt5-devel dcmtk-devel libmediainfo-devel libqt5-qtx11extras-devel openssl-devel libgudev-1_0-devel libavc1394-devel libv4l-devel
     trigger_condition: "ALWAYS"

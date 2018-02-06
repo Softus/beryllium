@@ -188,42 +188,6 @@ void VideoSources::updateDeviceList(const char* elmName, const char* propName)
             }
         }
 
-        // Check for migration from version < 1.2
-        //
-        if (!found && listSources->topLevelItemCount() > 0)
-        {
-            auto item = listSources->topLevelItem(0);
-            auto currDeviceName   = item->data(0, Qt::UserRole).toString();
-            auto currFriendlyName = item->data(1, Qt::UserRole).toString();
-
-            if (currDeviceName.isEmpty())
-            {
-                currDeviceName = defaultDevice;
-            }
-
-            if ((currFriendlyName.isEmpty() || currFriendlyName == friendlyName) &&
-                (currDeviceName == deviceId))
-            {
-                item->setData(1, Qt::UserRole, friendlyName);
-                item->setData(0, Qt::UserRole, deviceId);
-                auto title = friendlyName.isEmpty()? deviceId: deviceId + " (" + friendlyName + ")";
-                item->setText(0, title);
-
-                auto alias = item->text(2);
-                if (alias.isEmpty())
-                {
-                    alias = "src0";
-                    item->setText(2, alias);
-                }
-
-                auto parameters = item->data(2, Qt::UserRole).toMap();
-                parameters["alias"] = alias;
-                parameters["device-type"] = elmName;
-                item->setData(2, Qt::UserRole, parameters);
-                found = true;
-            }
-        }
-
         if (!found)
         {
             auto alias = QString("src%1").arg(listSources->topLevelItemCount());

@@ -63,8 +63,7 @@ static QString getPropName(const QString& deviceType)
     if (deviceType == "videotestsrc")  return "pattern";
     if (deviceType == WIN_VIDEO_SOURCE) return "device-name";
     if (deviceType == "v4l2src")       return "device";
-    if (deviceType == "osxvideosrc")   return "device";
-    //if (deviceType == "ximagesrc")     return "display-name";
+    if (deviceType == "avfvideosrc")   return "device-index";
 
     // Unknown device type
     return QString();

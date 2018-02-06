@@ -38,9 +38,7 @@
 //
 #include <gst/gstdebugutils.h>
 
-#if defined(Q_OS_OSX)
-  #warning TODO: osx
-#elif defined (Q_OS_WIN)
+#if defined (Q_OS_WIN)
   #include <qt_windows.h>
 #elif defined (Q_OS_LINUX)
   #if GST_CHECK_VERSION(1,0,0)

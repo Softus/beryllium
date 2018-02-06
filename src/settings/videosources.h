@@ -35,9 +35,9 @@ QT_END_NAMESPACE
 #define PLATFORM_SPECIFIC_SCREEN_SOURCE "ximagesrc"
 #define PLATFORM_SPECIFIC_PROPERTY "device"
 #elif defined (Q_OS_OSX)
-#define PLATFORM_SPECIFIC_SOURCE "osxvideosrc"
+#define PLATFORM_SPECIFIC_SOURCE "avfvideosrc"
 #define PLATFORM_SPECIFIC_SCREEN_SOURCE "avfvideosrc"
-#define PLATFORM_SPECIFIC_PROPERTY "device"
+#define PLATFORM_SPECIFIC_PROPERTY "device-index"
 #else
 #error The platform is not supported.
 #endif

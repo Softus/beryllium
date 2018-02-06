@@ -13,7 +13,7 @@ isEmpty(nodicom) {
     } linux {
         LIBS += -lssl -lz
     } macx {
-
+        LIBS += -lcharset -liconv -lz
     }
 
     SOURCES   += \
