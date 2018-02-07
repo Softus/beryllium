@@ -87,7 +87,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
 #ifdef WITH_DICOM
     auto mediaInfoVer = QString::fromStdWString(
         MediaInfoLib::MediaInfo::Option_Static(__T("Info_Version")));
-    auto lblMediaInfo = new QLabel(tr("<a href=\"http://mediainfo.sourceforge.net/\">")
+    auto lblMediaInfo = new QLabel(tr("<a href=\"https://mediaarea.net/ru/MediaInfo\">")
         .append(mediaInfoVer.replace("- v", "")).append("</a>"));
     lblMediaInfo->setOpenExternalLinks(true);
     layoutText->addWidget(lblMediaInfo);
@@ -98,30 +98,30 @@ AboutDialog::AboutDialog(QWidget *parent) :
     layoutText->addWidget(lblDcmtk);
 #endif
 
-    auto lblGstreamer = new QLabel(tr("<a href=\"http://gstreamer.freedesktop.org/\">")
+    auto lblGstreamer = new QLabel(tr("<a href=\"https://gstreamer.freedesktop.org/\">")
         .append(gst_version_string()).append("</a>"));
     lblGstreamer->setOpenExternalLinks(true);
     layoutText->addWidget(lblGstreamer);
 
 #if !GST_CHECK_VERSION(1,0,0)
-    auto lblOpencv = new QLabel(tr("<a href=\"http://opencv.org/\">OpenCV ")
+    auto lblOpencv = new QLabel(tr("<a href=\"https://opencv.org/\">OpenCV ")
         .append(CV_VERSION).append("</a>"));
     lblOpencv->setOpenExternalLinks(true);
     layoutText->addWidget(lblOpencv);
 #endif
 
     auto lblQtGstreamer = new QLabel(
-        tr("<a href=\"http://gstreamer.freedesktop.org/modules/qt-gstreamer.html/\">QtGStreamer ")
+        tr("<a href=\"https://gstreamer.freedesktop.org/modules/qt-gstreamer.html\">QtGStreamer ")
             .append(QT_GST_VERSION_STR).append("</a>"));
     lblQtGstreamer->setOpenExternalLinks(true);
     layoutText->addWidget(lblQtGstreamer);
 
-    auto lblQt = new QLabel(tr("<a href=\"http://qt-project.org/\">Qt ")
+    auto lblQt = new QLabel(tr("<a href=\"https://www.qt.io/\">Qt ")
         .append(QT_VERSION_STR).append("</a>"));
     lblQt->setOpenExternalLinks(true);
     layoutText->addWidget(lblQt);
 
-    auto lblQxt = new QLabel(tr("<a href=\"http://libqxt.org/\">LibQxt ")
+    auto lblQxt = new QLabel(tr("<a href=\"https://bitbucket.org/libqxt/libqxt/wiki/Home\">LibQxt ")
         .append(QXT_VERSION_STR).append("</a>"));
     lblQxt->setOpenExternalLinks(true);
     layoutText->addWidget(lblQxt);
@@ -131,7 +131,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
     //
 
     auto lblIconsWin8 = new QLabel(
-        tr("<a href=\"http://icons8.com/\">Icons8 icon set by VisualPharm</a>"));
+        tr("<a href=\"https://icons8.com/\">Icons8 icon set by VisualPharm</a>"));
     lblIconsWin8->setOpenExternalLinks(true);
     layoutText->addWidget(lblIconsWin8);
     layoutText->addSpacing(16);
