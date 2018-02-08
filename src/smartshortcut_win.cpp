@@ -25,14 +25,17 @@ class WinShortcut
     : public QAbstractNativeEventFilter
 {
 public:
+    LPARAM currentKey;
+
     WinShortcut()
+        : currentKey(0)
     {
-         qApp->installNativeEventFilter(this);
+        qApp->installNativeEventFilter(this);
     }
 
     ~WinShortcut()
     {
-         qApp->removeNativeEventFilter(this);
+        qApp->removeNativeEventFilter(this);
     }
 
     bool grabKey(int qtKey);
@@ -48,15 +51,32 @@ protected:
         Q_UNUSED(result);
 
         auto msg = static_cast<const MSG*>(message);
-        if (msg->message == WM_HOTKEY)
+        if (msg->message == WM_HOTKEY && msg->lParam != currentKey)
         {
+            // The guard for repeated WM_HOTKEY messages.
+            // Windows never send multiple WM_HOTKEY messages for different hotkeys at same time,
+            // so it safe to use one variable here.
+            currentKey = msg->lParam;
+
             auto keycode = toQtKey(HIWORD(msg->lParam));
             auto modifiers = toQtModifiers(LOWORD(msg->lParam));
 
-            QCoreApplication::postEvent(qApp,
-                new QKeyEvent(QEvent::KeyPress, keycode, modifiers));
-            QCoreApplication::postEvent(qApp,
-                new QKeyEvent(QEvent::KeyRelease, keycode, modifiers));
+            // Send the key press event
+            //
+            QApplication::sendEvent(qApp, new QKeyEvent(QEvent::KeyPress, keycode, modifiers));
+
+            // Wait till the key is released
+            //
+            while (::GetAsyncKeyState(HIWORD(msg->lParam)) < 0)
+            {
+                ::Sleep(20);
+            }
+
+            // Send the key release event
+            //
+            QApplication::sendEvent(qApp, new QKeyEvent(QEvent::KeyRelease, keycode, modifiers));
+
+            currentKey = 0;
         }
         return false;
     }
@@ -294,7 +314,7 @@ Qt::Key WinShortcut::toQtKey(quint32 nativeKey)
     case VK_OEM_CLEAR:           return Qt::Key_Clear;
 
     default:
-        qWarning() << "Native key" << nativeKey << "is not supported";
+        qWarning() << "Native key" <<  QString::number(nativeKey, 16) << "is not supported";
         break;
     }
 

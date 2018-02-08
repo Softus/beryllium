@@ -24,7 +24,7 @@
 #include <QMouseEvent>
 #include <QSettings>
 
-#define DEFAULT_LONG_PRESS_TIMEOUT   2000
+#define DEFAULT_LONG_PRESS_TIMEOUT   1000
 
 bool grabKey(int key);
 bool ungrabKey(int key);
