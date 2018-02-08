@@ -135,30 +135,25 @@ struct SmartHandler
         return false;
     }
 
-    bool trigger()
+    void trigger()
     {
         if (qApp->activeModalWidget())
         {
             qApp->beep();
-            return false;
         }
-
-        if (qApp->activePopupWidget())
+        else if (!qApp->activePopupWidget())
         {
-            return false;
-        }
+            auto longPress = SmartShortcut::longPressTimeout(ts);
+            ts = 0LL;
 
-        bool longPress = SmartShortcut::longPressTimeout(ts);
-
-        foreach (auto t, targets)
-        {
-            if (triggerTarget(longPress, t))
+            foreach (auto t, targets)
             {
-                return true;
+                if (triggerTarget(longPress, t))
+                {
+                    break;
+                }
             }
         }
-
-        return false;
     }
 };
 
@@ -225,13 +220,14 @@ void SmartShortcut::removeAll()
 void SmartShortcut::setShortcut(QObject *target, int key)
 {
     SmartTarget st(isGlobal(key), isLongPress(key), target);
+    auto keyCode = key & ~(GLOBAL_SHORTCUT_MASK | LONG_PRESS_MASK);
 
-    auto h = handlers.find(key & ~(GLOBAL_SHORTCUT_MASK | LONG_PRESS_MASK));
+    auto h = handlers.find(keyCode);
     if (h == handlers.end())
     {
         SmartHandler sh;
         sh.targets.append(st);
-        handlers.insert(key & ~(GLOBAL_SHORTCUT_MASK | LONG_PRESS_MASK), sh);
+        handlers.insert(keyCode, sh);
     }
     else
     {
@@ -240,7 +236,7 @@ void SmartShortcut::setShortcut(QObject *target, int key)
 
     if (isGlobal(key))
     {
-        grabKey(key & ~(GLOBAL_SHORTCUT_MASK | LONG_PRESS_MASK));
+        grabKey(keyCode);
     }
 }
 
@@ -410,10 +406,7 @@ bool SmartShortcut::eventFilter(QObject *o, QEvent *e)
                     auto handler = handlers.find(key);
                     if (handler != handlers.end())
                     {
-                        if (handler.value().trigger())
-                        {
-                            handler.value().ts = 0;
-                        }
+                        handler.value().trigger();
                         e->accept();
                         return true;
                     }
@@ -427,10 +420,7 @@ bool SmartShortcut::eventFilter(QObject *o, QEvent *e)
                 auto handler = handlers.find(btn);
                 if (handler != handlers.end())
                 {
-                    if (handler.value().trigger())
-                    {
-                        handler.value().ts = 0;
-                    }
+                    handler.value().trigger();
                     e->accept();
                     return true;
                 }
