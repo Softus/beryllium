@@ -16,8 +16,9 @@
 
 #include "videosources.h"
 #include "../defaults.h"
-#include "videosourcedetails.h"
+#include "../platform.h"
 #include "../qwaitcursor.h"
+#include "videosourcedetails.h"
 
 #if (defined WITH_LIBAVC1394) && defined (WITH_LIBRAW1394)
   #include <libavc1394/avc1394.h>
@@ -167,19 +168,19 @@ void VideoSources::updateDeviceList()
                 auto src = QGst::ElementPtr::wrap(gst_device_create_element(device, name));
                 g_free(name);
 
-                auto deviceType = QGlib::Type::fromInstance(src).name();
-                auto deviceIdPropName =
-                    deviceType == "GstV4l2Src" ? "device" : nullptr;
+                auto deviceType = QGlib::Type::fromInstance(src).name().mid(3).toLower();
+                auto deviceIdPropName = getDeviceIdPropName(deviceType);
 
-                if (!deviceIdPropName)
+                if (deviceIdPropName.isEmpty())
                 {
                     qWarning() << "Unsupported device type" << deviceType;
-                    continue;
                 }
-
-                auto deviceId = src->property(deviceIdPropName).toString();
-                auto deviceName = src->property("name").toString();
-                addDevice(deviceId, deviceName, deviceType.mid(3).toLower());
+                else
+                {
+                    auto deviceId = src->property(deviceIdPropName.toUtf8()).toString();
+                    auto deviceName = src->property("name").toString();
+                    addDevice(deviceId, deviceName, deviceType);
+                }
             }
 
             devices = g_list_remove(devices, device);
@@ -295,7 +296,7 @@ void VideoSources::onAddScreenCaptureClicked()
 {
     QVariantMap parameters;
     parameters["alias"] = QString("src%1").arg(listSources->topLevelItemCount());
-    parameters["device-type"] = PLATFORM_SPECIFIC_SCREEN_SOURCE;
+    parameters["device-type"] = PLATFORM_SPECIFIC_SCREEN_CAPTURE;
     listSources->addTopLevelItem(newItem("", "Screen capture", parameters, true));
 }
 

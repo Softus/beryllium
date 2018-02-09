@@ -26,22 +26,6 @@ class QTreeWidgetItem;
 class QPushButton;
 QT_END_NAMESPACE
 
-#if defined (Q_OS_WIN)
-#define PLATFORM_SPECIFIC_SOURCE "ksvideosrc"
-#define PLATFORM_SPECIFIC_SCREEN_SOURCE "gdiscreencapsrc"
-#define PLATFORM_SPECIFIC_PROPERTY "device-name"
-#elif defined (Q_OS_LINUX)
-#define PLATFORM_SPECIFIC_SOURCE "v4l2src"
-#define PLATFORM_SPECIFIC_SCREEN_SOURCE "ximagesrc"
-#define PLATFORM_SPECIFIC_PROPERTY "device"
-#elif defined (Q_OS_OSX)
-#define PLATFORM_SPECIFIC_SOURCE "avfvideosrc"
-#define PLATFORM_SPECIFIC_SCREEN_SOURCE "avfvideosrc"
-#define PLATFORM_SPECIFIC_PROPERTY "device-index"
-#else
-#error The platform is not supported.
-#endif
-
 class VideoSources : public QWidget
 {
     Q_OBJECT

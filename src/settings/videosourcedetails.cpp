@@ -18,6 +18,7 @@
 #include "videosources.h"
 #include "elementproperties.h"
 #include "../defaults.h"
+#include "../platform.h"
 #include "../qwaitcursor.h"
 #include <algorithm>
 
@@ -53,7 +54,7 @@
   #include <libv4l2rds.h>
 #endif
 
-static QString getPropName(const QString& deviceType)
+QString getDeviceIdPropName(const QString& deviceType)
 {
     if (deviceType == "videotestsrc")  return "pattern";
     if (deviceType == "ksvideosrc")    return "device-name";
@@ -248,7 +249,7 @@ void VideoSourceDetails::updateDevice(const QString& device)
         src->link(sink);
     }
 
-    auto propName = getPropName(deviceType);
+    auto propName = getDeviceIdPropName(deviceType);
     auto srcPad = src->getStaticPad("src");
     if (srcPad)
     {
@@ -311,7 +312,7 @@ void VideoSourceDetails::updateDevice(const QString& device)
                 //
                 idx = selectedChannel.toInt() + 1;
             }
-            else if (deviceType == PLATFORM_SPECIFIC_SCREEN_SOURCE)
+            else if (deviceType == PLATFORM_SPECIFIC_SCREEN_CAPTURE)
             {
                 foreach (auto screen, QGuiApplication::screens())
                 {

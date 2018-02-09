@@ -16,6 +16,7 @@
 
 #include "pipeline.h"
 #include "defaults.h"
+#include "platform.h"
 #include "typedetect.h"
 #include "settings/videosources.h"
 
@@ -324,7 +325,7 @@ QString Pipeline::buildPipeline
     QString pipe;
 
     auto deviceDef      = settings.value("device").toString();
-    auto deviceType     = settings.value("device-type", PLATFORM_SPECIFIC_SOURCE).toString();
+    auto deviceType     = settings.value("device-type", PLATFORM_SPECIFIC_VIDEO_SOURCE).toString();
     auto inputChannel   = settings.value("video-channel").toString();
     auto formatDef      = settings.value("format").toString();
     auto sizeDef        = settings.value("size").toSize();
@@ -423,7 +424,8 @@ QString Pipeline::buildPipeline
         }
         if (!deviceDef.isEmpty())
         {
-            pipe.append(" " PLATFORM_SPECIFIC_PROPERTY "=\"").append(deviceDef).append("\"");
+            pipe.append(" ").append(getDeviceIdPropName(deviceType))
+                .append("=\"").append(deviceDef).append("\"");
         }
     }
 

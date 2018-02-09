@@ -16,6 +16,7 @@
 
 #include "elementproperties.h"
 #include "../defaults.h"
+#include "../platform.h"
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -43,11 +44,7 @@ static bool isBlacklistedProp
     , const QString& propName
     )
 {
-    return propName == "bitrate"
-        || (propName == "pattern" && elmType == "videotestsrc")
-        || (propName == "device" && elmType == "v4l2src")
-        || (propName == "device-index" && elmType == "avfvideosrc")
-        || (propName == "device-name" && elmType == "ksvideosrc");
+    return propName == "bitrate" || getDeviceIdPropName(elmType) == propName;
 }
 
 static QWidget* createEditor

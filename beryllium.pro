@@ -161,6 +161,7 @@ HEADERS += \
     src/videoencodingprogressdialog.h \
     src/settingsdialog.h \
     src/pipeline.h \
+    src/platform.h \
     src/videowidget.h \
     src/settings/videosources.h \
     src/settings/videosourcedetails.h \
