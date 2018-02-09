@@ -38,10 +38,10 @@ NM = Nuclear Medicine
 *US = Ultrasound
 #define UID_UltrasoundImageStorage                               "1.2.840.10008.5.1.4.1.1.6.1"
 // Doesnt't work
-//#define UID_UltrasoundMultiframeImageStorage                     "1.2.840.10008.5.1.4.1.1.3.1"
-#define UID_RawDataStorage                                       "1.2.840.10008.5.1.4.1.1.66"
+//#define UID_UltrasoundMultiframeImageStorage                   "1.2.840.10008.5.1.4.1.1.3.1"
 
-OT = Other
+*OT = Other
+#define UID_RawDataStorage                                       "1.2.840.10008.5.1.4.1.1.66"
 BI = Biomagnetic imaging
 CD = Color flow Doppler
 DD = Duplex Doppler
@@ -127,10 +127,11 @@ DicomDeviceSettings::DicomDeviceSettings(QWidget *parent) :
     mainLayout->addRow(tr("AE &title"), textAet =
         new QLineEdit(settings.value("aet", localHost.toUpper()).toString()));
     mainLayout->addRow(tr("&Modality"), cbModality = new QComboBox);
-    cbModality->addItem(tr("Endoscopy"), "ES");
-    cbModality->addItem(tr("Ultrasound"), "US");
-    cbModality->addItem(tr("General Microscopy"), "GM");
-    cbModality->addItem(tr("External-camera Photography"), "XC");
+    cbModality->addItem(tr("Endoscopy (ES)"), "ES");
+    cbModality->addItem(tr("External-camera Photography (XC)"), "XC");
+    cbModality->addItem(tr("General Microscopy (GM)"), "GM");
+    cbModality->addItem(tr("Other (OT)"), "OT");
+    cbModality->addItem(tr("Ultrasound (US)"), "US");
     auto idx = cbModality->findData(settings.value("modality", DEFAULT_MODALITY).toString());
     cbModality->setCurrentIndex(qMax(idx, 0));
     mainLayout->addRow(tr("&IP address"), textIp);

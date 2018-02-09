@@ -80,8 +80,9 @@ static QString getImageSopClass(const QSettings& settings)
 
     return
         modality == "ES"? UID_VLEndoscopicImageStorage:
-        modality == "US"? UID_UltrasoundImageStorage:
         modality == "GM"? UID_VLMicroscopicImageStorage:
+        modality == "OT"? UID_RawDataStorage:
+        modality == "US"? UID_UltrasoundImageStorage:
         modality == "XC"? UID_VLPhotographicImageStorage:
         "??";
 }
@@ -99,8 +100,9 @@ static QString getVideoSopClass(const QSettings& settings)
 
     return
         modality == "ES"? UID_VideoEndoscopicImageStorage:
-        modality == "US"? UID_UltrasoundMultiframeImageStorage:
         modality == "GM"? UID_VideoMicroscopicImageStorage:
+        modality == "OT"? UID_RawDataStorage:
+        modality == "US"? UID_UltrasoundMultiframeImageStorage:
         modality == "XC"? UID_VideoPhotographicImageStorage:
         "??";
 }
