@@ -39,6 +39,7 @@ class SmartShortcut : public QObject
 public:
     static qint64 timestamp();
     static bool longPressTimeout(qint64 ts);
+    static void reloadSettings();
     static void remove(QObject *parent);
     static void removeAll();
     static void setShortcut(QObject *parent, int key);

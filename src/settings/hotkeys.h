@@ -24,6 +24,7 @@ QT_BEGIN_NAMESPACE
 class HotKeyEdit;
 class QCheckBox;
 class QPushButton;
+class QSpinBox;
 class QTreeWidget;
 class QTreeWidgetItem;
 QT_END_NAMESPACE
@@ -36,6 +37,7 @@ class HotKeySettings : public QWidget
     HotKeyEdit  *editor;
     QTreeWidget *tree;
     QCheckBox   *checkGlobal;
+    QSpinBox    *spinLongPress;
 
     void checkKeys(QTreeWidgetItem *top);
 

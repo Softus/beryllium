@@ -26,6 +26,7 @@
 #include <QMap>
 #include <QPushButton>
 #include <QSettings>
+#include <QSpinBox>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 
@@ -58,11 +59,23 @@ HotKeySettings::HotKeySettings(QWidget *parent)
     : QWidget(parent)
 {
     QSettings settings;
-    settings.beginGroup("hotkeys");
 
     auto layoutMain = new QVBoxLayout;
     layoutMain->setContentsMargins(4,0,4,0);
 
+    auto layoutLongPressDelay = new QHBoxLayout;
+    layoutMain->addLayout(layoutLongPressDelay);
+    auto lblLongPress = new QLabel(tr("&Threshold for \"long\" pressing"));
+    layoutLongPressDelay->addWidget(lblLongPress);
+    layoutLongPressDelay->addWidget(spinLongPress = new QSpinBox);
+    spinLongPress->setRange(0, 10000);
+    spinLongPress->setSingleStep(100);
+    spinLongPress->setSuffix(tr(" milliseconds"));
+    spinLongPress->setValue(settings.value("long-press-timeout",
+        DEFAULT_LONG_PRESS_TIMEOUT).toInt());
+    lblLongPress->setBuddy(spinLongPress);
+
+    settings.beginGroup("hotkeys");
     tree = new QTreeWidget;
     tree->setColumnCount(2);
     tree->setHeaderLabels(QStringList() << tr("Action") << tr("Hotkey") << tr("Global"));
@@ -157,7 +170,7 @@ HotKeySettings::HotKeySettings(QWidget *parent)
     layoutEditor->addWidget(lbl);
     layoutEditor->addWidget(editor = new HotKeyEdit);
     connect(editor, SIGNAL(keyChanged(int)), this, SLOT(keyChanged(int)));
-    layoutEditor->addWidget(checkGlobal = new QCheckBox(tr("Global")));
+    layoutEditor->addWidget(checkGlobal = new QCheckBox(tr("&Global")));
     connect(checkGlobal, SIGNAL(toggled(bool)), this, SLOT(onSetGlobal(bool)));
     layoutEditor->addWidget(btnReset = new QPushButton(tr("&Reset")));
     connect(btnReset, SIGNAL(clicked()), this, SLOT(resetClicked()));
@@ -272,6 +285,8 @@ void HotKeySettings::treeItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *
 
 void HotKeySettings::save(QSettings& settings)
 {
+   settings.setValue("long-press-timeout", spinLongPress->value());
+
    settings.beginGroup("hotkeys");
    for (auto grpIdx = 0; grpIdx < tree->topLevelItemCount(); ++grpIdx)
    {

@@ -56,7 +56,6 @@
     <message>
         <location filename="src/aboutdialog.cpp" line="124"/>
         <source>&lt;p&gt;Copyright (C) 2013-2018 &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;. All rights reserved.&lt;/p&gt;</source>
-        <oldsource>&lt;p&gt;Copyright (C) 2013-2016 &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;. All rights reserved.&lt;/p&gt;</oldsource>
         <translation>&lt;p&gt;Авторское право (C) 2013-2018 &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;&lt;br/&gt;Программа защищена законом об авторских правах&lt;br/&gt;и международными соглашениями.&lt;/p&gt;</translation>
     </message>
     <message>
@@ -441,13 +440,11 @@ Continue?</source>
     <message>
         <location filename="src/dicom/dicomdevicesettings.cpp" line="130"/>
         <source>Endoscopy (ES)</source>
-        <oldsource>Endoscopy</oldsource>
         <translation>Эндоскопия (ES)</translation>
     </message>
     <message>
         <location filename="src/dicom/dicomdevicesettings.cpp" line="132"/>
         <source>General Microscopy (GM)</source>
-        <oldsource>General Microscopy</oldsource>
         <translation>Общая микроскопия (GM)</translation>
     </message>
     <message>
@@ -628,174 +625,188 @@ Continue?</source>
 <context>
     <name>HotKeySettings</name>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="68"/>
+        <location filename="src/settings/hotkeys.cpp" line="81"/>
         <source>Action</source>
         <translation>Действие</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="68"/>
+        <location filename="src/settings/hotkeys.cpp" line="81"/>
         <source>Hotkey</source>
         <translation>Клавиша</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="68"/>
-        <location filename="src/settings/hotkeys.cpp" line="160"/>
+        <location filename="src/settings/hotkeys.cpp" line="81"/>
         <source>Global</source>
         <translation>Глобальная</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="73"/>
+        <location filename="src/settings/hotkeys.cpp" line="86"/>
         <source>Capture window</source>
         <translation>Окно захвата</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="76"/>
+        <location filename="src/settings/hotkeys.cpp" line="89"/>
         <source>Start/stop study</source>
         <translation>Начать/закончить исследование</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="78"/>
+        <location filename="src/settings/hotkeys.cpp" line="91"/>
         <source>Take snapshot</source>
         <translation>Сделать снимок</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="80"/>
+        <location filename="src/settings/hotkeys.cpp" line="93"/>
         <source>Start clip</source>
         <translation>Записать фрагмент</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="82"/>
+        <location filename="src/settings/hotkeys.cpp" line="95"/>
         <source>Clip done</source>
         <translation>Завершить фрагмент</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="84"/>
+        <location filename="src/settings/hotkeys.cpp" line="97"/>
         <source>Show the Archive window</source>
         <translation>Открыть окно архива</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="86"/>
+        <location filename="src/settings/hotkeys.cpp" line="99"/>
         <source>Show the Settings window</source>
         <translation>Открыть окно настроек</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="89"/>
+        <location filename="src/settings/hotkeys.cpp" line="102"/>
         <source>Show the Worklist window</source>
         <translation>Открыть рабочий лист</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="92"/>
+        <location filename="src/settings/hotkeys.cpp" line="105"/>
         <source>Archive window</source>
         <translation>Окно архива</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="95"/>
-        <location filename="src/settings/hotkeys.cpp" line="141"/>
+        <location filename="src/settings/hotkeys.cpp" line="108"/>
+        <location filename="src/settings/hotkeys.cpp" line="154"/>
         <source>Back</source>
         <translation>Обратно</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="97"/>
+        <location filename="src/settings/hotkeys.cpp" line="110"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="99"/>
+        <location filename="src/settings/hotkeys.cpp" line="112"/>
         <source>Restore</source>
         <translation>Вернуть</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="102"/>
+        <location filename="src/settings/hotkeys.cpp" line="115"/>
         <source>Upload</source>
         <translation>В хранилище</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="105"/>
+        <location filename="src/settings/hotkeys.cpp" line="118"/>
         <source>to USB</source>
         <translation>на USB</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="107"/>
+        <location filename="src/settings/hotkeys.cpp" line="120"/>
         <source>Edit</source>
         <translation>Правка</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="109"/>
+        <location filename="src/settings/hotkeys.cpp" line="122"/>
         <source>Up</source>
         <translation>Вверх</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="120"/>
+        <location filename="src/settings/hotkeys.cpp" line="133"/>
         <source>File browser</source>
         <translation>Проводник</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="112"/>
+        <location filename="src/settings/hotkeys.cpp" line="125"/>
         <source>Switch mode</source>
         <translation>Переключить режим</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="114"/>
+        <location filename="src/settings/hotkeys.cpp" line="68"/>
+        <source>&amp;Threshold for &quot;long&quot; pressing</source>
+        <translation>&amp;Порог для &quot;долгого&quot; нажатия</translation>
+    </message>
+    <message>
+        <location filename="src/settings/hotkeys.cpp" line="73"/>
+        <source> milliseconds</source>
+        <translation> миллисекунд</translation>
+    </message>
+    <message>
+        <location filename="src/settings/hotkeys.cpp" line="127"/>
         <source>List mode</source>
         <translation>Режим списка</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="116"/>
+        <location filename="src/settings/hotkeys.cpp" line="129"/>
         <source>Icon mode</source>
         <translation>Режим значков</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="118"/>
+        <location filename="src/settings/hotkeys.cpp" line="131"/>
         <source>Gallery mode</source>
         <translation>Режим галереи</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="123"/>
+        <location filename="src/settings/hotkeys.cpp" line="136"/>
         <source>Seek backward</source>
         <translation>Отмотать назад</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="125"/>
+        <location filename="src/settings/hotkeys.cpp" line="138"/>
         <source>Seek forward</source>
         <translation>Отмотать вперёд</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="127"/>
+        <location filename="src/settings/hotkeys.cpp" line="140"/>
         <source>Play video</source>
         <translation>Проиграть видео</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="129"/>
+        <location filename="src/settings/hotkeys.cpp" line="142"/>
         <source>Select</source>
         <translation>Выбрать</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="143"/>
+        <location filename="src/settings/hotkeys.cpp" line="156"/>
         <source>Start study</source>
         <translation>Начать исследование</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="145"/>
+        <location filename="src/settings/hotkeys.cpp" line="158"/>
         <source>Show details</source>
         <translation>Показать детали</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="147"/>
+        <location filename="src/settings/hotkeys.cpp" line="160"/>
         <source>Reload worklist</source>
         <translation>Обновить рабочий лист</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="156"/>
+        <location filename="src/settings/hotkeys.cpp" line="169"/>
         <source>&amp;Set key</source>
         <translation>&amp;Задать клавишу</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="162"/>
+        <location filename="src/settings/hotkeys.cpp" line="173"/>
+        <source>&amp;Global</source>
+        <translation>&amp;Глобальная</translation>
+    </message>
+    <message>
+        <location filename="src/settings/hotkeys.cpp" line="175"/>
         <source>&amp;Reset</source>
         <translation>&amp;Сбросить</translation>
     </message>
     <message>
-        <location filename="src/settings/hotkeys.cpp" line="138"/>
+        <location filename="src/settings/hotkeys.cpp" line="151"/>
         <source>Worklist window</source>
         <translation>Окно рабочего листа</translation>
     </message>
@@ -838,54 +849,54 @@ Continue?</source>
         <translation>О программе %1</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="718"/>
-        <location filename="src/mainwindow.cpp" line="723"/>
-        <location filename="src/mainwindow.cpp" line="728"/>
-        <location filename="src/mainwindow.cpp" line="733"/>
-        <location filename="src/mainwindow.cpp" line="738"/>
+        <location filename="src/mainwindow.cpp" line="720"/>
+        <location filename="src/mainwindow.cpp" line="725"/>
+        <location filename="src/mainwindow.cpp" line="730"/>
+        <location filename="src/mainwindow.cpp" line="735"/>
+        <location filename="src/mainwindow.cpp" line="740"/>
         <source> - </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="768"/>
+        <location filename="src/mainwindow.cpp" line="770"/>
         <source>Failed to create &apos;%1&apos;</source>
         <translation>Не удалось создать &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="860"/>
-        <location filename="src/mainwindow.cpp" line="920"/>
+        <location filename="src/mainwindow.cpp" line="862"/>
+        <location filename="src/mainwindow.cpp" line="922"/>
         <source>Failed to start recording.
 Please, adjust the video source settings.</source>
         <translation>Невозможно начать запись.
 Проверьте настройки видео.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="882"/>
-        <location filename="src/mainwindow.cpp" line="1135"/>
+        <location filename="src/mainwindow.cpp" line="884"/>
+        <location filename="src/mainwindow.cpp" line="1137"/>
         <source>Failed to start recording.
 Check the error log for details.</source>
         <translation>Невозможно начать запись.
 Проверьте журнал ожибок.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1279"/>
+        <location filename="src/mainwindow.cpp" line="1281"/>
         <source>Failed to start a study.
 Another study is in progress.</source>
         <translation>Невозможно начать исследование.
 Активное исследование ещё не закончено.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="933"/>
+        <location filename="src/mainwindow.cpp" line="935"/>
         <source>End the study?</source>
         <translation>Завершить исследование?</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1172"/>
+        <location filename="src/mainwindow.cpp" line="1174"/>
         <source>End study</source>
         <translation>Завершить исследование</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1172"/>
+        <location filename="src/mainwindow.cpp" line="1174"/>
         <source>Start study</source>
         <translation>Начать исследование</translation>
     </message>
@@ -1249,7 +1260,7 @@ Another study is in progress.</source>
 <context>
     <name>SmartShortcut</name>
     <message>
-        <location filename="src/smartshortcut.cpp" line="264"/>
+        <location filename="src/smartshortcut.cpp" line="263"/>
         <source>(not set)</source>
         <translation>(не задано)</translation>
     </message>
@@ -1295,7 +1306,6 @@ Another study is in progress.</source>
     <message>
         <location filename="src/settings/storage.cpp" line="86"/>
         <source>%yyyy%|year|%mm%|month|%dd%|day|%hh%|hour|%min%|minute|%nn%|sequential number|%an%|accession number|%id%|patient id|%name%|patient name|%sex%|patient sex|%birthdate%|patient birthdate|%physician%|physician name|%study%|study name|%src%|source name|%org%|organization</source>
-        <oldsource>%yyyy%|year|%mm%|month|%dd%|day|%hh%|hour|%min%|minute|%nn%|sequential number|%an%|accession number|%id%|patient id|%name%|patient name|%sex%|patient sex|%birthdate%|patient birthdate|%physician%|physician name|%study%|study name|%src%|source name</oldsource>
         <translation>%yyyy%|год|%mm%|месяц|%dd%|день|%hh%|час|%min%|минуты|%nn%|порядковый номер|%an%|идентификатор исследования|%id%|номер карты|%name%|ФИО пациента|%sex%|пол|%birthdate%|дата рождения|%physician%|врач|%study%|тип исследования|%src%|имя источника|%org%|организация</translation>
     </message>
     <message>
@@ -1643,8 +1653,8 @@ Are you want to continue?</source>
     </message>
     <message>
         <location filename="src/settings/videosourcedetails.cpp" line="157"/>
-        <source>Advanced</source>
-        <translation>Особые настройки</translation>
+        <source>A&amp;dvanced</source>
+        <translation>Особые &amp;настройки</translation>
     </message>
     <message>
         <location filename="src/settings/videosourcedetails.cpp" line="161"/>

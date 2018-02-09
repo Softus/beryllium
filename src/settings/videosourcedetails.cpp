@@ -154,7 +154,7 @@ VideoSourceDetails::VideoSourceDetails
     // Buttons row
     //
     auto layoutBtns = new QHBoxLayout;
-    auto btnAdvanced = new QPushButton(tr("Advanced"));
+    auto btnAdvanced = new QPushButton(tr("A&dvanced"));
     connect(btnAdvanced, SIGNAL(clicked()), this, SLOT(onAdvancedClick()));
     layoutBtns->addWidget(btnAdvanced);
     layoutBtns->addStretch(1);

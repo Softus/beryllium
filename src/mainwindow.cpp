@@ -631,6 +631,8 @@ void MainWindow::applySettings()
 {
     QWaitCursor wait(this);
 
+    SmartShortcut::reloadSettings();
+
     if (checkPipelines())
     {
         // No new pipelines, just reconfigure (if need) all existing
