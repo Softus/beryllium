@@ -33,7 +33,7 @@ Debian/Ubuntu/Mint
 1. Install build dependecies
 
         sudo apt install lsb-release debhelper fakeroot libdcmtk2-dev libboost-dev \
-        libmediainfo-dev libssl-dev libwrap0-dev libgudev-1.0-dev libqt5opengl5-dev \
+        libmediainfo-dev libssl-dev libwrap0-dev libqt5opengl5-dev \
         libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libqt5gstreamer-1.0-0 \
         libqt5gstreamer-dev libavc1394-dev libraw1394-dev libv4l-dev qttools5-dev-tools \
         qt5-default libqt5x11extras5-dev
@@ -63,7 +63,7 @@ SUSE/Open SUSE
 
         sudo zypper install rpm-build lsb-release libqt5-linguist libqt5-qtbase-devel \
         gstreamer-plugins-qt5-devel dcmtk-devel libmediainfo-devel libqt5-qtx11extras-devel \
-        openssl-devel libgudev-1_0-devel libavc1394-devel libv4l-devel
+        openssl-devel libavc1394-devel libv4l-devel
 
 2. Make Makefile
 
@@ -91,7 +91,7 @@ CentOS
 
         sudo yum install redhat-lsb make cmake boost-devel gstreamer1-plugins-base-devel \
         qt5-qtdeclarative-devel rpm-build gstreamer1-devel libv4l-devel git \
-        qt5-qtbase-devel qt5-linguist qt5-qtx11extras-devel libgudev1-devel \
+        qt5-qtbase-devel qt5-linguist qt5-qtx11extras-devel \
         libavc1394-devel libmediainfo-devel dcmtk-devel openssl-devel tcp_wrappers-devel gcc-c++
 
 2. Build 3-rd party libraries
@@ -127,7 +127,7 @@ Fedora
 1. Install build dependecies
 
         sudo dnf install redhat-lsb make rpm-build gstreamer1-devel libv4l-devel \
-        qt5-qtbase-devel qt5-gstreamer-devel qt5-linguist qt5-qtx11extras-devel libgudev1-devel \
+        qt5-qtbase-devel qt5-gstreamer-devel qt5-linguist qt5-qtx11extras-devel \
         libavc1394-devel libmediainfo-devel dcmtk-devel openssl-devel tcp_wrappers-devel gcc-c++ 
 
 2. Make Makefile

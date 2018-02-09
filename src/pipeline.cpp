@@ -35,9 +35,11 @@
 //
 #include <gst/gstdebugutils.h>
 
-#if defined (Q_OS_WIN)
+#ifdef Q_OS_WIN
   #include <qt_windows.h>
-#elif defined (Q_OS_LINUX)
+#endif
+
+#ifdef WITH_LIBV4L2
   #include <libv4l2.h>
   #include <libv4l2rds.h>
 #endif
@@ -578,7 +580,7 @@ bool Pipeline::updatePipeline()
     auto videoInputChannel = settings.value("video-channel").toString();
     if (!videoInputChannel.isEmpty())
     {
-#if defined (Q_OS_LINUX)
+#ifdef WITH_LIBV4L2
         auto src = pipeline->getElementByName(videoInputChannel.toUtf8());
         if (src)
         {

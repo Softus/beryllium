@@ -48,7 +48,7 @@
 #include <QGst/Structure>
 #include <gst/gst.h>
 
-#if defined (Q_OS_LINUX)
+#ifdef WITH_LIBV4L2
   #include <libv4l2.h>
   #include <libv4l2rds.h>
 #endif
@@ -268,7 +268,7 @@ void VideoSourceDetails::updateDevice(const QString& device)
         qDebug() << caps->toString();
         auto selectedChannelLabel = selectedChannel.toString();
 
-#if defined (Q_OS_LINUX)
+#ifdef WITH_LIBV4L2
         int fd = src->property("device-fd").toInt();
         uint n = 0;
         struct v4l2_input input;

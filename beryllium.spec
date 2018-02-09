@@ -13,20 +13,20 @@ Packager: Softus Inc. <contact@softus.org>
 BuildRequires: make, libv4l-devel, libavc1394-devel
 
 %if %distro == fedora
-BuildRequires: gstreamer1-devel, qt5-qtbase-devel, qt5-qtx11extras-devel, libgudev1-devel
+BuildRequires: gstreamer1-devel, qt5-qtbase-devel, qt5-qtx11extras-devel
 BuildRequires: qt5-gstreamer-devel
 Requires: gstreamer1, qt5
 Requires: gstreamer1-plugins-base, gstreamer1-plugins-good, gstreamer1-plugins-bad-free
 %endif
 
 %if %distro == centos
-BuildRequires: gstreamer1-devel, qt5-qtbase-devel, qt5-qtx11extras-devel, libgudev1-devel
+BuildRequires: gstreamer1-devel, qt5-qtbase-devel, qt5-qtx11extras-devel
 Requires: gstreamer1, qt5
 Requires: gstreamer1-plugins-base, gstreamer1-plugins-good, gstreamer1-plugins-bad-free
 %endif
 
 %if %distro == opensuse
-BuildRequires: libqt5-linguist, libqt5-qtbase-devel, libqt5-qtx11extras-devel, libgudev-1_0-devel
+BuildRequires: libqt5-linguist, libqt5-qtbase-devel, libqt5-qtx11extras-devel
 BuildRequires: gstreamer-plugins-qt5-devel
 Requires: gstreamer-plugins-base, gstreamer-plugins-good
 Requires: gstreamer-plugins-bad, gstreamer-plugins-ugly

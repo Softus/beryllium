@@ -21,7 +21,7 @@
     setup_commands:
     - yum install -y epel-release
     - yum update -y
-    - yum install -y git make cmake boost-devel gstreamer1-plugins-base-devel qt5-qtdeclarative-devel redhat-lsb rpm-build gstreamer1-devel libv4l-devel qt5-qtbase-devel qt5-linguist qt5-qtx11extras-devel libgudev1-devel libavc1394-devel libmediainfo-devel openssl-devel gcc-c++
+    - yum install -y git make cmake boost-devel gstreamer1-plugins-base-devel qt5-qtdeclarative-devel redhat-lsb rpm-build gstreamer1-devel libv4l-devel qt5-qtbase-devel qt5-linguist qt5-qtx11extras-devel libavc1394-devel libmediainfo-devel openssl-devel gcc-c++
     trigger_condition: "ALWAYS"
     working_directory: "/buddy/centos"
 
@@ -33,7 +33,7 @@
     - export RPM_BUILD_NCPUS=2
     - .ci/make-rpm.sh
     setup_commands:
-    - dnf install -y make redhat-lsb rpm-build gstreamer1-devel libv4l-devel qt5-qtbase-devel qt5-gstreamer-devel qt5-linguist qt5-qtx11extras-devel libgudev1-devel libavc1394-devel libmediainfo-devel dcmtk-devel openssl-devel gcc-c++
+    - dnf install -y make redhat-lsb rpm-build gstreamer1-devel libv4l-devel qt5-qtbase-devel qt5-gstreamer-devel qt5-linguist qt5-qtx11extras-devel libavc1394-devel libmediainfo-devel dcmtk-devel openssl-devel gcc-c++
     trigger_condition: "ALWAYS"
     working_directory: "/buddy/fedora"
 
@@ -45,7 +45,7 @@
     - export RPM_BUILD_NCPUS=2
     - .ci/make-rpm.sh
     setup_commands:
-    - zypper install -y make rpm-build lsb-release libqt5-linguist libqt5-qtbase-devel gstreamer-plugins-qt5-devel dcmtk-devel libmediainfo-devel libqt5-qtx11extras-devel openssl-devel libgudev-1_0-devel libavc1394-devel libv4l-devel
+    - zypper install -y make rpm-build lsb-release libqt5-linguist libqt5-qtbase-devel gstreamer-plugins-qt5-devel dcmtk-devel libmediainfo-devel libqt5-qtx11extras-devel openssl-devel libavc1394-devel libv4l-devel
     trigger_condition: "ALWAYS"
     working_directory: "/buddy/opensuse"
 
@@ -59,6 +59,6 @@
     - dpkg-buildpackage -us -uc -I.git -I*.sh -rfakeroot
     setup_commands:
     - apt update -q
-    - apt install -y lsb-release debhelper fakeroot libdcmtk2-dev libboost-dev libmediainfo-dev libssl-dev libwrap0-dev libgudev-1.0-dev libqt5opengl5-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libqt5gstreamer-1.0-0 libqt5gstreamer-dev libavc1394-dev libraw1394-dev libv4l-dev qttools5-dev-tools qt5-default libqt5x11extras5-dev
+    - apt install -y lsb-release debhelper fakeroot libdcmtk2-dev libboost-dev libmediainfo-dev libssl-dev libwrap0-dev libqt5opengl5-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libqt5gstreamer-1.0-0 libqt5gstreamer-dev libavc1394-dev libraw1394-dev libv4l-dev qttools5-dev-tools qt5-default libqt5x11extras5-dev
     trigger_condition: "ALWAYS"
     working_directory: "/buddy/ubuntu"

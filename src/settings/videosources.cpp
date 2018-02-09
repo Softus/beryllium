@@ -18,7 +18,11 @@
 #include "../defaults.h"
 #include "videosourcedetails.h"
 #include "../qwaitcursor.h"
-#include "../gst/enumsrc.h"
+
+#if (defined WITH_LIBAVC1394) && defined (WITH_LIBRAW1394)
+  #include <libavc1394/avc1394.h>
+  #include <libavc1394/rom1394.h>
+#endif
 
 #include <QApplication>
 #include <QBoxLayout>
@@ -26,7 +30,11 @@
 #include <QMessageBox>
 #include <QPushButton>
 
+#include <QGst/Caps>
+#include <QGst/Element>
 #include <QGst/ElementFactory>
+#include <QGst/Structure>
+#include <gst/gst.h>
 
 static QTreeWidgetItem*
 newItem(const QString& name, const QString& device, const QVariantMap& parameters, bool enabled)
@@ -139,63 +147,107 @@ void VideoSources::showEvent(QShowEvent *e)
 
     // Populate cameras list
     //
-    updateDeviceList(PLATFORM_SPECIFIC_SOURCE, PLATFORM_SPECIFIC_PROPERTY);
-
-    if (QGst::ElementFactory::find("dv1394src"))
-    {
-        // Populate firewire list
-        //
-        updateDeviceList("dv1394src", "guid");
-    }
+    updateDeviceList();
 }
 
-void VideoSources::updateDeviceList(const char* elmName, const char* propName)
+void VideoSources::updateDeviceList()
 {
     QWaitCursor wait(this);
-    auto src = QGst::ElementFactory::make(elmName);
-    if (!src)
+
+    auto monitor = gst_device_monitor_new();
+    gst_device_monitor_add_filter(monitor, "Video/Source", nullptr);
+    if (gst_device_monitor_start(monitor))
     {
-        QMessageBox::critical(this, windowTitle(),
-            tr("Failed to create element '%1'").arg(elmName));
-        return;
-    }
-
-    auto prop = src->property(propName);
-    auto defaultDevice = prop.toString();
-
-    // Look for device-name for windows and "device" for linux/macosx
-    //
-    auto devices = enumSources(elmName, propName);
-    foreach (auto deviceId, devices)
-    {
-        // Switch to the device
-        //
-        src->setProperty(propName, QGlib::Value(deviceId).transformTo(prop.type()));
-
-        auto friendlyName = src->property("device-name").toString();
-        auto found = false;
-
-        foreach (auto item, listSources->findItems(deviceId, Qt::MatchStartsWith))
+        auto devices = gst_device_monitor_get_devices(monitor);
+        while (devices)
         {
-            auto currDeviceName   = item->data(0, Qt::UserRole).toString();
-            auto currFriendlyName = item->data(1, Qt::UserRole).toString();
-
-            if (currFriendlyName == friendlyName && currDeviceName == deviceId)
+            auto device = static_cast<GstDevice *>(devices->data);
             {
-                found = true;
-                break;
-            }
-        }
+                auto name = gst_device_get_display_name(device);
+                auto src = QGst::ElementPtr::wrap(gst_device_create_element(device, name));
+                g_free(name);
 
-        if (!found)
+                auto deviceType = QGlib::Type::fromInstance(src).name();
+                auto deviceIdPropName =
+                    deviceType == "GstV4l2Src" ? "device" : nullptr;
+
+                if (!deviceIdPropName)
+                {
+                    qWarning() << "Unsupported device type" << deviceType;
+                    continue;
+                }
+
+                auto deviceId = src->property(deviceIdPropName).toString();
+                auto deviceName = src->property("name").toString();
+                addDevice(deviceId, deviceName, deviceType.mid(3).toLower());
+            }
+
+            devices = g_list_remove(devices, device);
+            gst_object_unref(device);
+        }
+        gst_device_monitor_stop(monitor);
+    }
+
+    gst_object_unref(monitor);
+
+#if (defined WITH_LIBAVC1394) && defined (WITH_LIBRAW1394)
+    if (QGst::ElementFactory::find("dv1394src"))
+    {
+        rom1394_directory directory;
+        raw1394handle_t handle = raw1394_new_handle ();
+
+        if (handle)
         {
-            auto alias = QString("src%1").arg(listSources->topLevelItemCount());
-            QVariantMap parameters;
-            parameters["alias"] = alias;
-            parameters["device-type"] = elmName;
-            listSources->addTopLevelItem(newItem(friendlyName, deviceId, parameters, false));
+            auto num_ports = raw1394_get_port_info(handle, nullptr, 0);
+            for (int port = 0; port < num_ports; port++)
+            {
+                if (raw1394_set_port (handle, port) < 0)
+                {
+                    continue;
+                }
+
+                auto num_nodes = raw1394_get_nodecount (handle);
+                for (int node = 0; node < num_nodes; node++)
+                {
+                    rom1394_get_directory (handle, node, &directory);
+                    if (rom1394_get_node_type (&directory) == ROM1394_NODE_TYPE_AVC
+                        && avc1394_check_subunit_type (handle, node, AVC1394_SUBUNIT_TYPE_VCR))
+                    {
+                        addDevice(QString::number(rom1394_get_guid(handle, node)),
+                            "DV source", "dv1394src");
+                    }
+                }
+            }
+            raw1394_destroy_handle(handle);
         }
     }
+#endif
+
+}
+
+void VideoSources::addDevice
+    ( const QString& deviceId
+    , const QString& deviceName
+    , const QString& deviceType
+    )
+{
+    foreach (auto item, listSources->findItems(deviceId, Qt::MatchStartsWith))
+    {
+        auto currDeviceId   = item->data(0, Qt::UserRole).toString();
+        auto currDeviceName = item->data(1, Qt::UserRole).toString();
+
+        if (currDeviceName == deviceName && currDeviceId == deviceId)
+        {
+            // Already known source.
+            return;
+        }
+    }
+
+    auto alias = QString("src%1").arg(listSources->topLevelItemCount());
+    QVariantMap parameters;
+    parameters["alias"] = alias;
+    parameters["device-type"] = deviceType;
+    listSources->addTopLevelItem(newItem(deviceName, deviceId, parameters, false));
 }
 
 void VideoSources::onTreeItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *)
@@ -254,7 +306,6 @@ void VideoSources::onAddTestClicked()
     parameters["device-type"] = "videotestsrc";
     listSources->addTopLevelItem(newItem("", "Video test source", parameters, true));
 }
-
 
 void VideoSources::save(QSettings& settings)
 {

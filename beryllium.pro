@@ -18,7 +18,7 @@ CONFIG  += c++11
 
 win32 {
     QT           += gui-private
-    LIBS         += -ladvapi32 -lnetapi32 -luser32 -lws2_32
+    LIBS         += -ladvapi32 -lnetapi32 -luser32 -lwsock32
     INCLUDEPATH  += c:/usr/include
     QMAKE_LIBDIR += c:/usr/lib
 
@@ -49,9 +49,18 @@ for (mod, OPTIONAL_MODULES): qtHaveModule($$mod) {
     DEFINES += WITH_QT_$$upper($$mod)
 }
 
+OPTIONAL_LIBS = libavc1394 libraw1394 libv4l2
+for (mod, OPTIONAL_LIBS) {
+  modVer = $$system(pkg-config --silence-errors --modversion $$mod)
+  !isEmpty(modVer) {
+    message("Found $$mod version $$modVer")
+    PKGCONFIG += $$mod
+    DEFINES += WITH_$$upper($$replace(mod, \W, _))
+  }
+}
+
 PKGCONFIG += Qt5GLib-2.0 Qt5GStreamer-1.0 Qt5GStreamerUi-1.0 \
     gstreamer-1.0 gstreamer-base-1.0 gstreamer-pbutils-1.0
-linux:PKGCONFIG += libavc1394 libraw1394 gudev-1.0 libv4l2
 
 TARGET   = beryllium
 TEMPLATE = app
@@ -101,15 +110,12 @@ SOURCES += \
 
 win32 {
     SOURCES += \
-        gst/enumsrc_1_4.cpp \
         src/smartshortcut_win.cpp
 } linux {
     SOURCES += \
-        gst/enumsrc_tux.cpp \
         src/smartshortcut_x11.cpp
 } macx {
     SOURCES += \
-        gst/enumsrc_1_4.cpp \
         src/smartshortcut_mac.cpp
 }
 
@@ -166,7 +172,6 @@ HEADERS += \
     src/settings/storage.h \
     src/settings/studies.h \
     src/settings/videorecord.h \
-    gst/enumsrc.h \
     src/settings/elementproperties.h
 
 FORMS   +=
