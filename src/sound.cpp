@@ -16,7 +16,6 @@
 
 #include "defaults.h"
 #include "sound.h"
-#include "gstcompat.h"
 
 #include <QApplication>
 #include <QMessageBox>
@@ -33,7 +32,7 @@ bool Sound::play(const QString& filePath)
 {
     if (!pipeline)
     {
-        pipeline = QGst::ElementFactory::make(PLAYBIN_ELEMENT).dynamicCast<QGst::Pipeline>();
+        pipeline = QGst::ElementFactory::make("playbin").dynamicCast<QGst::Pipeline>();
     }
 
     if (!pipeline)

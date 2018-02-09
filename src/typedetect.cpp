@@ -16,7 +16,6 @@
 #define QT_NO_EMIT
 #include "typedetect.h"
 #include "product.h"
-#include "gstcompat.h"
 #include <gio/gio.h>
 
 #include <QDebug>
@@ -32,9 +31,7 @@
 #include <QGst/ElementFactory>
 #include <QGst/Fourcc>
 #include <QGst/Pipeline>
-#if GST_CHECK_VERSION(1,0,0)
 #include <QGst/Sample>
-#endif
 #include <QGst/Structure>
 
 bool setFileExtAttribute(const QString& filePath, const QString& name, const QString& value)
@@ -164,17 +161,10 @@ QImage extractRgbImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, in
     auto imgWidth  = structure->value("width").toInt();
     auto imgHeight = structure->value("height").toInt();
 
-#if GST_CHECK_VERSION(1,0,0)
     QGst::MapInfo map;
     auto data = buf->map(map, QGst::MapRead)? map.data(): nullptr;
-#else
-    auto data = buf->data();
-#endif
     QImage img(data, imgWidth, imgHeight, QImage::Format_RGB888);
-
-#if GST_CHECK_VERSION(1,0,0)
     buf->unmap(map);
-#endif
 
     // Must copy image bits, they will be unavailable after the pipeline stops
     //
@@ -186,12 +176,8 @@ QImage extractImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int w
     QImage img;
     QGst::State   state;
     auto structure = caps->internalStructure(0);
-#if GST_CHECK_VERSION(1,0,0)
     if (structure->name() == "video/x-raw" && structure->value("format").toString() == "RGB"
         && structure->value("bpp").toInt() == 24)
-#else
-    if (structure->name() == "video/x-raw-rgb" && structure->value("bpp").toInt() == 24)
-#endif
     {
         // Already good enought buffer
         //
@@ -202,7 +188,7 @@ QImage extractImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int w
     auto src   = QGst::ElementFactory::make("appsrc", "src");
     auto vaapi = structure->name() == "video/x-surface"?
          QGst::ElementFactory::make("vaapidownload", "vaapi"): QGst::ElementPtr();
-    auto cvt   = QGst::ElementFactory::make(DEFAULT_VIDEO_CONVERTER, "cvt");
+    auto cvt   = QGst::ElementFactory::make("videoconvert", "cvt");
     auto sink  = QGst::ElementFactory::make("appsink", "sink");
 
     if (pipeline && src && cvt && sink)
@@ -214,11 +200,7 @@ QImage extractImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int w
             pipeline->add(vaapi);
         }
         src->setProperty("caps", caps);
-#if GST_CHECK_VERSION(1,0,0)
         sink->setProperty("caps", QGst::Caps::fromString("video/x-raw,format=RGB,bpp=24"));
-#else
-        sink->setProperty("caps", QGst::Caps::fromString("video/x-raw-rgb,bpp=24"));
-#endif
         sink->setProperty("async", false);
 
         if (vaapi ? QGst::Element::linkMany(src, vaapi, cvt, sink)
@@ -229,19 +211,11 @@ QImage extractImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int w
             if (QGst::StateChangeSuccess == pipeline->getState(&state, nullptr, timeout))
             {
                 QGlib::emit<void>(src, "push-buffer", buf);
-#if GST_CHECK_VERSION(1,0,0)
                 auto rgbSample = QGlib::emit<QGst::SamplePtr>(sink, "pull-preroll");
                 if (rgbSample)
                 {
                     img = extractRgbImage(rgbSample->buffer(), rgbSample->caps(), width);
                 }
-#else
-                auto rgbBuf = QGlib::emit<QGst::BufferPtr>(sink, "pull-preroll");
-                if (rgbBuf)
-                {
-                    img = extractRgbImage(rgbBuf, rgbBuf->caps(), width);
-                }
-#endif
             }
             pipeline->setState(QGst::StateNull);
             pipeline->getState(&state, nullptr, timeout);

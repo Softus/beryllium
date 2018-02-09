@@ -18,7 +18,6 @@
 #include "defaults.h"
 #include "typedetect.h"
 #include "settings/videosources.h"
-#include "gstcompat.h"
 
 #include <QApplication>
 #include <QPainter>
@@ -30,9 +29,7 @@
 #include <QGst/ElementFactory>
 #include <QGst/Parse>
 
-#if GST_CHECK_VERSION(1,0,0)
 #include <QGst/VideoOverlay>
-#endif
 
 // From Gstreamer SDK
 //
@@ -41,12 +38,8 @@
 #if defined (Q_OS_WIN)
   #include <qt_windows.h>
 #elif defined (Q_OS_LINUX)
-  #if GST_CHECK_VERSION(1,0,0)
-    #include <libv4l2.h>
-    #include <libv4l2rds.h>
-  #else
-    #include <gst/interfaces/tuner.h>
-  #endif
+  #include <libv4l2.h>
+  #include <libv4l2rds.h>
 #endif
 
 static void ensurePathExist(const QString& filePath)
@@ -343,8 +336,8 @@ QString Pipeline::buildPipeline
         alias = QString("src%1").arg(index);
     }
 
-    auto colorConverter = QString(" ! ").append(settings.value("color-converter",
-                              DEFAULT_VIDEO_CONVERTER).toString());
+    auto colorConverter = QString(" ! ").append(
+                          settings.value("color-converter", "videoconvert").toString());
     auto videoCodec     = settings.value("video-encoder").toString();
     auto bitrate        = settings.value("bitrate").toString();
 
@@ -586,7 +579,6 @@ bool Pipeline::updatePipeline()
     if (!videoInputChannel.isEmpty())
     {
 #if defined (Q_OS_LINUX)
-  #if GST_CHECK_VERSION(1,0,0)
         auto src = pipeline->getElementByName(videoInputChannel.toUtf8());
         if (src)
         {
@@ -610,26 +602,6 @@ bool Pipeline::updatePipeline()
                 }
             }
         }
-  #else
-        auto tuner = GST_TUNER(gst_bin_get_by_interface(pipeline.staticCast<QGst::Bin>(),
-            GST_TYPE_TUNER));
-        if (tuner)
-        {
-            auto walk = (GList *)gst_tuner_list_channels(tuner);
-            while (walk)
-            {
-                auto ch = GST_TUNER_CHANNEL(walk->data);
-                if (0 == videoInputChannel.compare(ch->label))
-                {
-                    gst_tuner_set_channel(tuner, ch);
-                    break;
-                }
-                walk = g_list_next (walk);
-            }
-
-            g_object_unref(tuner);
-        }
-  #endif
 #endif
     }
 
@@ -1107,16 +1079,12 @@ void Pipeline::onElementMessage(const QGst::ElementMessagePtr& msg)
             auto lastBuffer = msg->source()->property("last-buffer").get<QGst::BufferPtr>();
             bool ok = lastBuffer;
 
-#if GST_CHECK_VERSION(1,0,0)
-            QGst::MapInfo map;
             if (ok)
             {
+                QGst::MapInfo map;
                 ok = lastBuffer->map(map, QGst::MapRead) && pm.loadFromData(map.data(), map.size());
                 lastBuffer->unmap(map);
             }
-#else
-            ok = ok && pm.loadFromData(lastBuffer->data(), lastBuffer->size());
-#endif
 
             // If we can not load from the buffer, try to load from the file
             //
@@ -1150,11 +1118,7 @@ void Pipeline::onElementMessage(const QGst::ElementMessagePtr& msg)
         return;
     }
 
-#if GST_CHECK_VERSION(1,0,0)
     if (QGst::VideoOverlay::isPrepareWindowHandleMessage(msg))
-#else
-    if (s->name() == PREPARE_WINDOW_HANDLE_MESSAGE)
-#endif
     {
         // At this time the video output finally has a sink, so set it up now
         //
@@ -1193,13 +1157,7 @@ void Pipeline::onElementMessage(const QGst::ElementMessagePtr& msg)
 
 void Pipeline::onImageReady(const QGst::BufferPtr& buf)
 {
-#if GST_CHECK_VERSION(1,0,0)
-    qDebug() << "imageValve handoff " << buf->size() << " " << buf->decodingTimeStamp()
-             << " " << buf->flags();
-#else
-    qDebug() << "imageValve handoff " << buf->size() << " " << buf->timeStamp() << " "
-             << buf->flags();
-#endif
+    qDebug() << "imageValve handoff" << buf->size() << buf->decodingTimeStamp() << buf->flags();
     imageValve->setProperty("drop-probability", 1.0);
     imageReady();
 }

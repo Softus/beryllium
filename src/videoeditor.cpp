@@ -20,7 +20,6 @@
 #include "defaults.h"
 #include "typedetect.h"
 #include "qwaitcursor.h"
-#include "gstcompat.h"
 
 #include <QAction>
 #include <QApplication>
@@ -46,9 +45,7 @@
 #include <QGst/Fourcc>
 #include <QGst/Pad>
 #include <QGst/Parse>
-#if GST_CHECK_VERSION(1,0,0)
 #include <QGst/Sample>
-#endif
 #include <QGst/Query>
 #include <QGst/Ui/VideoWidget>
 #include <gst/gstdebugutils.h>
@@ -236,7 +233,7 @@ void VideoEditor::loadFile(const QString& filePath)
 
     if (!pipeline)
     {
-        pipeline = QGst::ElementFactory::make(PLAYBIN_ELEMENT).dynamicCast<QGst::Pipeline>();
+        pipeline = QGst::ElementFactory::make("playbin").dynamicCast<QGst::Pipeline>();
         if (pipeline)
         {
             //let the video widget watch the pipeline for new video sinks
@@ -328,7 +325,7 @@ void VideoEditor::onBusMessage(const QGst::MessagePtr& message)
             {
                 qDebug() << "Got empty QGst::MessageElement";
             }
-            else if (s->name() == PREPARE_WINDOW_HANDLE_MESSAGE)
+            else if (s->name() == "prepare-window-handle")
             {
                 // At this time the video output finally has a sink, so set it up now
                 //
@@ -381,11 +378,7 @@ void VideoEditor::onStateChange(const QGst::StateChangedMessagePtr& message)
                 auto pad = sink->getStaticPad("sink");
                 if (pad)
                 {
-#if GST_CHECK_VERSION(1,0,0)
                     auto caps = pad->currentCaps();
-#else
-                    auto caps = pad->negotiatedCaps();
-#endif
                     if (caps)
                     {
                         auto s = caps->internalStructure(0);
@@ -497,7 +490,7 @@ bool VideoEditor::exportVideo(QFile* outFile)
     QSettings settings;
     settings.beginGroup("gst");
     auto encoder         = settings.value("video-encoder").toString();
-    auto colorConverter =  settings.value("color-converter", DEFAULT_VIDEO_CONVERTER).toString();
+    auto colorConverter =  settings.value("color-converter", "videoconvert").toString();
     auto fixColor        = settings.value(encoder + "-colorspace").toBool()
         ? colorConverter + " ! " : "";
     auto encoderParams   = settings.value(encoder + "-parameters").toString();
@@ -535,13 +528,8 @@ bool VideoEditor::exportVideo(QFile* outFile)
     try
     {
         QString pipeDef;
-#if GST_CHECK_VERSION(1,0,0)
         pipeDef.append("nleurisource uri=\"").append(QUrl::fromLocalFile(filePath).toEncoded())
-            .append("\" ");
-#else
-        pipeDef.append("gnlfilesource location=\"").append(filePath).append("\" ");
-#endif
-        pipeDef.append("media-start=").append(QString::number(start))
+            .append("\" media-start=").append(QString::number(start))
             .append(" media-duration=").append(QString::number(len)).append(" start=0 duration=")
             .append(QString::number(len))
             .append(" ! ").append(fixColor).append(encoder).append(" name=videoencoder ")
@@ -662,15 +650,11 @@ void VideoEditor::onSnapshotClick()
 {
     QImage img;
 
-#if GST_CHECK_VERSION(1,0,0)
     auto sample = pipeline->property("sample").get<QGst::SamplePtr>();
     if (sample)
+    {
         img = extractImage(sample->buffer(), sample->caps(), 160);
-#else
-    auto buffer = pipeline->property("frame").get<QGst::BufferPtr>();
-    if (buffer)
-        img = extractImage(buffer, buffer->caps(), 160);
-#endif
+    }
 
     if (!img.isNull())
     {

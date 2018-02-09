@@ -82,15 +82,6 @@ DebugSettings::DebugSettings(QWidget *parent)
     checkGstNoColor->setChecked(
         settings.value("gst-debug-no-color", DEFAULT_GST_DEBUG_NO_COLOR).toBool());
 
-#if !GST_CHECK_VERSION(1,0,0)
-    layoutGst->addRow(tr("&Pipelines dump folder"), textGstDot = new QxtLineEdit());
-    textGstDot->setButtonIcon(QIcon(":/buttons/folder"));
-    textGstDot->setButtonPosition(QxtLineEdit::OuterRight);
-    textGstDot->setResetButtonMode(QxtLineEdit::ShowResetNotEmpty);
-    textGstDot->setText(settings.value("gst-debug-dot-dir", DEFAULT_GST_DEBUG_DOT_DIR).toString());
-    connect(textGstDot, SIGNAL(buttonClicked()), this, SLOT(onClickBrowse()));
-#endif
-
     layoutGst->addRow(tr("&Categories"), textGstDebug = new QxtLineEdit());
     textGstDebug->setResetButtonMode(QxtLineEdit::ShowResetNotEmpty);
     textGstDebug->setText(settings.value("gst-debug", DEFAULT_GST_DEBUG).toString());
@@ -178,9 +169,6 @@ void DebugSettings::save(QSettings& settings)
         cbGstLogLevel->itemData(cbGstLogLevel->currentIndex()).toInt());
     settings.setValue("gst-debug-log-file", textGstOutput->text());
     settings.setValue("gst-debug-no-color", checkGstNoColor->isChecked());
-#if !GST_CHECK_VERSION(1,0,0)
-    settings.setValue("gst-debug-dot-dir", textGstDot->text());
-#endif
     settings.setValue("gst-debug", textGstDebug->text());
     setupGstDebug(settings);
 

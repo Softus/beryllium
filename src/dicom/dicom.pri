@@ -9,7 +9,7 @@ isEmpty(nodicom) {
     # DCMTK isn't pgk-config compatible at all.
     LIBS       += -ldcmnet -ldcmdata -loflog -lofstd
     win32 {
-        LIBS += -lws2_32 -lzlibstatic -lnetapi32 -liphlpapi -lcharset
+        LIBS += -lzlibstatic -lnetapi32 -liphlpapi -lcharset
     } linux {
         LIBS += -lssl -lz
     } macx {

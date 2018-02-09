@@ -174,10 +174,6 @@ setModeCallback(const gchar *name, const gchar *value, gpointer, GError **)
     return true;
 }
 
-#if !GST_CHECK_VERSION(1,0,0)
-extern void _gst_debug_init(void);
-#endif
-
 void setupGstDebug(const QSettings& settings)
 {
     Q_ASSERT(settings.group() == "debug");
@@ -189,45 +185,25 @@ void setupGstDebug(const QSettings& settings)
 
     gst_debug_set_active(true);
 
-#if !GST_CHECK_VERSION(1,2,0)
-    auto debugDotDir = settings.value("gst-debug-dot-dir", DEFAULT_GST_DEBUG_DOT_DIR).toString();
-    if (!debugDotDir.isEmpty())
-    {
-        QDir(debugDotDir).mkpath(".");
-        qputenv("GST_DEBUG_DUMP_DOT_DIR", debugDotDir.toLocal8Bit());
-    }
-#endif
-
     auto gstDebug = settings.value("gst-debug", DEFAULT_GST_DEBUG).toString();
     if (!gstDebug.isEmpty())
     {
-#if GST_CHECK_VERSION(1,2,0)
         gst_debug_set_threshold_from_string(gstDebug.toLocal8Bit(), true);
-#else
-        qputenv("GST_DEBUG", gstDebug.toLocal8Bit());
-#endif
     }
 
     auto debugLogFile = settings.value("gst-debug-log-file", DEFAULT_GST_DEBUG_LOG_FILE).toString();
-    if (!debugLogFile.isEmpty())
-    {
-        QFileInfo(debugLogFile).absoluteDir().mkpath(".");
-#if GST_CHECK_VERSION(1,2,0)
-        gst_debug_remove_log_function(gst_debug_log_default);
-        gst_debug_add_log_function(gst_debug_log_default, g_fopen(debugLogFile.toLocal8Bit(), "w"),
-            nullptr);
-#else
-        qputenv("GST_DEBUG_FILE", debugLogFile.toLocal8Bit());
-        _gst_debug_init();
-#endif
-    }
-#if GST_CHECK_VERSION(1,2,0)
-    else
+    if (debugLogFile.isEmpty())
     {
         gst_debug_remove_log_function (gst_debug_log_default);
         gst_debug_add_log_function (gst_debug_log_default, stderr, nullptr);
     }
-#endif
+    else
+    {
+        QFileInfo(debugLogFile).absoluteDir().mkpath(".");
+        gst_debug_remove_log_function(gst_debug_log_default);
+        gst_debug_add_log_function(gst_debug_log_default, g_fopen(debugLogFile.toLocal8Bit(), "w"),
+            nullptr);
+    }
 
     gst_debug_set_colored(
         !settings.value("gst-debug-no-color", DEFAULT_GST_DEBUG_NO_COLOR).toBool());
@@ -399,15 +375,6 @@ int main(int argc, char *argv[])
     QSettings::setDefaultFormat(QSettings::IniFormat);
 #endif
 
-#if !GLIB_CHECK_VERSION(2, 32, 0)
-    // Must initialise the threading system before using any other GLib funtion.
-    //
-    if (!g_thread_supported())
-    {
-        g_thread_init(nullptr);
-    }
-#endif
-
     // Pass some arguments to gstreamer.
     // For example --gst-debug-level=5
     //
@@ -462,9 +429,7 @@ int main(int argc, char *argv[])
     // QGStreamer stuff
     //
     QGst::init();
-#if !GST_CHECK_VERSION(1,0,0)
-    gstApplyFixes();
-#else
+
     // Get rid of vaapisink until somebody get it fixed
     //
     auto registry = gst_registry_get();
@@ -474,14 +439,11 @@ int main(int argc, char *argv[])
         gst_plugin_feature_set_rank(feature, GST_RANK_NONE);
         gst_object_unref(feature);
     }
-#endif
 
     // QT init
     //
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
-#if (QT_VERSION >= QT_VERSION_CHECK(4, 8, 0))
     QApplication::setAttribute(Qt::AA_X11InitThreads);
-#endif
     QApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/app/product"));
 

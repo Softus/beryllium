@@ -18,7 +18,6 @@
 #include "../defaults.h"
 #include "videosourcedetails.h"
 #include "../qwaitcursor.h"
-#include "../gstcompat.h"
 #include "../gst/enumsrc.h"
 
 #include <QApplication>

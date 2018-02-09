@@ -19,7 +19,6 @@
 #include "elementproperties.h"
 #include "../defaults.h"
 #include "../qwaitcursor.h"
-#include "../gstcompat.h"
 #include <algorithm>
 
 #include <QApplication>
@@ -50,18 +49,14 @@
 #include <gst/gst.h>
 
 #if defined (Q_OS_LINUX)
-  #if GST_CHECK_VERSION(1,0,0)
   #include <libv4l2.h>
   #include <libv4l2rds.h>
-  #else
-  #include <gst/interfaces/tuner.h>
-  #endif
 #endif
 
 static QString getPropName(const QString& deviceType)
 {
     if (deviceType == "videotestsrc")  return "pattern";
-    if (deviceType == WIN_VIDEO_SOURCE) return "device-name";
+    if (deviceType == "ksvideosrc")    return "device-name";
     if (deviceType == "v4l2src")       return "device";
     if (deviceType == "avfvideosrc")   return "device-index";
 
@@ -214,11 +209,7 @@ QString VideoSourceDetails::updateGstList
     for (auto curr = elmList; curr; curr = curr->next)
     {
         auto factory = QGst::ElementFactoryPtr::wrap(GST_ELEMENT_FACTORY(curr->data), true);
-#if GST_CHECK_VERSION(1,0,0)
         cb->addItem(factory->metadata(GST_ELEMENT_METADATA_LONGNAME), factory->name());
-#else
-        cb->addItem(factory->longName(), factory->name());
-#endif
         if (selectedCodec == factory->name())
         {
             cb->setCurrentIndex(cb->count() - 1);
@@ -273,16 +264,11 @@ void VideoSourceDetails::updateDevice(const QString& device)
         pipeline->setState(QGst::StateReady);
         pipeline->getState(nullptr, nullptr, GST_SECOND * 10);
 
-#if GST_CHECK_VERSION(1,0,0)
         caps = srcPad->allowedCaps();
-#else
-        caps = srcPad->caps();
-#endif
         qDebug() << caps->toString();
         auto selectedChannelLabel = selectedChannel.toString();
 
 #if defined (Q_OS_LINUX)
-  #if GST_CHECK_VERSION(1,0,0)
         int fd = src->property("device-fd").toInt();
         uint n = 0;
         struct v4l2_input input;
@@ -302,28 +288,6 @@ void VideoSourceDetails::updateDevice(const QString& device)
             }
             listChannels->addItem(label, label);
         }
-  #else
-        auto tuner = GST_TUNER(src);
-        if (tuner)
-        {
-            // The list is owned by the GstTuner and must not be freed.
-            //
-            auto channelList = gst_tuner_list_channels(tuner);
-            while (channelList)
-            {
-                auto ch = GST_TUNER_CHANNEL(channelList->data);
-                //gst_tuner_set_channel(tuner, ch);
-
-                if (selectedChannelLabel == ch->label)
-                {
-                    idx = listChannels->count();
-                }
-                listChannels->addItem(ch->label, ch->label);
-                channelList = g_list_next(channelList);
-            }
-        }
-        else
-  #endif
 #endif
         {
             if (deviceType == "dv1394src")
@@ -376,11 +340,7 @@ void VideoSourceDetails::updateDevice(const QString& device)
 
 static QString valueToString(const QGlib::Value& value)
 {
-    return
-#if !GST_CHECK_VERSION(1,0,0)
-       GST_TYPE_FOURCC == value.type() ? "(fourcc)" + value.toString() : value.toString();
-#endif
-       G_TYPE_STRING == value.type() ? "(string)" + value.toString() : value.toString();
+    return G_TYPE_STRING == value.type() ? "(string)" + value.toString() : value.toString();
 }
 
 static QList<QGlib::Value> getFormats(const QGlib::Value& value)

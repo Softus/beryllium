@@ -109,11 +109,7 @@ DicomDeviceSettings::DicomDeviceSettings(QWidget *parent) :
 
     foreach (auto addr, QNetworkInterface::allAddresses())
     {
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
         if (addr.isLoopback())
-#else
-        if (addr.scopeId() == "Node-local" || addr.isInSubnet(QHostAddress(0x7F000000), 8))
-#endif
         {
             // Skip 127.x.x.x and IPv6 local subnet
             continue;

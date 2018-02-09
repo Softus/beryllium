@@ -16,7 +16,6 @@
 
 #include "elementproperties.h"
 #include "../defaults.h"
-#include "../gstcompat.h"
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -48,7 +47,7 @@ static bool isBlacklistedProp
         || (propName == "pattern" && elmType == "videotestsrc")
         || (propName == "device" && elmType == "v4l2src")
         || (propName == "device-index" && elmType == "avfvideosrc")
-        || (propName == "device-name" && elmType == WIN_VIDEO_SOURCE);
+        || (propName == "device-name" && elmType == "ksvideosrc");
 }
 
 static QWidget* createEditor

@@ -26,12 +26,7 @@ SlidingStackedWidget::SlidingStackedWidget(QWidget *parent)
     : QStackedWidget(parent)
     , d_ptr(new SlidingStackedWidgetPrivate(this))
 {
-#if (QT_VERSION >= QT_VERSION_CHECK(4, 8, 0))
-    auto flags = Qt::IgnoredGesturesPropagateToParent;
-#else
-    auto flags = Qt::GestureFlags();
-#endif
-    grabGesture(Qt::PanGesture, flags);
+    grabGesture(Qt::PanGesture, Qt::IgnoredGesturesPropagateToParent);
 }
 
 bool SlidingStackedWidget::event(QEvent *e)

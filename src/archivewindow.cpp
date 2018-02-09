@@ -21,7 +21,6 @@
 #include "qwaitcursor.h"
 #include "thumbnaillist.h"
 #include "typedetect.h"
-#include "gstcompat.h"
 #include "dbusconnect.h"
 
 #ifdef WITH_DICOM
@@ -1313,10 +1312,10 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
 
     try
     {
-        auto pipeDef = QString("uridecodebin uri=\"%1\" ! " DEFAULT_VIDEO_CONVERTER \
+        auto pipeDef = QString("uridecodebin uri=\"%1\" ! videoconvert" \
                 " ! %2 autovideosink name=displaysink async=0")
             .arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toEncoded().constData())
-            .arg(isVideo ? "" : IMAGEFREEZE_ELEMENT " ! ");
+            .arg(isVideo ? "" : "imagefreeze ! ");
         pipeline = QGst::Parse::launch(pipeDef).dynamicCast<QGst::Pipeline>();
         auto hiddenVideoWidget = pagesWidget->widget(1 - pagesWidget->currentIndex());
         static_cast<QGst::Ui::VideoWidget*>(hiddenVideoWidget)->watchPipeline(pipeline);
@@ -1363,7 +1362,7 @@ void ArchiveWindow::onBusMessage(const QGst::MessagePtr& message)
             {
                 qDebug() << "Got empty QGst::MessageElement";
             }
-            else if (s->name() == PREPARE_WINDOW_HANDLE_MESSAGE)
+            else if (s->name() == "prepare-window-handle")
             {
                 // At this time the video output finally has a sink, so set it up now
                 //
@@ -1407,22 +1406,13 @@ void ArchiveWindow::onBusMessage(const QGst::MessagePtr& message)
         }
         break;
 #ifdef QT_DEBUG
-#if GST_CHECK_VERSION(1,0,0)
     case QGst::MessageDurationChanged:
-    {
-        auto durationQuery = QGst::DurationQuery::create(QGst::FormatTime);
-        message->source().staticCast<QGst::Element>()->query(durationQuery);
-        qDebug() << "Duration" << durationQuery->format() << durationQuery->duration();
-    }
-    break;
-#else
-    case QGst::MessageDuration:
-    {
-        auto msg = message.staticCast<QGst::DurationMessage>();
-        qDebug() << "Duration" << msg->format() << msg->duration();
-    }
-    break;
-#endif
+        {
+            auto durationQuery = QGst::DurationQuery::create(QGst::FormatTime);
+            message->source().staticCast<QGst::Element>()->query(durationQuery);
+            qDebug() << "Duration" << durationQuery->format() << durationQuery->duration();
+        }
+        break;
     case QGst::MessageInfo:
         qDebug() << message->source()->property("name").toString()
                  << message.staticCast<QGst::InfoMessage>()->error();
@@ -1468,11 +1458,7 @@ void ArchiveWindow::onStateChangedMessage(const QGst::StateChangedMessagePtr& me
                 auto pad = sink->getStaticPad("sink");
                 if (pad)
                 {
-#if GST_CHECK_VERSION(1,0,0)
                     auto caps = pad->currentCaps();
-#else
-                    auto caps = pad->negotiatedCaps();
-#endif
                     if (caps)
                     {
                         auto s = caps->internalStructure(0);

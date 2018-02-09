@@ -379,12 +379,9 @@ void QxtLineEdit::paintEvent(QPaintEvent* event)
 
 
         QRect r = style()->subElementRect(QStyle::SE_LineEditContents, &option, this);
-#if QT_VERSION >= 0x040500
-        // TODO: sort out prior Qt 4.5
         int left, top, right, bottom;
         getTextMargins(&left, &top, &right, &bottom);
         r.adjust(left, top, -right, -bottom);
-#endif // QT_VERSION >= 0x040500
         r.adjust(hMargin, vMargin, -hMargin, -vMargin);
 
         QPainter painter(this);

@@ -84,9 +84,7 @@ static DcmTagKey DCM_ClipNo(0x5000,  0x8002);
   #include <dbt.h>
   #include <winternl.h> // for DEVICE_TYPE
   #include <ntddstor.h> // for GUID_DEVINTERFACE_PARTITION
-  #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
-    #include <qpa/qplatformnativeinterface.h>
-  #endif
+  #include <qpa/qplatformnativeinterface.h>
   #define DATA_FOLDER qApp->applicationDirPath()
 #else
   #define DATA_FOLDER qApp->applicationDirPath() + "/../share/" PRODUCT_SHORT_NAME
@@ -235,13 +233,8 @@ void MainWindow::showEvent(QShowEvent *evt)
     {
         QSettings settings;
         auto safeMode = settings.value("ui/enable-settings", DEFAULT_ENABLE_SETTINGS).toBool()
-            && (
-#if (QT_VERSION >= QT_VERSION_CHECK(4, 8, 0))
-                       qApp->queryKeyboardModifiers() == SAFE_MODE_KEYS ||
-#else
-                       qApp->keyboardModifiers() == SAFE_MODE_KEYS ||
-#endif
-                       settings.value("safe-mode", true).toBool());
+            && (qApp->queryKeyboardModifiers() == SAFE_MODE_KEYS
+                || settings.value("safe-mode", true).toBool());
 
         if (safeMode)
         {
@@ -260,12 +253,8 @@ void MainWindow::showEvent(QShowEvent *evt)
         dbd.dbcc_size = sizeof(DEV_BROADCAST_DEVICEINTERFACE);
         dbd.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
         dbd.dbcc_classguid = GUID_DEVINTERFACE_PARTITION;
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
         HWND hWnd  = (HWND)qApp->platformNativeInterface()->nativeResourceForWindow(
             QByteArrayLiteral("handle"), windowHandle());
-#else
-        HWND hWnd  = (HWND)winId();
-#endif
         qDebug() << hWnd << RegisterDeviceNotification(hWnd, &dbd, DEVICE_NOTIFY_WINDOW_HANDLE);
 
         // Register notifications for all floppy drives and SD readers.
@@ -328,7 +317,6 @@ void MainWindow::resizeEvent(QResizeEvent *evt)
 }
 
 #ifdef Q_OS_WIN
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
 bool MainWindow::nativeEvent(const QByteArray& eventType, void *msg, long *result)
 {
     MSG* message = reinterpret_cast<MSG*>(msg);
@@ -338,16 +326,6 @@ bool MainWindow::nativeEvent(const QByteArray& eventType, void *msg, long *resul
     }
     return QWidget::nativeEvent(eventType, msg, result);
 }
-#else
-bool MainWindow::winEvent(MSG *message, long *result)
-{
-    if (archiveWindow && message->message == WM_DEVICECHANGE)
-    {
-        archiveWindow->onUsbDiskChanged();
-    }
-    return QWidget::winEvent(message, result);
-}
-#endif // QT_VERSION >= 5.0
 #endif // Q_OS_WIN
 
 
@@ -522,13 +500,6 @@ bool MainWindow::checkPipelines()
     QSettings settings;
     settings.beginGroup("gst");
     auto nSources = settings.beginReadArray("src");
-
-    if (nSources == 0)
-    {
-        // Migration from version < 1.2
-        //
-        ++nPipeline;
-    }
 
     for (int i = 0; i < nSources; ++i)
     {
@@ -964,11 +935,7 @@ bool MainWindow::confirmStopStudy()
     msg.setOverrideSettingsKey("end-study");
     msg.setRememberOnReject(false);
     msg.setDefaultButton(QMessageBox::Yes);
-#if (QT_VERSION >= QT_VERSION_CHECK(4, 8, 0))
     if (qApp->queryKeyboardModifiers().testFlag(Qt::ShiftModifier))
-#else
-    if (qApp->keyboardModifiers().testFlag(Qt::ShiftModifier))
-#endif
     {
         msg.reset();
     }

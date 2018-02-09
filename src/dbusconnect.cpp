@@ -31,16 +31,9 @@ int connectToDbusService
             continue;
         }
 
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
         auto sign = QString::fromUtf8(method.methodSignature());
-        auto name = method.name();
-#else
-        auto sign = QString::fromUtf8(method.signature());
-        auto name = sign.split("(").front();
-#endif
-
         if (bus.connect(
-            service, path, interface, name,  target, QString("1").append(sign).toUtf8()))
+            service, path, interface, method.name(),  target, QString("1").append(sign).toUtf8()))
         {
             qDebug() << "Connected to signal" << sign;
             ++succeeded;

@@ -25,9 +25,6 @@
 #include <gst/gst.h>
 #include <QGlib/Value>
 #include <QGst/Buffer>
-#if !GST_CHECK_VERSION(1,0,0)
-  #include <opencv/cv.h>
-#endif
 
 #ifdef WITH_DICOM
 #define HAVE_CONFIG_H
@@ -45,17 +42,7 @@
 #endif
 #endif
 
-// Prior to 1.2. QGst::Buffer has no allocator support
-//
-#if defined(QGST_MEMORY_H)
-  #define QT_GST_VERSION_STR "1.2"
-// Prior to 10.3 the QGlib::Value was not compatible with the QGlib::Error
-//
-#elif defined(QGLIB_ERROR_H)
-  #define QT_GST_VERSION_STR "0.10.3"
-#else
-  #define QT_GST_VERSION_STR "0.10"
-#endif
+#define QT_GST_VERSION_STR "1.2"
 
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent)
@@ -102,13 +89,6 @@ AboutDialog::AboutDialog(QWidget *parent) :
         .append(gst_version_string()).append("</a>"));
     lblGstreamer->setOpenExternalLinks(true);
     layoutText->addWidget(lblGstreamer);
-
-#if !GST_CHECK_VERSION(1,0,0)
-    auto lblOpencv = new QLabel(tr("<a href=\"https://opencv.org/\">OpenCV ")
-        .append(CV_VERSION).append("</a>"));
-    lblOpencv->setOpenExternalLinks(true);
-    layoutText->addWidget(lblOpencv);
-#endif
 
     auto lblQtGstreamer = new QLabel(
         tr("<a href=\"https://gstreamer.freedesktop.org/modules/qt-gstreamer.html\">QtGStreamer ")

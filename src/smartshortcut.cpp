@@ -303,7 +303,6 @@ QString SmartShortcut::toString(int key, QKeySequence::SequenceFormat format)
         if (buttons & Qt::RightButton)   returnText += "RightButton";
         if (buttons & Qt::XButton1)      returnText += "BackButton";
         if (buttons & Qt::XButton2)      returnText += "ForwardButton";
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         if (buttons & Qt::MiddleButton)  returnText += "MiddleButton";
         if (buttons & Qt::ExtraButton3)  returnText += "TaskButton";
         if (buttons & Qt::ExtraButton4)  returnText += "ExtraButton4";
@@ -322,9 +321,6 @@ QString SmartShortcut::toString(int key, QKeySequence::SequenceFormat format)
         if (buttons & Qt::ExtraButton17) returnText += "ExtraButton17";
         if (buttons & Qt::ExtraButton18) returnText += "ExtraButton18";
         if (buttons & Qt::ExtraButton19) returnText += "ExtraButton19";
-#else
-        if (buttons & Qt::MidButton)     returnText += "MiddleButton";
-#endif
     }
     return returnText.join("+");
 }
@@ -436,11 +432,7 @@ bool SmartShortcut::eventFilter(QObject *o, QEvent *e)
 
 qint64 SmartShortcut::timestamp()
 {
-#if (QT_VERSION >= QT_VERSION_CHECK(4, 7, 0))
     return QDateTime::currentMSecsSinceEpoch();
-#else
-    return QTime(0,0,0).msecsTo(QTime::currentTime());
-#endif
 }
 
 bool SmartShortcut::longPressTimeout(qint64 ts)

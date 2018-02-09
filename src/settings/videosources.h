@@ -27,7 +27,7 @@ class QPushButton;
 QT_END_NAMESPACE
 
 #if defined (Q_OS_WIN)
-#define PLATFORM_SPECIFIC_SOURCE WIN_VIDEO_SOURCE
+#define PLATFORM_SPECIFIC_SOURCE "ksvideosrc"
 #define PLATFORM_SPECIFIC_SCREEN_SOURCE "gdiscreencapsrc"
 #define PLATFORM_SPECIFIC_PROPERTY "device-name"
 #elif defined (Q_OS_LINUX)

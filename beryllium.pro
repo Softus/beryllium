@@ -17,18 +17,16 @@ DEFINES += PREFIX=$$PREFIX
 CONFIG  += c++11
 
 win32 {
-    greaterThan(QT_MAJOR_VERSION, 4): QT += gui-private
-
-    LIBS += -ladvapi32 -lnetapi32 -lwsock32 -luser32
-
-    INCLUDEPATH += c:/usr/include
+    QT           += gui-private
+    LIBS         += -ladvapi32 -lnetapi32 -luser32 -lws2_32
+    INCLUDEPATH  += c:/usr/include
     QMAKE_LIBDIR += c:/usr/lib
 
     USERNAME    = $$(USERNAME)
     OS_DISTRO   = Windows
     OS_REVISION = $$system($$quote('cmd.exe /q /c "for /f "tokens=4-5 delims=. " %i in (\'ver\') do echo %i.%j"'))
 } linux {
-    LIBS += -lX11
+    LIBS       += -lX11
 
     USERNAME    = $$(USER)
     OS_DISTRO   = $$system($$quote('lsb_release -is | cut -d" " -f1'))
@@ -45,24 +43,15 @@ DEFINES += OS_DISTRO=$$OS_DISTRO OS_REVISION=$$OS_REVISION USERNAME=$$USERNAME
 CONFIG += link_pkgconfig
 PKGCONFIG += gio-2.0
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    OPTIONAL_MODULES = dbus opengl widgets x11extras
-    for (mod, OPTIONAL_MODULES): qtHaveModule($$mod) {
-        QT += $$mod
-        DEFINES += WITH_QT_$$upper($$mod)
-    }
+OPTIONAL_MODULES = dbus opengl widgets x11extras
+for (mod, OPTIONAL_MODULES): qtHaveModule($$mod) {
+    QT += $$mod
+    DEFINES += WITH_QT_$$upper($$mod)
+}
 
-    PKGCONFIG += Qt5GLib-2.0 Qt5GStreamer-1.0 Qt5GStreamerUi-1.0 \
-        gstreamer-1.0 gstreamer-base-1.0 gstreamer-pbutils-1.0
-    linux:PKGCONFIG += libavc1394 libraw1394 gudev-1.0 libv4l2
-}
-else {
-    QT += dbus opengl
-    DEFINES += WITH_QT_DBUS WITH_QT_OPENGL
-    PKGCONFIG += QtGLib-2.0 QtGStreamer-0.10 QtGStreamerUi-0.10 \
-        gstreamer-0.10 gstreamer-base-0.10 gstreamer-interfaces-0.10 \
-        gstreamer-pbutils-0.10 opencv libsoup-2.4 librtmp
-}
+PKGCONFIG += Qt5GLib-2.0 Qt5GStreamer-1.0 Qt5GStreamerUi-1.0 \
+    gstreamer-1.0 gstreamer-base-1.0 gstreamer-pbutils-1.0
+linux:PKGCONFIG += libavc1394 libraw1394 gudev-1.0 libv4l2
 
 TARGET   = beryllium
 TEMPLATE = app
@@ -73,25 +62,6 @@ DEFINES += QXT_STATIC
 
 # Produce nice compilation output
 # CONFIG += silent
-
-# Some code backported from 1.6 to 0.10
-lessThan(QT_MAJOR_VERSION, 5) {
-SOURCES += \
-    gst/gst.cpp \
-    gst/mpeg_sys_type_find.cpp \
-    gst/motioncells/gstmotioncells.cpp \
-    gst/motioncells/MotionCells.cpp \
-    gst/motioncells/motioncells_wrapper.cpp \
-    gst/rtmp/gstrtmpsink.c \
-    gst/soup/gstsouphttpclientsink.c
-
-HEADERS += \
-    gst/motioncells/gstmotioncells.h \
-    gst/motioncells/MotionCells.h \
-    gst/motioncells/motioncells_wrapper.h \
-    gst/rtmp/gstrtmpsink.h \
-    gst/soup/gstsouphttpclientsink.h \
-}
 
 SOURCES += \
     libqxt/qxtcheckcombobox.cpp \
@@ -134,9 +104,9 @@ win32 {
         gst/enumsrc_1_4.cpp \
         src/smartshortcut_win.cpp
 } linux {
-    SOURCES += src/smartshortcut_x11.cpp
-    greaterThan(QT_MAJOR_VERSION, 4): SOURCES += gst/enumsrc_tux.cpp
-    lessThan(QT_MAJOR_VERSION, 5):    SOURCES += gst/enumsrc_0_10.cpp
+    SOURCES += \
+        gst/enumsrc_tux.cpp \
+        src/smartshortcut_x11.cpp
 } macx {
     SOURCES += \
         gst/enumsrc_1_4.cpp \
@@ -166,7 +136,6 @@ HEADERS += \
     src/aboutdialog.h \
     src/archivewindow.h \
     src/comboboxwithpopupsignal.h \
-    src/gstcompat.h \
     src/darkthemestyle.h \
     src/defaults.h \
     src/hotkeyedit.h \
@@ -207,24 +176,25 @@ RESOURCES    += \
 TRANSLATIONS += beryllium_ru.ts
 
 linux {
-    INSTALLS += target
-    target.path = $$PREFIX/bin
+    INSTALLS          += target
+    target.path        = $$PREFIX/bin
 
-    shortcut.files = beryllium.desktop
-    shortcut.path = $$PREFIX/share/applications
-    icon.files = pixmaps/beryllium.png
-    icon.path = $$PREFIX/share/icons
-    man.files = beryllium.1
-    man.path = $$PREFIX/share/man/man1
+    shortcut.files     = beryllium.desktop
+    shortcut.path      = $$PREFIX/share/applications
+    icon.files         = pixmaps/beryllium.png
+    icon.path          = $$PREFIX/share/icons
+    man.files          = beryllium.1
+    man.path           = $$PREFIX/share/man/man1
     translations.files = beryllium_ru.qm
-    translations.path = $$PREFIX/share/beryllium/translations
-    sound.files = sound/*
-    sound.path = $$PREFIX/share/beryllium/sound
-    INSTALLS += translations sound shortcut icon man
+    translations.path  = $$PREFIX/share/beryllium/translations
+    sound.files        = sound/*
+    sound.path         = $$PREFIX/share/beryllium/sound
+    INSTALLS          += translations sound shortcut icon man
+
     contains(QT, dbus): {
-        dbus.files = org.softus.beryllium.service
-        dbus.path = $$PREFIX/share/dbus-1/services
-        INSTALLS += dbus
+        dbus.files     = org.softus.beryllium.service
+        dbus.path      = $$PREFIX/share/dbus-1/services
+        INSTALLS      += dbus
     }
 }
 
