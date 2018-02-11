@@ -65,18 +65,10 @@ PKGCONFIG += Qt5GLib-2.0 Qt5GStreamer-1.0 Qt5GStreamerUi-1.0 \
 TARGET   = beryllium
 TEMPLATE = app
 
-# Qxt library
-INCLUDEPATH += libqxt
-DEFINES += QXT_STATIC
-
 # Produce nice compilation output
 # CONFIG += silent
 
 SOURCES += \
-    libqxt/qxtcheckcombobox.cpp \
-    libqxt/qxtconfirmationmessage.cpp \
-    libqxt/qxtlineedit.cpp \
-    libqxt/qxtspanslider.cpp \
     src/aboutdialog.cpp \
     src/archivewindow.cpp \
     src/beryllium.cpp \
@@ -129,16 +121,6 @@ contains(QT, dbus): {
 }
 
 HEADERS += \
-    libqxt/qxtcheckcombobox.h \
-    libqxt/qxtcheckcombobox_p.h \
-    libqxt/QxtCheckComboBox \
-    libqxt/qxtconfirmationmessage.h \
-    libqxt/QxtConfirmationMessage \
-    libqxt/qxtlineedit.h \
-    libqxt/QxtLineEdit \
-    libqxt/qxtspanslider.h \
-    libqxt/QxtSpanSlider \
-    libqxt/qxtspanslider_p.h \
     src/aboutdialog.h \
     src/archivewindow.h \
     src/comboboxwithpopupsignal.h \
@@ -205,3 +187,4 @@ linux {
 }
 
 include (src/dicom/dicom.pri)
+include (libqxt/libqxt.pri)
