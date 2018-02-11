@@ -2,6 +2,7 @@ version: 1.4.{build}
 pull_requests:
   do_not_increment_build_number: true
 skip_non_tags: true
+shallow_clone: true 
 image: Visual Studio 2013
 
 environment:
@@ -19,6 +20,9 @@ environment:
   QT_URI: https://download.qt.io/archive/qt/5.0/5.0.2/qt-windows-opensource-5.0.2-mingw47_32-x86-offline.exe
   QT_RUNTIME: qt-5.0.2_mingw-4.7.wxi
   PKG_CONFIG_PATH: C:\usr\lib\pkgconfig;%GSTREAMER_DIR%\lib\pkgconfig;%QT_DIR%\lib\pkgconfig
+
+configuration:
+  - Release
 
 # Fix line endings on Windows
 init:
@@ -69,17 +73,15 @@ install:
 
 build_script:
 - lrelease *.ts
-- qmake INCLUDEPATH+=%BOOST_DIR%
-- mingw32-make
-
-- copy \usr\bin\*.dll release\
-- copy %QT_DIR%\bin\*.dll Release\
-- xcopy /s %QT_DIR%\plugins Release\
-
-- msbuild "/property:configuration=Release" "wix\msi.wixproj"
+- qmake INCLUDEPATH+=%BOOST_DIR% CONFIG+=%CONFIGURATION%
+- mingw32-make -f Makefile.%CONFIGURATION%
+- copy \usr\bin\*.dll %CONFIGURATION%\
+- copy %QT_DIR%\bin\*.dll %CONFIGURATION%\
+- xcopy /s %QT_DIR%\plugins %CONFIGURATION%\
+- msbuild "/property:configuration=%CONFIGURATION%" "wix\msi.wixproj"
 
 artifacts:
-- path: dist\Releasex86\en-US\*.msi
+- path: dist\%CONFIGURATION%x86\en-US\*.msi
   name: windows-installer_en-US
-- path: dist\Releasex86\ru-RU\*.msi
+- path: dist\%CONFIGURATION%x86\ru-RU\*.msi
   name: windows-installer_ru-RU
