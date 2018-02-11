@@ -2,13 +2,9 @@ language: cpp
 sudo: required
 dist: trusty
 
-compiler:
- - clang
- - gcc
-
 os:
- - linux
-#- osx
+- linux
+- osx
 
 env:
  - BUILD_MODE=release
@@ -17,19 +13,23 @@ env:
 install:
  - |
    if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+     export MKSPEC=linux-g++
      sudo add-apt-repository ppa:softus-team/ppa -y
      sudo add-apt-repository ppa:dan-witt/gstreamer -y
      sudo apt-get update -q
-     sudo apt-get install -y debhelper fakeroot libdcmtk2-dev libboost-dev libmediainfo-dev libssl-dev libwrap0-dev libgudev-1.0-dev libqt5opengl5-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libqt5gstreamer-1.0-0 libqt5gstreamer-dev libavc1394-dev libraw1394-dev libv4l-dev qttools5-dev-tools qt5-default libqt5x11extras5-dev
-     if [ "${CXX}" = "clang++" ]; then export MKSPEC=linux-clang; fi
-     if [ "${CXX}" = "g++" ]; then export MKSPEC=linux-g++; fi
+     sudo apt-get install -y debhelper fakeroot libdcmtk2-dev libboost-dev libmediainfo-dev 
+     sudo apt-get install -y libssl-dev libwrap0-dev libgudev-1.0-dev libqt5opengl5-dev
+     sudo apt-get install -y libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev 
+     sudo apt-get install -y libqt5gstreamer-1.0-0 libqt5gstreamer-dev libavc1394-dev libraw1394-dev
+     sudo apt-get install -y libv4l-dev qttools5-dev-tools qt5-default libqt5x11extras5-dev
    fi
+
  - |
    if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-     brew install pkg-config boost dcmtk gstreamer gst-plugins-base qt media-info git cmake
-     brew link qt --force
-     if [ "${CXX}" = "clang++" ]; then export MKSPEC=macx-clang; fi
-     if [ "${CXX}" = "g++" ]; then export MKSPEC=macx-g++; fi
+     export MKSPEC=macx-clang
+     brew install cmake git pkg-config qt boost gstreamer gst-plugins-base dcmtk media-info
+     export PATH="/usr/local/opt/qt/bin:$PATH"
+     export PKG_CONFIG_PATH=/usr/local/opt/qt/lib/pkgconfig:/usr/local/lib/pkgconfig
      .ci/git-install.sh git://anongit.freedesktop.org/gstreamer/qt-gstreamer master "-DQT_VERSION=5"
    fi
 
@@ -37,5 +37,16 @@ script:
  - echo "Building for ${MKSPEC} in ${BUILD_MODE} mode..."
  - mkdir build
  - cd build
- - qmake ../beryllium.pro -spec ${MKSPEC} CONFIG+=${BUILD_MODE}
+ - lrelease ../*.ts
+ - qmake ../beryllium.pro INCLUDEPATH+=/usr/local/include -spec ${MKSPEC} CONFIG+=${BUILD_MODE}
  - make
+ - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then macdeployqt beryllium.app -dmg; fi
+
+branches:
+  only:
+    - master
+
+cache:
+  apt: true
+  directories:
+    - $HOME/Library/Caches/Homebrew
