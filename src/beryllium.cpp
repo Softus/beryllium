@@ -455,13 +455,7 @@ int main(int argc, char *argv[])
                 && app.palette().color(QPalette::Active, QPalette::ButtonText).lightness() > 128))
     {
         app.setStyle(new DarkThemeStyle(QApplication::style()));
-
-        foreach (auto size, appIcon.availableSizes())
-        {
-            auto img = appIcon.pixmap(size).toImage();
-            img.invertPixels();
-            appIcon.addPixmap(QPixmap::fromImage(img));
-        }
+        appIcon = DarkThemeStyle::invertIcon(appIcon);
     }
     app.setWindowIcon(appIcon);
 

@@ -21,6 +21,25 @@ DarkThemeStyle::DarkThemeStyle(QStyle *style)
 {
 }
 
+const QIcon DarkThemeStyle::invertIcon(const QIcon& icon)
+{
+    QIcon inverted;
+
+    foreach (auto size, icon.availableSizes())
+    {
+        inverted.addPixmap(invertPixmap(icon.pixmap(size)));
+    }
+
+    return inverted;
+}
+
+const QPixmap DarkThemeStyle::invertPixmap(const QPixmap& pixmap)
+{
+    auto img = pixmap.toImage().convertToFormat(QImage::Format_ARGB32);
+    img.invertPixels();
+    return QPixmap::fromImage(img);
+}
+
 void DarkThemeStyle::drawItemPixmap
     ( QPainter *painter
     , const QRect &rect
@@ -28,8 +47,6 @@ void DarkThemeStyle::drawItemPixmap
     , const QPixmap &pixmap
     ) const
 {
-    auto img = pixmap.toImage();
-    img.invertPixels();
-    QProxyStyle::drawItemPixmap(painter, rect, alignment, QPixmap::fromImage(img));
+    QProxyStyle::drawItemPixmap(painter, rect, alignment, invertPixmap(pixmap));
 }
 

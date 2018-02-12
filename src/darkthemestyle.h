@@ -24,6 +24,10 @@ class DarkThemeStyle : public QProxyStyle
 public:
     DarkThemeStyle(QStyle *style = 0);
 
+    static const QIcon invertIcon(const QIcon& icon);
+    static const QPixmap invertPixmap(const QPixmap& pixmap);
+
+protected:
     virtual void drawItemPixmap
         ( QPainter *painter
         , const QRect &rect
