@@ -20,6 +20,7 @@
 #include <QApplication>
 #include <QBoxLayout>
 #include <QLabel>
+#include <QProxyStyle>
 #include <QPushButton>
 #include <qxtglobal.h>
 #include <gst/gst.h>
@@ -52,7 +53,13 @@ AboutDialog::AboutDialog(QWidget *parent) :
     auto layoutMain = new QHBoxLayout;
     layoutMain->setContentsMargins(16,16,16,16);
     auto icon = new QLabel();
-    icon->setPixmap(qApp->windowIcon().pixmap(64));
+    if (qApp->style()->inherits("QProxyStyle"))
+    {
+        // Since the app icon is already inverted, reset the label style to the default.
+        //
+        icon->setStyle(static_cast<QProxyStyle*>(qApp->style())->baseStyle());
+    }
+    icon->setPixmap(qApp->windowIcon().pixmap(100));
     layoutMain->addWidget(icon, 1, Qt::AlignTop);
     auto layoutText = new QVBoxLayout;
     layoutText->setContentsMargins(16,0,16,0);

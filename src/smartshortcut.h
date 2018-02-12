@@ -17,6 +17,7 @@
 #ifndef SMARTSHORTCUT_H
 #define SMARTSHORTCUT_H
 
+#include <QAction>
 #include <QObject>
 #include <QKeySequence>
 
@@ -37,12 +38,14 @@ class SmartShortcut : public QObject
     static qint64 longPressTimeoutInMsec;
 
 public:
+    static void reloadSettings();
+    static void setShortcut(QObject *parent, int key);
+    static void updateShortcut(QObject *parent, int key);
+    static void removeShortcut(QObject *parent);
+    static void removeAll();
+
     static qint64 timestamp();
     static bool longPressTimeout(qint64 ts);
-    static void reloadSettings();
-    static void remove(QObject *parent);
-    static void removeAll();
-    static void setShortcut(QObject *parent, int key);
     static void setEnabled(bool enable);
     static QString toString
         ( int key
@@ -57,23 +60,5 @@ public:
 protected:
     bool eventFilter(QObject *o, QEvent *e);
 };
-
-// T == QAction | QAbstractButton
-//
-template <class T>
-static void updateShortcut(T* btn, int key)
-{
-    SmartShortcut::remove(btn);
-
-    if (key == 0)
-    {
-        btn->setToolTip(btn->text().remove("&"));
-    }
-    else
-    {
-        SmartShortcut::setShortcut(btn, key);
-        btn->setToolTip(btn->text().remove("&") + " (" + SmartShortcut::toString(key) + ")");
-    }
-}
 
 #endif // SMARTSHORTCUT_H

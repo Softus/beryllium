@@ -55,7 +55,7 @@ struct X11ErrorHandler
                 error = true;
                 char errstr[256];
                 XGetErrorText(display, event->error_code, errstr, 256);
-                qDebug() << errstr;
+                qDebug() << "X11 error" << event->error_code << errstr;
             }
             break;
         }

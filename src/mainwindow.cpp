@@ -71,6 +71,7 @@ static DcmTagKey DCM_ClipNo(0x5000,  0x8002);
 #include <QPainter>
 #include <QResizeEvent>
 #include <QSettings>
+#include <QSystemTrayIcon>
 #include <QTimer>
 #include <QToolBar>
 #include <QToolButton>
@@ -94,6 +95,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
     , dlgPatient(nullptr)
     , archiveWindow(nullptr)
+    , trayIcon(nullptr)
 #ifdef WITH_DICOM
     , pendingPatient(nullptr)
     , worklist(nullptr)
@@ -109,8 +111,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // This magic required for updating widgets from worker threads on Microsoft (R) Windows (TM)
     //
-    connect(this, SIGNAL(enableWidget(QWidget*, bool)), this,
-        SLOT(onEnableWidget(QWidget*, bool)), Qt::QueuedConnection);
+    connect(this, SIGNAL(enableAction(QAction*, bool)), this,
+        SLOT(onEnableAction(QAction*, bool)), Qt::QueuedConnection);
 
     auto layoutMain = new QVBoxLayout();
     extraTitle = new QLabel;
@@ -128,6 +130,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     mainStack = new SlidingStackedWidget();
     layoutMain->addWidget(mainStack);
+
+    actionExit = new QAction(tr("E&xit"), this);
+    actionExit->setMenuRole(QAction::QuitRole);
+    connect(actionExit, &QAction::triggered, qApp, QApplication::quit);
 
     auto studyLayout = new QVBoxLayout;
     layoutVideo = new QHBoxLayout;
@@ -156,6 +162,17 @@ MainWindow::MainWindow(QWidget *parent)
     if (settings.value("enable-menu").toBool())
     {
         layoutMain->setMenuBar(createMenuBar());
+    }
+    if (settings.value("show-tray-icon").toBool())
+    {
+        if (QSystemTrayIcon::isSystemTrayAvailable())
+        {
+            createTrayIcon();
+        }
+        else
+        {
+            qWarning() << "QSystemTrayIcon is not supported on this platform";
+        }
     }
     setLayout(layoutMain);
 
@@ -331,76 +348,68 @@ bool MainWindow::nativeEvent(const QByteArray& eventType, void *msg, long *resul
 
 QMenuBar* MainWindow::createMenuBar()
 {
-    auto mnuBar = new QMenuBar();
-    auto mnu    = new QMenu(tr("&Menu"));
+    auto menuBar = new QMenuBar();
+    auto menuMain    = new QMenu(tr("&Menu"));
 
-    mnu->addAction(actionAbout);
+    menuMain->addAction(actionAbout);
     actionAbout->setMenuRole(QAction::AboutRole);
 
-    mnu->addAction(actionArchive);
+    menuMain->addAction(actionArchive);
 
 #ifdef WITH_DICOM
-    mnu->addAction(actionWorklist);
+    menuMain->addAction(actionWorklist);
 #endif
-    mnu->addSeparator();
-    auto actionRtp = mnu->addAction(tr("&Enable RTP streaming"), this, SLOT(toggleSetting()));
-    actionRtp->setCheckable(true);
-    actionRtp->setData("gst/enable-rtp");
+    menuMain->addSeparator();
 
-    auto actionFullVideo = mnu->addAction(tr("&Record entire study"), this, SLOT(toggleSetting()));
+    auto actionFullVideo = menuMain->addAction(tr("Record &video log"), this, SLOT(toggleSetting()));
     actionFullVideo->setCheckable(true);
     actionFullVideo->setData("gst/enable-video");
 
     actionSettings->setMenuRole(QAction::PreferencesRole);
-    mnu->addAction(actionSettings);
-    mnu->addSeparator();
-    auto actionExit = mnu->addAction(tr("E&xit"), qApp, SLOT(quit()), Qt::ALT | Qt::Key_F4);
-    actionExit->setMenuRole(QAction::QuitRole);
+    menuMain->addAction(actionSettings);
+    menuMain->addSeparator();
+    menuMain->addAction(actionExit);
 
-    connect(mnu, SIGNAL(aboutToShow()), this, SLOT(onPrepareSettingsMenu()));
-    mnuBar->addMenu(mnu);
+    connect(menuMain, SIGNAL(aboutToShow()), this, SLOT(onPrepareSettingsMenu()));
+    menuBar->addMenu(menuMain);
 
-    mnuBar->show();
-    return mnuBar;
+    auto menuStudy    = new QMenu(tr("&Study"));
+    menuStudy->addAction(actionStart);
+    menuStudy->addAction(actionSnapshot);
+    menuStudy->addAction(actionRecordStart);
+    menuStudy->addAction(actionRecordStop);
+    menuBar->addMenu(menuStudy);
+
+    menuBar->show();
+    return menuBar;
+}
+
+QAction* MainWindow::addButton
+    ( QToolBar* bar
+    , const QString& icon
+    , const QString& text
+    , const char* handler
+    )
+{
+    auto action = bar->addAction(QIcon(":/buttons/" + icon), text, this, handler);
+    auto btn = static_cast<QToolButton*>(bar->widgetForAction(action));
+    btn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    btn->setFocusPolicy(Qt::NoFocus);
+    btn->setMinimumWidth(178);
+
+    return action;
 }
 
 QToolBar* MainWindow::createToolBar()
 {
     QToolBar* bar = new QToolBar(tr("Main"));
 
-    btnStart = new QToolButton();
-    btnStart->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    btnStart->setFocusPolicy(Qt::NoFocus);
-    btnStart->setMinimumWidth(175);
-    connect(btnStart, SIGNAL(clicked()), this, SLOT(onStartClick()));
-    bar->addWidget(btnStart);
-
-    btnSnapshot = new QToolButton();
-    btnSnapshot->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    btnSnapshot->setFocusPolicy(Qt::NoFocus);
-    btnSnapshot->setIcon(QIcon(":/buttons/camera"));
-    btnSnapshot->setText(tr("Take snapshot"));
-    btnSnapshot->setMinimumWidth(175);
-    connect(btnSnapshot, SIGNAL(clicked()), this, SLOT(onSnapshotClick()));
-    bar->addWidget(btnSnapshot);
-
-    btnRecordStart = new QToolButton();
-    btnRecordStart->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    btnRecordStart->setFocusPolicy(Qt::NoFocus);
-    btnRecordStart->setIcon(QIcon(":/buttons/record"));
-    btnRecordStart->setText(tr("Start clip"));
-    btnRecordStart->setMinimumWidth(175);
-    connect(btnRecordStart, SIGNAL(clicked()), this, SLOT(onRecordStartClick()));
-    bar->addWidget(btnRecordStart);
-
-    btnRecordStop = new QToolButton();
-    btnRecordStop->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    btnRecordStop->setFocusPolicy(Qt::NoFocus);
-    btnRecordStop->setIcon(QIcon(":/buttons/record_done"));
-    btnRecordStop->setText(tr("Clip done"));
-    btnRecordStop->setMinimumWidth(175);
-    connect(btnRecordStop, SIGNAL(clicked()), this, SLOT(onRecordStopClick()));
-    bar->addWidget(btnRecordStop);
+    // The text of this action will be updated when the pipeline gets ready
+    //
+    actionStart       = addButton(bar, QString(),     QString(),           SLOT(onStartClick()));
+    actionSnapshot    = addButton(bar, "camera",      tr("Take snapshot"), SLOT(onSnapshotClick()));
+    actionRecordStart = addButton(bar, "record",      tr("Start clip"),    SLOT(onRecordStartClick()));
+    actionRecordStop  = addButton(bar, "record_done", tr("Clip done"),     SLOT(onRecordStopClick()));
 
     QWidget* spacer = new QWidget;
     spacer->setMinimumWidth(1);
@@ -425,6 +434,42 @@ QToolBar* MainWindow::createToolBar()
     actionAbout->setToolTip(tr("About %1").arg(PRODUCT_FULL_NAME));
 
     return bar;
+}
+
+void MainWindow::createTrayIcon()
+{
+    trayIcon = new QSystemTrayIcon(qApp->windowIcon(), this);
+    trayIcon->setToolTip(windowTitle());
+
+    auto menuTray = new QMenu(PRODUCT_FULL_NAME);
+    auto actionShow = menuTray->addAction(tr("Show %1").arg(PRODUCT_FULL_NAME), this,
+        SLOT(onActivateWindow()));
+    menuTray->setDefaultAction(actionShow);
+    menuTray->addSeparator();
+    menuTray->addAction(actionStart);
+    menuTray->addAction(actionSnapshot);
+    menuTray->addAction(actionRecordStart);
+    menuTray->addAction(actionRecordStop);
+    menuTray->addSeparator();
+    menuTray->addAction(actionExit);
+    trayIcon->setContextMenu(menuTray);
+    connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::onTrayIconActivated);
+    trayIcon->show();
+}
+
+void MainWindow::onTrayIconActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    qDebug() << "Reason" << reason;
+
+    if (reason != QSystemTrayIcon::Context)
+    {
+        activateWindow();
+    }
+}
+
+void MainWindow::onActivateWindow()
+{
+    activateWindow();
 }
 
 // mpegpsmux > mpg, jpegenc > jpg, pngenc > png, oggmux > ogg, avimux > avi, matrosskamux > mat
@@ -659,7 +704,7 @@ void MainWindow::applySettings()
         }
     }
 
-    btnStart->setEnabled(activePipeline && allPipelinesAreReady);
+    actionStart->setEnabled(activePipeline && allPipelinesAreReady);
 
     if (archiveWindow != nullptr)
     {
@@ -672,20 +717,22 @@ void MainWindow::applySettings()
     actionSettings->setVisible(showSettings);
 
     settings.beginGroup("hotkeys");
-    updateShortcut(btnStart,       settings.value("capture-start",
+    SmartShortcut::updateShortcut(actionStart,       settings.value("capture-start",
         DEFAULT_HOTKEY_START).toInt());
-    updateShortcut(btnSnapshot,    settings.value("capture-snapshot",
+    SmartShortcut::updateShortcut(actionSnapshot,    settings.value("capture-snapshot",
         DEFAULT_HOTKEY_SNAPSHOT).toInt());
-    updateShortcut(btnRecordStart, settings.value("capture-record-start",
+    SmartShortcut::updateShortcut(actionRecordStart, settings.value("capture-record-start",
         DEFAULT_HOTKEY_RECORD_START).toInt());
-    updateShortcut(btnRecordStop,  settings.value("capture-record-stop",
+    SmartShortcut::updateShortcut(actionRecordStop,  settings.value("capture-record-stop",
         DEFAULT_HOTKEY_RECORD_STOP).toInt());
-    updateShortcut(actionArchive,  settings.value("capture-archive",
+    SmartShortcut::updateShortcut(actionArchive,     settings.value("capture-archive",
         DEFAULT_HOTKEY_ARCHIVE).toInt());
-    updateShortcut(actionSettings, settings.value("capture-settings",
+    SmartShortcut::updateShortcut(actionSettings,    settings.value("capture-settings",
         DEFAULT_HOTKEY_SETTINGS).toInt());
-    updateShortcut(actionAbout,    settings.value("capture-about",
+    SmartShortcut::updateShortcut(actionAbout,       settings.value("capture-about",
         DEFAULT_HOTKEY_ABOUT).toInt());
+    SmartShortcut::updateShortcut(actionExit,        settings.value("capture-exit",
+        DEFAULT_HOTKEY_EXIT).toInt());
 
 #ifdef WITH_DICOM
     // Recreate worklist just in case the columns/servers were changed
@@ -695,7 +742,7 @@ void MainWindow::applySettings()
     connect(worklist, SIGNAL(startStudy(DcmDataset*)), this, SLOT(onStartStudy(DcmDataset*)));
     worklist->setObjectName("Worklist");
     mainStack->addWidget(worklist);
-    updateShortcut(actionWorklist, settings.value("capture-worklist",
+    SmartShortcut::updateShortcut(actionWorklist, settings.value("capture-worklist",
         DEFAULT_HOTKEY_WORKLIST).toInt());
 #endif
     settings.endGroup();
@@ -807,7 +854,7 @@ void MainWindow::updateOutputPath()
 
 void MainWindow::onClipFrameReady()
 {
-    enableWidget(btnRecordStart, true);
+    enableAction(actionRecordStart, true);
 
     auto pipeline = static_cast<Pipeline*>(sender());
     if (!pipeline->clipPreviewFileName.isEmpty())
@@ -815,10 +862,10 @@ void MainWindow::onClipFrameReady()
 
         // Once an image will be ready, the valve will be turned off again.
         //
-        enableWidget(btnSnapshot, false);
+        enableAction(actionSnapshot, false);
     }
 
-    enableWidget(btnRecordStop, activePipeline->recording);
+    enableAction(actionRecordStop, activePipeline->recording);
 }
 
 void MainWindow::onPipelineError(const QString& text)
@@ -849,7 +896,7 @@ void MainWindow::onImageSaved
     listImagesAndClips->setItemSelected(item, true);
     listImagesAndClips->scrollToItem(item);
 
-    btnSnapshot->setEnabled(running);
+    actionSnapshot->setEnabled(running);
 }
 
 bool MainWindow::startVideoRecord()
@@ -1033,7 +1080,7 @@ bool MainWindow::takeSnapshot(Pipeline* pipeline, const QString& imageTemplate)
 
     // Once the image will be ready, the valve will be turned off again.
     //
-    btnSnapshot->setEnabled(false);
+    actionSnapshot->setEnabled(false);
     return true;
 }
 
@@ -1126,7 +1173,7 @@ void MainWindow::doRecord
 
             // Until the real clip recording starts, we should disable this button
             //
-            btnRecordStart->setEnabled(false);
+            actionRecordStart->setEnabled(false);
             pipeline->recording = true;
             pipeline->enableClip(true);
         }
@@ -1165,21 +1212,21 @@ void MainWindow::stopRecord(Pipeline* pipeline)
 
 void MainWindow::onClipRecordComplete()
 {
-    btnRecordStop->setEnabled(running && activePipeline->recording);
+    actionRecordStop->setEnabled(running && activePipeline->recording);
 }
 
 void MainWindow::updateStartButton()
 {
     QIcon icon(running? ":/buttons/stop": ":/buttons/start");
     QString strOnOff(running? tr("End study"): tr("Start study"));
-    btnStart->setIcon(icon);
-    auto shortcut = btnStart->shortcut(); // save the shortcut...
-    btnStart->setText(strOnOff);
-    btnStart->setShortcut(shortcut); // ...and restore
+    actionStart->setIcon(icon);
+    auto shortcut = actionStart->shortcut(); // save the shortcut...
+    actionStart->setText(strOnOff);
+    actionStart->setShortcut(shortcut); // ...and restore
 
-    btnRecordStart->setEnabled(running);
-    btnRecordStop->setEnabled(running && activePipeline->recording);
-    btnSnapshot->setEnabled(running);
+    actionRecordStart->setEnabled(running);
+    actionRecordStop->setEnabled(running && activePipeline->recording);
+    actionSnapshot->setEnabled(running);
     actionSettings->setDisabled(running);
 #ifdef WITH_DICOM
     actionWorklist->setDisabled(running);
@@ -1236,9 +1283,9 @@ void MainWindow::onShowSettingsClick()
     }
 }
 
-void MainWindow::onEnableWidget(QWidget* widget, bool enable)
+void MainWindow::onEnableAction(QAction *action, bool enable)
 {
-    widget->setEnabled(enable);
+    action->setEnabled(enable);
 }
 
 void MainWindow::updateStartDialog()
@@ -1411,12 +1458,27 @@ void MainWindow::onStartStudy()
     activePipeline->displayWidget->update();
     delete dlgPatient;
     dlgPatient = nullptr;
+
+    if (settings.value("minimize-on-start", true).toBool())
+    {
+        setWindowState(Qt::WindowMinimized);
+        if (trayIcon)
+        {
+            trayIcon->showMessage(windowTitle(), tr("The study is started."));
+        }
+    }
 }
 
 void MainWindow::onStopStudy()
 {
     QSettings settings;
     QWaitCursor wait(this);
+
+    activateWindow();
+    if (trayIcon)
+    {
+        trayIcon->showMessage(windowTitle(), tr("The study is stopped."));
+    }
 
     onRecordStopClick();
 
@@ -1559,7 +1621,7 @@ void MainWindow::onSwapSources(QWidget* src, QWidget* dst)
         if (idx < 0)
         {
             activePipeline = p;
-            btnRecordStop->setEnabled(running && p->recording);
+            actionRecordStop->setEnabled(running && p->recording);
         }
     }
     settings.endArray();

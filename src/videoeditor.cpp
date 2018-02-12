@@ -32,7 +32,6 @@
 #include <QTemporaryFile>
 #include <QTimer>
 #include <QToolBar>
-#include <QToolButton>
 #include <QUrl>
 #include <QxtSpanSlider>
 

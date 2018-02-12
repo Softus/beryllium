@@ -34,7 +34,6 @@ class QListWidget;
 class QListWidgetItem;
 class QStackedWidget;
 class QToolBar;
-class QToolButton;
 QT_END_NAMESPACE
 
 #ifdef WITH_QT_DBUS
@@ -53,7 +52,7 @@ class ArchiveWindow : public QWidget
 #ifdef WITH_DICOM
     QAction*               actionStore;
 #endif
-    QToolButton*           btnUsbStore;
+    QAction*               actionUsbStore;
     QAction*               actionBack;
     QAction*               actionEdit;
     QAction*               actionPlay;

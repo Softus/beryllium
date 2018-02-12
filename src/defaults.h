@@ -24,6 +24,7 @@
 #define DEFAULT_FOLDER_TEMPLATE       "/%yyyy%-%MM%/%dd%/%name%-%id%/"
 #define DEFAULT_HOTKEY_ABOUT          (int)(Qt::AltModifier | Qt::ShiftModifier | Qt::Key_Question)
 #define DEFAULT_HOTKEY_ARCHIVE        (int)(Qt::Key_F2)
+#define DEFAULT_HOTKEY_EXIT           (int)(Qt::AltModifier | Qt::Key_F4)
 #define DEFAULT_HOTKEY_UPLOAD         (int)(Qt::Key_F6)
 #define DEFAULT_HOTKEY_USB            (int)(Qt::Key_F7)
 #define DEFAULT_HOTKEY_DELETE         (int)(Qt::Key_Delete)

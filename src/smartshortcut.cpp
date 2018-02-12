@@ -160,7 +160,7 @@ static QHash<int, SmartHandler> handlers;
 
 qint64 SmartShortcut::longPressTimeoutInMsec = -1;
 
-void SmartShortcut::remove(QObject *target)
+void SmartShortcut::removeShortcut(QObject *target)
 {
     for (auto h = handlers.begin(); h != handlers.end(); ++h)
     {
@@ -216,9 +216,9 @@ void SmartShortcut::removeAll()
     handlers.clear();
 }
 
-void SmartShortcut::setShortcut(QObject *target, int key)
+void SmartShortcut::setShortcut(QObject *parent, int key)
 {
-    SmartTarget st(isGlobal(key), isLongPress(key), target);
+    SmartTarget st(isGlobal(key), isLongPress(key), parent);
     auto keyCode = key & ~(GLOBAL_SHORTCUT_MASK | LONG_PRESS_MASK);
 
     auto h = handlers.find(keyCode);
@@ -238,7 +238,38 @@ void SmartShortcut::setShortcut(QObject *target, int key)
         grabKey(keyCode);
     }
 
-    QObject::connect(target, &QObject::destroyed, SmartShortcut::remove);
+    QObject::connect(parent, &QObject::destroyed, SmartShortcut::removeShortcut);
+}
+
+void SmartShortcut::updateShortcut(QObject* parent, int key)
+{
+    removeShortcut(parent);
+    auto keyCode = key & ~(GLOBAL_SHORTCUT_MASK | LONG_PRESS_MASK);
+
+    if (parent->inherits("QAction"))
+    {
+        auto action = static_cast<QAction*>(parent);
+        if (key == 0)
+        {
+            action->setToolTip(action->text().remove("&"));
+            return;
+        }
+        action->setToolTip(action->text().remove("&") + " (" + toString(key) + ")");
+        action->setShortcut(keyCode);
+    }
+    else if (parent->inherits("QAbstractButton"))
+    {
+        auto button = static_cast<QAbstractButton*>(parent);
+        if (key == 0)
+        {
+            button->setToolTip(button->text().remove("&"));
+            return;
+        }
+        button->setToolTip(button->text().remove("&") + " (" + toString(key) + ")");
+        button->setShortcut(keyCode);
+    }
+
+    setShortcut(parent, key);
 }
 
 bool SmartShortcut::isGlobal(int key)

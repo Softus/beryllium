@@ -102,6 +102,9 @@ HotKeySettings::HotKeySettings(QWidget *parent)
     itemCapture->addChild(newItem(settings, tr("Show the Worklist window"), "capture-worklist",
         DEFAULT_HOTKEY_WORKLIST));
 #endif
+    itemCapture->addChild(newItem(settings, tr("Exit application"),         "capture-exit",
+        DEFAULT_HOTKEY_EXIT));
+
     auto itemArchive = new QTreeWidgetItem(QStringList(tr("Archive window")));
     itemArchive->setFlags(Qt::ItemIsEnabled);
     tree->addTopLevelItem(itemArchive);
@@ -141,11 +144,6 @@ HotKeySettings::HotKeySettings(QWidget *parent)
         DEFAULT_HOTKEY_PLAY));
     itemArchive->addChild(newItem(settings, tr("Select"),        "archive-select",
         DEFAULT_HOTKEY_SELECT));
-
-    //itemArchive->addChild(newItem(settings, tr("Previous file"), "archive-prev",
-    //    DEFAULT_HOTKEY_PREV));
-    //itemArchive->addChild(newItem(settings, tr("Next file"),     "archive-next",
-    //    DEFAULT_HOTKEY_NEXT));
 
 #ifdef WITH_DICOM
     auto itemWorklist = new QTreeWidgetItem(QStringList(tr("Worklist window")));

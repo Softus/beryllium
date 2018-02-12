@@ -18,6 +18,7 @@
 #define MAINWINDOW_H
 
 #include <QDir>
+#include <QSystemTrayIcon>
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -27,9 +28,9 @@ class QListWidget;
 class QListWidgetItem;
 class QMenuBar;
 class QResizeEvent;
+class QSystemTrayIcon;
 class QTimer;
 class QToolBar;
-class QToolButton;
 QT_END_NAMESPACE
 
 class ArchiveWindow;
@@ -48,16 +49,18 @@ class MainWindow : public QWidget
     //
     PatientDataDialog *dlgPatient;
     QLabel*      extraTitle;
-    QToolButton* btnStart;
-    QToolButton* btnRecordStart;
-    QToolButton* btnRecordStop;
-    QToolButton* btnSnapshot;
+    QAction*     actionExit;
+    QAction*     actionStart;
+    QAction*     actionRecordStart;
+    QAction*     actionRecordStop;
+    QAction*     actionSnapshot;
     QAction*     actionAbout;
     QAction*     actionSettings;
     QAction*     actionArchive;
     ArchiveWindow* archiveWindow;
     QBoxLayout*  layoutSources;
     QBoxLayout*  layoutVideo;
+    QSystemTrayIcon* trayIcon;
 #ifdef WITH_DICOM
     QAction*      actionWorklist;
     DcmDataset*   pendingPatient;
@@ -83,8 +86,15 @@ class MainWindow : public QWidget
     int           studyNo;
     Sound*        sound;
 
+    void      createTrayIcon();
     QMenuBar* createMenuBar();
     QToolBar* createToolBar();
+    QAction*  addButton
+        ( QToolBar* bar
+        , const QString& icon
+        , const QString& text
+        , const char* handler
+        );
     void updateStartButton();
 
     // State machine
@@ -141,7 +151,7 @@ protected:
 #endif
 
 signals:
-    void enableWidget(QWidget*, bool);
+    void enableAction(QAction*, bool);
 
 public slots:
     void applySettings();
@@ -157,7 +167,7 @@ private slots:
     void onStartStudy();
 #endif
     void onClipFrameReady();
-    void onEnableWidget(QWidget*, bool);
+    void onEnableAction(QAction* action, bool);
     void onImageSaved(const QString& filename, const QString& tooltip, const QPixmap& pm);
     void onPipelineError(const QString& text);
     void onPrepareSettingsMenu();
@@ -172,6 +182,8 @@ private slots:
     void onStartClick();
     void onStopStudy();
     void onSwapSources(QWidget *src, QWidget *dst);
+    void onTrayIconActivated(QSystemTrayIcon::ActivationReason reason);
+    void onActivateWindow();
 
     friend class MainWindowDBusAdaptor;
 };

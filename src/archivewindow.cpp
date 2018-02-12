@@ -278,14 +278,12 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
     actionStore = barArchive->addAction(QIcon(":buttons/dicom"), tr("Upload"), this,
         SLOT(onStoreClick()));
 #endif
-    btnUsbStore = new QToolButton;
-    btnUsbStore->setIcon(QIcon(":buttons/usb"));
-    btnUsbStore->setText(tr("to USB"));
-    btnUsbStore->setToolButtonStyle(barArchive->toolButtonStyle());
+    actionUsbStore = barArchive->addAction(QIcon(":buttons/usb"), tr("to USB"), this,
+        SLOT(onUsbStoreClick()));
+
+    auto btnUsbStore = static_cast<QToolButton*>(barArchive->widgetForAction(actionUsbStore));
     btnUsbStore->setPopupMode(QToolButton::InstantPopup);
-    connect(btnUsbStore, SIGNAL(clicked()), this, SLOT(onUsbStoreClick()));
     connect(btnUsbStore, SIGNAL(triggered(QAction*)), this, SLOT(onUsbStoreMenuClick(QAction*)));
-    barArchive->addWidget(btnUsbStore);
 
     actionEdit = barArchive->addAction(QIcon(":buttons/edit"), tr("Edit"), this,
         SLOT(onEditClick()));
@@ -428,49 +426,44 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
 void ArchiveWindow::updateHotkeys(QSettings& settings)
 {
     settings.beginGroup("hotkeys");
-    updateShortcut(actionBack,        settings.value("archive-back",
+    SmartShortcut::updateShortcut(actionBack,        settings.value("archive-back",
         DEFAULT_HOTKEY_BACK).toInt());
-    updateShortcut(actionDelete,      settings.value("archive-delete",
+    SmartShortcut::updateShortcut(actionDelete,      settings.value("archive-delete",
         DEFAULT_HOTKEY_DELETE).toInt());
-    updateShortcut(actionRestore,     settings.value("archive-restore",
+    SmartShortcut::updateShortcut(actionRestore,     settings.value("archive-restore",
         DEFAULT_HOTKEY_RESTORE).toInt());
 #ifdef WITH_DICOM
-    updateShortcut(actionStore,       settings.value("archive-upload",
+    SmartShortcut::updateShortcut(actionStore,       settings.value("archive-upload",
         DEFAULT_HOTKEY_UPLOAD).toInt());
 #endif
-    updateShortcut(btnUsbStore,       settings.value("archive-usb",
+    SmartShortcut::updateShortcut(actionUsbStore,       settings.value("archive-usb",
         DEFAULT_HOTKEY_USB).toInt());
-    updateShortcut(actionEdit,        settings.value("archive-edit",
+    SmartShortcut::updateShortcut(actionEdit,        settings.value("archive-edit",
         DEFAULT_HOTKEY_EDIT).toInt());
-    updateShortcut(actionUp,          settings.value("archive-parent-folder",
+    SmartShortcut::updateShortcut(actionUp,          settings.value("archive-parent-folder",
         DEFAULT_HOTKEY_PARENT_FOLDER).toInt());
 
-    updateShortcut(actionMode,        settings.value("archive-next-mode",
+    SmartShortcut::updateShortcut(actionMode,        settings.value("archive-next-mode",
         DEFAULT_HOTKEY_NEXT_MODE).toInt());
-    updateShortcut(actionListMode,    settings.value("archive-list-mode",
+    SmartShortcut::updateShortcut(actionListMode,    settings.value("archive-list-mode",
         DEFAULT_HOTKEY_LIST_MODE).toInt());
-    updateShortcut(actionIconMode,    settings.value("archive-icon-mode",
+    SmartShortcut::updateShortcut(actionIconMode,    settings.value("archive-icon-mode",
         DEFAULT_HOTKEY_ICON_MODE).toInt());
-    updateShortcut(actionGalleryMode, settings.value("archive-gallery-mode",
+    SmartShortcut::updateShortcut(actionGalleryMode, settings.value("archive-gallery-mode",
         DEFAULT_HOTKEY_GALLERY_MODE).toInt());
 
-    updateShortcut(actionBrowse,      settings.value("archive-browse",
+    SmartShortcut::updateShortcut(actionBrowse,      settings.value("archive-browse",
         DEFAULT_HOTKEY_BROWSE).toInt());
 
-    updateShortcut(actionSeekBack,    settings.value("archive-seek-back",
+    SmartShortcut::updateShortcut(actionSeekBack,    settings.value("archive-seek-back",
         DEFAULT_HOTKEY_SEEK_BACK).toInt());
-    updateShortcut(actionSeekFwd,     settings.value("archive-seek-fwd",
+    SmartShortcut::updateShortcut(actionSeekFwd,     settings.value("archive-seek-fwd",
         DEFAULT_HOTKEY_SEEK_FWD).toInt());
-    updateShortcut(actionPlay,        settings.value("archive-play",
+    SmartShortcut::updateShortcut(actionPlay,        settings.value("archive-play",
         DEFAULT_HOTKEY_PLAY).toInt());
-    updateShortcut(actionEnter,       settings.value("archive-select",
+    SmartShortcut::updateShortcut(actionEnter,       settings.value("archive-select",
         DEFAULT_HOTKEY_SELECT).toInt());
 
-    // Not a real keys
-    // updateShortcut(btnPrev,        settings.value("archive-prev",
-    //     DEFAULT_HOTKEY_PREV).toInt());
-    // updateShortcut(btnNext,        settings.value("archive-next",
-    //     DEFAULT_HOTKEY_NEXT).toInt());
     settings.endGroup();
 }
 
@@ -1023,11 +1016,11 @@ void ArchiveWindow::onUsbDiskChanged()
 void ArchiveWindow::updateUsbStoreButton()
 {
     auto disks = collectRemovableDrives();
-    btnUsbStore->setDisabled(disks.empty());
+    actionUsbStore->setDisabled(disks.empty());
 
-    if (btnUsbStore->isEnabled())
+    if (actionUsbStore->isEnabled())
     {
-        btnUsbStore->setProperty("disk", disks.first());
+        actionUsbStore->setProperty("disk", disks.first());
         QMenu* menu = nullptr;
 
         // Omit the menu if the user has nothing to choose
@@ -1045,7 +1038,7 @@ void ArchiveWindow::updateUsbStoreButton()
                 menu->addAction(QIcon(":/buttons/usb"), diskLabel)->setData(disk);
             }
         }
-        btnUsbStore->setMenu(menu);
+        actionUsbStore->setMenu(menu);
     }
 }
 

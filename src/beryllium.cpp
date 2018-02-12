@@ -445,17 +445,25 @@ int main(int argc, char *argv[])
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
     QApplication::setAttribute(Qt::AA_X11InitThreads);
     QApplication app(argc, argv);
-    app.setWindowIcon(QIcon(":/app/product"));
+    QIcon appIcon(":/app/product");
 
     // Apply dark aware theme if button text is bright or the dart theme is forced
     //
-    QString theme = settings.value("theme", "auto").toString();
+    QString theme = settings.value("ui/theme", "auto").toString();
     if (theme.compare("dark", Qt::CaseInsensitive) == 0
             || (theme.compare("auto", Qt::CaseInsensitive) == 0
                 && app.palette().color(QPalette::Active, QPalette::ButtonText).lightness() > 128))
     {
         app.setStyle(new DarkThemeStyle(QApplication::style()));
+
+        foreach (auto size, appIcon.availableSizes())
+        {
+            auto img = appIcon.pixmap(size).toImage();
+            img.invertPixels();
+            appIcon.addPixmap(QPixmap::fromImage(img));
+        }
     }
+    app.setWindowIcon(appIcon);
 
     bool fullScreen = settings.value("show-fullscreen").toBool();
 

@@ -115,13 +115,13 @@ Worklist::Worklist(QWidget *parent) :
     settings.endGroup();
 
     settings.beginGroup("hotkeys");
-    updateShortcut(actionDetail,     settings.value("worklist-show-details",
+    SmartShortcut::updateShortcut(actionDetail,     settings.value("worklist-show-details",
         DEFAULT_HOTKEY_SHOW_DETAILS).toInt());
-    updateShortcut(actionStartStudy, settings.value("worklist-start",
+    SmartShortcut::updateShortcut(actionStartStudy, settings.value("worklist-start",
         DEFAULT_HOTKEY_START).toInt());
-    updateShortcut(actionLoad,       settings.value("worklist-refresh",
+    SmartShortcut::updateShortcut(actionLoad,       settings.value("worklist-refresh",
         DEFAULT_HOTKEY_REFRESH).toInt());
-    updateShortcut(actionBack,       settings.value("worklist-back",
+    SmartShortcut::updateShortcut(actionBack,       settings.value("worklist-back",
         DEFAULT_HOTKEY_BACK).toInt());
     settings.endGroup();
 
