@@ -33,7 +33,7 @@
 
 #include <QLineEdit>
 #include <QIcon>
-#include <qxtglobal.h>
+#include "qxtglobal.h"
 
 class QxtLineEditPrivate;
 class QActionEvent;

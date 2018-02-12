@@ -35,7 +35,7 @@
 #include <QSettings>
 #include <QSpinBox>
 #include <QTextEdit>
-#include <QxtLineEdit>
+#include <qxtlineedit.h>
 
 #include <QGlib/Error>
 #include <QGlib/ParamSpec>

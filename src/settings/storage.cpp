@@ -28,7 +28,7 @@
 #include <QSettings>
 #include <QSpinBox>
 #include <QVBoxLayout>
-#include <QxtLineEdit>
+#include <qxtlineedit.h>
 
 StorageSettings::StorageSettings(QWidget *parent)
     : QWidget(parent)

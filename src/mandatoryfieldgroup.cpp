@@ -23,7 +23,7 @@
 #include <QFormLayout>
 #include <QPushButton>
 #include <QSettings>
-#include <QxtLineEdit>
+#include <qxtlineedit.h>
 
 MandatoryFieldGroup::MandatoryFieldGroup(QObject* parent)
     : QObject(parent)

@@ -26,7 +26,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QSettings>
-#include <QxtLineEdit>
+#include <qxtlineedit.h>
 
 #include <gst/gst.h>
 

@@ -26,8 +26,8 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QSpinBox>
-#include <QxtCheckComboBox>
-#include <QxtLineEdit>
+#include <qxtcheckcombobox.h>
+#include <qxtlineedit.h>
 
 #include <QGst/Parse>
 #include <gst/gst.h>

@@ -18,7 +18,7 @@
 #ifndef HOTKEYEDIT_H
 #define HOTKEYEDIT_H
 
-#include <QxtLineEdit>
+#include <qxtlineedit.h>
 
 class HotKeyEdit : public QxtLineEdit
 {

@@ -16,16 +16,13 @@ INCLUDEPATH += $$PWD
 DEFINES     += BUILD_QXT_CORE QXT_STATIC
 
 HEADERS += $$PWD/qxtglobal.h \
+    $$PWD/qxtmetaobject.h \
     $$PWD/qxtnamespace.h \
     $$PWD/qxtcheckcombobox.h \
     $$PWD/qxtcheckcombobox_p.h \
-    $$PWD/QxtCheckComboBox \
     $$PWD/qxtconfirmationmessage.h \
-    $$PWD/QxtConfirmationMessage \
     $$PWD/qxtlineedit.h \
-    $$PWD/QxtLineEdit \
     $$PWD/qxtspanslider.h \
-    $$PWD/QxtSpanSlider \
     $$PWD/qxtspanslider_p.h
 
 SOURCES += $$PWD/qxtcheckcombobox.cpp \

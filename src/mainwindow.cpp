@@ -459,16 +459,18 @@ void MainWindow::createTrayIcon()
 
 void MainWindow::onTrayIconActivated(QSystemTrayIcon::ActivationReason reason)
 {
-    qDebug() << "Reason" << reason;
-
     if (reason != QSystemTrayIcon::Context)
     {
-        activateWindow();
+        onActivateWindow();
     }
 }
 
 void MainWindow::onActivateWindow()
 {
+    if (!isMaximized())
+    {
+        showNormal();
+    }
     activateWindow();
 }
 
@@ -1318,7 +1320,7 @@ void MainWindow::onStartStudy()
 
     // Switch focus to the main window
     //
-    activateWindow();
+    onActivateWindow();
 
     mainStack->slideInWidget("Main");
 
@@ -1474,7 +1476,8 @@ void MainWindow::onStopStudy()
     QSettings settings;
     QWaitCursor wait(this);
 
-    activateWindow();
+    onActivateWindow();
+
     if (trayIcon)
     {
         trayIcon->showMessage(windowTitle(), tr("The study is stopped."));

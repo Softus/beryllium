@@ -55,7 +55,7 @@
 #include <QPushButton>
 #include <QResizeEvent>
 #include <QSettings>
-#include <QxtLineEdit>
+#include <qxtlineedit.h>
 
 PatientDataDialog::PatientDataDialog(bool noWorklist, const QString& settingsKey, QWidget *parent)
     : QDialog(parent)
