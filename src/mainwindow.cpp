@@ -133,7 +133,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     actionExit = new QAction(tr("E&xit"), this);
     actionExit->setMenuRole(QAction::QuitRole);
-    connect(actionExit, &QAction::triggered, qApp, QApplication::quit);
+    connect(actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
 
     auto studyLayout = new QVBoxLayout;
     layoutVideo = new QHBoxLayout;
