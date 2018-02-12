@@ -237,6 +237,8 @@ void SmartShortcut::setShortcut(QObject *target, int key)
     {
         grabKey(keyCode);
     }
+
+    QObject::connect(target, &QObject::destroyed, SmartShortcut::remove);
 }
 
 bool SmartShortcut::isGlobal(int key)
