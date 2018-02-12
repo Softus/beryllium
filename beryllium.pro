@@ -100,7 +100,8 @@ SOURCES += \
     src/settings/hotkeys.cpp \
     src/settings/debug.cpp \
     src/settings/confirmations.cpp \
-    src/settings/elementproperties.cpp
+    src/settings/elementproperties.cpp \
+    src/settings/ui.cpp
 
 win32 {
     SOURCES += \
@@ -157,7 +158,8 @@ HEADERS += \
     src/settings/storage.h \
     src/settings/studies.h \
     src/settings/videorecord.h \
-    src/settings/elementproperties.h
+    src/settings/elementproperties.h \
+    src/settings/ui.h
 
 FORMS   +=
 

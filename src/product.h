@@ -34,4 +34,12 @@
 #define AUX_STR_EXP(__A)        #__A
 #define AUX_STR(__A)            AUX_STR_EXP(__A)
 
+#ifdef Q_OS_WIN
+#define DATA_FOLDER qApp->applicationDirPath()
+#else
+#define DATA_FOLDER qApp->applicationDirPath() + "/../share/" PRODUCT_SHORT_NAME
+#endif
+#define TRANSLATIONS_FOLDER DATA_FOLDER + "/translations/"
+#define SOUND_FOLDER        DATA_FOLDER + "/sound/"
+
 #endif // PRODUCT_H

@@ -86,9 +86,6 @@ static DcmTagKey DCM_ClipNo(0x5000,  0x8002);
   #include <winternl.h> // for DEVICE_TYPE
   #include <ntddstor.h> // for GUID_DEVINTERFACE_PARTITION
   #include <qpa/qplatformnativeinterface.h>
-  #define DATA_FOLDER qApp->applicationDirPath()
-#else
-  #define DATA_FOLDER qApp->applicationDirPath() + "/../share/" PRODUCT_SHORT_NAME
 #endif
 
 MainWindow::MainWindow(QWidget *parent)
@@ -135,6 +132,9 @@ MainWindow::MainWindow(QWidget *parent)
     actionExit->setMenuRole(QAction::QuitRole);
     connect(actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
 
+    actionFullscreen = new QAction(tr("&Fullscreen"), this);
+    connect(actionFullscreen, SIGNAL(triggered()), this, SLOT(onToggleFullscreen()));
+
     auto studyLayout = new QVBoxLayout;
     layoutVideo = new QHBoxLayout;
     layoutSources = new QVBoxLayout;
@@ -158,21 +158,9 @@ MainWindow::MainWindow(QWidget *parent)
     settings.beginGroup("ui");
     altSrcSize = settings.value("alt-src-size", DEFAULT_ALT_SRC_SIZE).toSize();
     mainSrcSize = settings.value("main-src-size", DEFAULT_MAIN_SRC_SIZE).toSize();
-    extraTitle->setVisible(settings.value("extra-title").toBool());
     if (settings.value("enable-menu").toBool())
     {
         layoutMain->setMenuBar(createMenuBar());
-    }
-    if (settings.value("show-tray-icon").toBool())
-    {
-        if (QSystemTrayIcon::isSystemTrayAvailable())
-        {
-            createTrayIcon();
-        }
-        else
-        {
-            qWarning() << "QSystemTrayIcon is not supported on this platform";
-        }
     }
     setLayout(layoutMain);
 
@@ -217,6 +205,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent *evt)
 {
+    // The user has triggered "Quit" in the menu bar or pressed the exit shortcut.
+    //
+    if (!evt->spontaneous() || !isVisible()) {
+        return;
+    }
+
     // Save keyboard modifiers state, since it may change after the confirm dialog will be shown.
     //
     auto fromMouse = qApp->keyboardModifiers() == Qt::NoModifier;
@@ -260,7 +254,7 @@ void MainWindow::showEvent(QShowEvent *evt)
         }
         else
         {
-            applySettings();
+            actionStart->setEnabled(applySettings());
         }
 #ifdef Q_OS_WIN
         // Archive window need this, but only the top level window may receive this message
@@ -326,10 +320,7 @@ void MainWindow::hideEvent(QHideEvent *evt)
 
 void MainWindow::resizeEvent(QResizeEvent *evt)
 {
-    if (windowState().testFlag(Qt::WindowFullScreen))
-    {
-        extraTitle->setVisible(true);
-    }
+    extraTitle->setVisible(isFullScreen());
     QWidget::resizeEvent(evt);
 }
 
@@ -380,7 +371,6 @@ QMenuBar* MainWindow::createMenuBar()
     menuStudy->addAction(actionRecordStop);
     menuBar->addMenu(menuStudy);
 
-    menuBar->show();
     return menuBar;
 }
 
@@ -467,11 +457,31 @@ void MainWindow::onTrayIconActivated(QSystemTrayIcon::ActivationReason reason)
 
 void MainWindow::onActivateWindow()
 {
-    if (!isMaximized())
+    if (!isMaximized() && !isFullScreen())
+    {
+        if (QSettings().value("ui/show-fullscreen").toBool())
+        {
+            showFullScreen();
+        }
+        else
+        {
+            showNormal();
+        }
+    }
+
+    activateWindow();
+}
+
+void MainWindow::onToggleFullscreen()
+{
+    if (isFullScreen())
     {
         showNormal();
     }
-    activateWindow();
+    else
+    {
+        showFullScreen();
+    }
 }
 
 // mpegpsmux > mpg, jpegenc > jpg, pngenc > png, oggmux > ogg, avimux > avi, matrosskamux > mat
@@ -674,7 +684,7 @@ void MainWindow::rebuildPipelines()
     }
 }
 
-void MainWindow::applySettings()
+bool MainWindow::applySettings()
 {
     QWaitCursor wait(this);
 
@@ -706,8 +716,6 @@ void MainWindow::applySettings()
         }
     }
 
-    actionStart->setEnabled(activePipeline && allPipelinesAreReady);
-
     if (archiveWindow != nullptr)
     {
         archiveWindow->updateRoot();
@@ -735,6 +743,8 @@ void MainWindow::applySettings()
         DEFAULT_HOTKEY_ABOUT).toInt());
     SmartShortcut::updateShortcut(actionExit,        settings.value("capture-exit",
         DEFAULT_HOTKEY_EXIT).toInt());
+    SmartShortcut::updateShortcut(actionFullscreen,  settings.value("capture-fullscreen",
+        DEFAULT_HOTKEY_FULLSCREEN).toInt());
 
 #ifdef WITH_DICOM
     // Recreate worklist just in case the columns/servers were changed
@@ -752,6 +762,26 @@ void MainWindow::applySettings()
 #ifdef WITH_DICOM
     actionWorklist->setEnabled(!settings.value("dicom/mwl-server").toString().isEmpty());
 #endif
+
+    auto needTrayIcon = settings.value("ui/show-tray-icon").toBool();
+    if (needTrayIcon && !trayIcon)
+    {
+        if (QSystemTrayIcon::isSystemTrayAvailable())
+        {
+            createTrayIcon();
+        }
+        else
+        {
+            qWarning() << "QSystemTrayIcon is not supported on this platform";
+        }
+    }
+    else if (!needTrayIcon && trayIcon)
+    {
+        delete trayIcon;
+        trayIcon = nullptr;
+    }
+
+    return activePipeline && allPipelinesAreReady;
 }
 
 void MainWindow::updateWindowTitle()
@@ -1036,7 +1066,7 @@ void MainWindow::onSourceClick()
 
 void MainWindow::playSound(const QString& file)
 {
-    sound->play(DATA_FOLDER + "/sound/" + file + ".ac3");
+    sound->play(SOUND_FOLDER + file + ".ac3");
 }
 
 bool MainWindow::takeSnapshot(Pipeline* pipeline, const QString& imageTemplate)
@@ -1261,7 +1291,7 @@ void MainWindow::toggleSetting()
     auto propName = static_cast<QAction*>(sender())->data().toString();
     bool enable = !settings.value(propName).toBool();
     settings.setValue(propName, enable);
-    applySettings();
+    actionStart->setEnabled(applySettings());
 }
 
 void MainWindow::onShowAboutClick()
@@ -1279,10 +1309,17 @@ void MainWindow::onShowSettingsClick()
 {
     SettingsDialog dlg(QString(), this);
     connect(&dlg, SIGNAL(apply()), this, SLOT(applySettings()));
+
+    // Some actions may be available from the system tray icon
+    //
+    auto isStartEnabled = actionStart->isEnabled();
+    actionStart->setEnabled(false);
     if (dlg.exec())
     {
-        applySettings();
+        isStartEnabled = applySettings();
     }
+
+    actionStart->setEnabled(isStartEnabled);
 }
 
 void MainWindow::onEnableAction(QAction *action, bool enable)
@@ -1461,13 +1498,14 @@ void MainWindow::onStartStudy()
     delete dlgPatient;
     dlgPatient = nullptr;
 
-    if (settings.value("minimize-on-start", true).toBool())
+    if (settings.value("ui/minimize-on-start", true).toBool())
     {
-        setWindowState(Qt::WindowMinimized);
-        if (trayIcon)
-        {
-            trayIcon->showMessage(windowTitle(), tr("The study is started."));
-        }
+        showMinimized();
+    }
+
+    if (trayIcon)
+    {
+        trayIcon->showMessage(windowTitle(), tr("The study is started."));
     }
 }
 

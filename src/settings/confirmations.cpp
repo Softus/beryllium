@@ -21,8 +21,8 @@
 #include <QSettings>
 #include <QVBoxLayout>
 
-ConfirmationSettings::ConfirmationSettings(QWidget *parent) :
-    QWidget(parent)
+ConfirmationSettings::ConfirmationSettings(QWidget *parent)
+    : QWidget(parent)
 {
     QSettings settings;
     settings.beginGroup("confirmations");

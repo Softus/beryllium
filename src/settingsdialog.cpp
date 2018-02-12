@@ -23,6 +23,7 @@
 #include "settings/physicians.h"
 #include "settings/storage.h"
 #include "settings/studies.h"
+#include "settings/ui.h"
 #include "settings/videorecord.h"
 #include "settings/videosources.h"
 
@@ -154,6 +155,7 @@ void SettingsDialog::createPage(const QString& title, const QMetaObject& page)
 
 void SettingsDialog::createPages()
 {
+    createPage(tr("User interface"), UiSettings::staticMetaObject);
 #ifdef WITH_DICOM
     createPage(tr("DICOM device"), DicomDeviceSettings::staticMetaObject);
     createPage(tr("DICOM servers"), DicomServerSettings::staticMetaObject);

@@ -79,7 +79,7 @@ HotKeySettings::HotKeySettings(QWidget *parent)
     tree = new QTreeWidget;
     tree->setColumnCount(2);
     tree->setHeaderLabels(QStringList() << tr("Action") << tr("Hotkey") << tr("Global"));
-    tree->setColumnWidth(0, 300);
+    tree->setColumnWidth(0, 320);
     tree->setColumnWidth(1, 200);
     tree->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     layoutMain->addWidget(tree);
@@ -104,6 +104,8 @@ HotKeySettings::HotKeySettings(QWidget *parent)
 #endif
     itemCapture->addChild(newItem(settings, tr("Exit application"),         "capture-exit",
         DEFAULT_HOTKEY_EXIT));
+    itemCapture->addChild(newItem(settings, tr("Toggle fullscreen view"),   "capture-fullscreen",
+        DEFAULT_HOTKEY_FULLSCREEN));
 
     auto itemArchive = new QTreeWidgetItem(QStringList(tr("Archive window")));
     itemArchive->setFlags(Qt::ItemIsEnabled);

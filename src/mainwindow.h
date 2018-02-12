@@ -50,6 +50,7 @@ class MainWindow : public QWidget
     PatientDataDialog *dlgPatient;
     QLabel*      extraTitle;
     QAction*     actionExit;
+    QAction*     actionFullscreen;
     QAction*     actionStart;
     QAction*     actionRecordStart;
     QAction*     actionRecordStop;
@@ -154,7 +155,7 @@ signals:
     void enableAction(QAction*, bool);
 
 public slots:
-    void applySettings();
+    bool applySettings();
     void toggleSetting();
     void playSound(const QString& file);
     void onClipRecordComplete();
@@ -184,6 +185,7 @@ private slots:
     void onSwapSources(QWidget *src, QWidget *dst);
     void onTrayIconActivated(QSystemTrayIcon::ActivationReason reason);
     void onActivateWindow();
+    void onToggleFullscreen();
 
     friend class MainWindowDBusAdaptor;
 };

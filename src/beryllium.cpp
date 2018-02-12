@@ -62,12 +62,6 @@ namespace dcmtk{}
 using namespace dcmtk;
 #endif
 
-#ifdef Q_OS_WIN
-#define DATA_FOLDER qApp->applicationDirPath()
-#else
-#define DATA_FOLDER qApp->applicationDirPath() + "/../share/" PRODUCT_SHORT_NAME
-#endif
-
 // The mpegps type finder is a bit broken,
 // this code fixes it.
 //
@@ -347,7 +341,7 @@ bool switchToRunningInstance()
     auto msg = QDBusInterface(PRODUCT_NAMESPACE, "/org/softus/Beryllium/Main",
             "org.softus.beryllium.Main")
          .call("startStudy", accessionNumber, patientId, patientName, patientSex, patientBirthdate,
-               physician, studyDescription, (bool)autoStart);
+               physician, studyDescription, !!autoStart);
     //qDebug() << msg;
     return msg.type() == QDBusMessage::ReplyMessage && msg.arguments().first().toBool();
 }
@@ -447,11 +441,13 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     QIcon appIcon(":/app/product");
 
+    settings.beginGroup("ui");
+
     // Apply dark aware theme if button text is bright or the dart theme is forced
     //
-    QString theme = settings.value("ui/theme", "auto").toString();
-    if (theme.compare("dark", Qt::CaseInsensitive) == 0
-            || (theme.compare("auto", Qt::CaseInsensitive) == 0
+    QString iconSet = settings.value("icon-set", DEFAULT_ICON_SET).toString();
+    if (iconSet.compare("dark", Qt::CaseInsensitive) == 0
+            || (iconSet.compare("auto", Qt::CaseInsensitive) == 0
                 && app.palette().color(QPalette::Active, QPalette::ButtonText).lightness() > 128))
     {
         app.setStyle(new DarkThemeStyle(QApplication::style()));
@@ -459,29 +455,30 @@ int main(int argc, char *argv[])
     }
     app.setWindowIcon(appIcon);
 
-    bool fullScreen = settings.value("show-fullscreen").toBool();
+    bool    fullScreen          = settings.value("show-fullscreen").toBool();
+    bool    emulateDoubleClicks = settings.value("long-tap-to-double-click").toBool();
+    QString locale              = settings.value("locale").toString();
+
 
     // Override some style sheets
     //
     app.setStyleSheet(settings.value("css").toString());
 
+    settings.endGroup();
+
     // Translations
     //
     QTranslator  translator;
-    QString      locale = settings.value("ui/locale").toString();
     if (locale.isEmpty())
     {
         locale = QLocale::system().name();
     }
 
-    // First, try to load localization in the current directory, if possible.
-    // If failed, then try to load from app data path
-    //
-    if (translator.load(app.applicationDirPath() + "/" PRODUCT_SHORT_NAME "_" + locale) ||
-        translator.load(DATA_FOLDER + "/translations/" PRODUCT_SHORT_NAME "_" + locale))
+    if (translator.load(PRODUCT_SHORT_NAME "_" + locale, TRANSLATIONS_FOLDER))
     {
         app.installTranslator(&translator);
     }
+
 
     QWidget* wnd = nullptr;
 
@@ -521,7 +518,7 @@ int main(int argc, char *argv[])
             if (bus.registerService(PRODUCT_NAMESPACE) || !switchToRunningInstance())
             {
                 adapter->startStudy(accessionNumber, patientId, patientName, patientSex,
-                    patientBirthdate, physician, studyDescription, (bool)autoStart);
+                    patientBirthdate, physician, studyDescription, !!autoStart);
 
                 auto dbusService = settings.value("connect-to-dbus-service").toStringList();
                 if (dbusService.length() >= 4)
@@ -548,7 +545,7 @@ int main(int argc, char *argv[])
 
     if (wnd)
     {
-        if (settings.value("long-tap-to-click").toBool())
+        if (emulateDoubleClicks)
         {
             new ClickFilter(wnd);
             wnd->grabGesture(Qt::TapAndHoldGesture);
