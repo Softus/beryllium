@@ -6,7 +6,7 @@ shallow_clone: true
 image: Visual Studio 2013
 
 environment:
-  DCMTK_VER: DCMTK-3.6.2
+  DCMTK_VER: DCMTK-3.6.3
   GSTREAMER_VER: 1.12.4
   MEDIAINFO_VER: 0.7.93
   BOOST_DIR: C:\Libraries\boost_1_59_0
