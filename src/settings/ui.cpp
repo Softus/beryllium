@@ -75,6 +75,13 @@ UiSettings::UiSettings(QWidget *parent)
         && settings.value("show-tray-icon").toBool());
     layoutMain->addWidget(checkTrayIcon);
 
+    checkShowTrayMessages = new QCheckBox(tr("Show &pop-up messages in the system tray"));
+    checkShowTrayMessages->setEnabled(checkTrayIcon->isChecked());
+    connect(checkTrayIcon, SIGNAL(toggled(bool)), checkShowTrayMessages, SLOT(setEnabled(bool)));
+    checkShowTrayMessages->setChecked(checkTrayIcon->isEnabled()
+        && settings.value("show-tray-messages").toBool());
+    layoutMain->addWidget(checkShowTrayMessages);
+
     checkMinimizeOnStart = new QCheckBox(tr("&Minimize on start study"));
     checkMinimizeOnStart->setChecked(settings.value("minimize-on-start").toBool());
     layoutMain->addWidget(checkMinimizeOnStart);
@@ -91,8 +98,8 @@ UiSettings::UiSettings(QWidget *parent)
     layoutMain->addRow(tr("Extra &CSS"), textCss);
 
     layoutMain->addItem(new QSpacerItem(0, 10000, QSizePolicy::Minimum, QSizePolicy::Expanding));
-    layoutMain->addWidget(new QLabel(tr("NOTE: some changes on this page will take effect" \
-        " the next time the application starts.")));
+    layoutMain->addWidget(new QLabel(tr("NOTE: some changes on this page will take effect\n" \
+        "the next time the application starts.")));
 
     setLayout(layoutMain);
 }
@@ -114,6 +121,7 @@ void UiSettings::save(QSettings& settings)
     settings.setValue("locale",                   getListData(cbLanguage));
     settings.setValue("icon-set",                 getListData(cbIconSet));
     settings.setValue("show-tray-icon",           checkTrayIcon->isChecked());
+    settings.setValue("show-tray-messages",       checkTrayIcon->isChecked());
     settings.setValue("show-fullscreen",          checkShowFullscreen->isChecked());
     settings.setValue("minimize-on-start",        checkMinimizeOnStart->isChecked());
     settings.setValue("long-tap-to-double-click", checkEmulateDblClick->isChecked());

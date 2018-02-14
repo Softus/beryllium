@@ -887,6 +887,7 @@ void MainWindow::updateOutputPath()
 void MainWindow::onClipFrameReady()
 {
     enableAction(actionRecordStart, true);
+    showNotification(tr("The clip is recording"));
 
     auto pipeline = static_cast<Pipeline*>(sender());
     if (!pipeline->clipPreviewFileName.isEmpty())
@@ -929,6 +930,7 @@ void MainWindow::onImageSaved
     listImagesAndClips->scrollToItem(item);
 
     actionSnapshot->setEnabled(running);
+    showNotification(tr("The snapshot is ready"));
 }
 
 bool MainWindow::startVideoRecord()
@@ -1067,6 +1069,21 @@ void MainWindow::onSourceClick()
 void MainWindow::playSound(const QString& file)
 {
     sound->play(SOUND_FOLDER + file + ".ac3");
+}
+
+void MainWindow::showNotification(const QString& message)
+{
+    if (trayIcon && (isHidden() || isMinimized()))
+    {
+        QSettings settings;
+        settings.beginGroup("ui");
+        if (settings.value("show-tray-messages").toBool())
+        {
+            trayIcon->showMessage(windowTitle(), message, QSystemTrayIcon::Information,
+                settings.value("tray-message-delay", DEFAULT_TRAY_MESSAGE_DELAY).toInt());
+        }
+        settings.endGroup();
+    }
 }
 
 bool MainWindow::takeSnapshot(Pipeline* pipeline, const QString& imageTemplate)
@@ -1244,6 +1261,7 @@ void MainWindow::stopRecord(Pipeline* pipeline)
 
 void MainWindow::onClipRecordComplete()
 {
+    showNotification(tr("The clip is done"));
     actionRecordStop->setEnabled(running && activePipeline->recording);
 }
 
@@ -1503,10 +1521,7 @@ void MainWindow::onStartStudy()
         showMinimized();
     }
 
-    if (trayIcon)
-    {
-        trayIcon->showMessage(windowTitle(), tr("The study is started."));
-    }
+    showNotification(tr("The study is started."));
 }
 
 void MainWindow::onStopStudy()
@@ -1516,10 +1531,7 @@ void MainWindow::onStopStudy()
 
     onActivateWindow();
 
-    if (trayIcon)
-    {
-        trayIcon->showMessage(windowTitle(), tr("The study is stopped."));
-    }
+    showNotification(tr("The study is stopped."));
 
     onRecordStopClick();
 

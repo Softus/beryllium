@@ -18,6 +18,7 @@
 #define BERYLLIUM_DEFAULTS_H
 
 #define DEFAULT_ICON_SET              "auto"
+#define DEFAULT_TRAY_MESSAGE_DELAY    3000
 #define DEFAULT_ALT_SRC_SIZE          QSize(160, 144)
 #define DEFAULT_MAIN_SRC_SIZE         QSize(352, 288)
 #define DEFAULT_ENABLE_SETTINGS       true

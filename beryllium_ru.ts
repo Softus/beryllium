@@ -363,8 +363,11 @@ Continue?</source>
     </message>
     <message>
         <location filename="src/settings/debug.cpp" line="140"/>
-        <source>NOTE: some changes on this page will take effect the next time the application starts.</source>
-        <translation>ПРИМЕЧАНИЕ: часть изменений с этой вкладки вступят в силу только при следующем запуске приложения.</translation>
+        <source>NOTE: some changes on this page will take effect
+the next time the application starts.</source>
+        <oldsource>NOTE: some changes on this page will take effect the next time the application starts.</oldsource>
+        <translation>ПРИМЕЧАНИЕ: часть изменений с этой вкладки вступят в силу
+только при следующем запуске приложения.</translation>
     </message>
 </context>
 <context>
@@ -893,50 +896,65 @@ Continue?</source>
         <translation>Не удалось создать &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="941"/>
-        <location filename="src/mainwindow.cpp" line="1001"/>
+        <location filename="src/mainwindow.cpp" line="890"/>
+        <source>The clip is recording</source>
+        <translation>Записывается фрагмент видео</translation>
+    </message>
+    <message>
+        <location filename="src/mainwindow.cpp" line="933"/>
+        <source>The snapshot is ready</source>
+        <translation>Снимок готов</translation>
+    </message>
+    <message>
+        <location filename="src/mainwindow.cpp" line="943"/>
+        <location filename="src/mainwindow.cpp" line="1003"/>
         <source>Failed to start recording.
 Please, adjust the video source settings.</source>
         <translation>Невозможно начать запись.
 Проверьте настройки видео.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="963"/>
-        <location filename="src/mainwindow.cpp" line="1216"/>
+        <location filename="src/mainwindow.cpp" line="965"/>
+        <location filename="src/mainwindow.cpp" line="1233"/>
         <source>Failed to start recording.
 Check the error log for details.</source>
         <translation>Невозможно начать запись.
 Проверьте журнал ожибок.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1367"/>
+        <location filename="src/mainwindow.cpp" line="1264"/>
+        <source>The clip is done</source>
+        <translation>Фрагмент видео готов</translation>
+    </message>
+    <message>
+        <location filename="src/mainwindow.cpp" line="1385"/>
         <source>Failed to start a study.
 Another study is in progress.</source>
         <translation>Невозможно начать исследование.
 Активное исследование ещё не закончено.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1506"/>
+        <location filename="src/mainwindow.cpp" line="1524"/>
         <source>The study is started.</source>
         <translation>Исследование началось.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1520"/>
+        <location filename="src/mainwindow.cpp" line="1534"/>
         <source>The study is stopped.</source>
         <translation>Исследование завершилось.</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1014"/>
+        <location filename="src/mainwindow.cpp" line="1016"/>
         <source>End the study?</source>
         <translation>Завершить исследование?</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1253"/>
+        <location filename="src/mainwindow.cpp" line="1271"/>
         <source>End study</source>
         <translation>Завершить исследование</translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1253"/>
+        <location filename="src/mainwindow.cpp" line="1271"/>
         <source>Start study</source>
         <translation>Начать исследование</translation>
     </message>
@@ -1415,68 +1433,79 @@ This may lead to overwriting of files.</source>
 <context>
     <name>UiSettings</name>
     <message>
-        <location filename="src/settings/ui.cpp" line="41"/>
-        <location filename="src/settings/ui.cpp" line="61"/>
+        <location filename="src/settings/ui.cpp" line="42"/>
+        <location filename="src/settings/ui.cpp" line="62"/>
         <source>(auto)</source>
         <translation>(автоматически)</translation>
     </message>
     <message>
-        <location filename="src/settings/ui.cpp" line="42"/>
+        <location filename="src/settings/ui.cpp" line="43"/>
         <source>english (en)</source>
         <translation>английский (en)</translation>
     </message>
     <message>
-        <location filename="src/settings/ui.cpp" line="52"/>
+        <location filename="src/settings/ui.cpp" line="53"/>
         <source>%1 (%2)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/settings/ui.cpp" line="56"/>
+        <location filename="src/settings/ui.cpp" line="57"/>
         <source>&amp;Language</source>
         <translation>&amp;Язык</translation>
     </message>
     <message>
-        <location filename="src/settings/ui.cpp" line="61"/>
+        <location filename="src/settings/ui.cpp" line="62"/>
         <source>light</source>
         <translation>светлый</translation>
     </message>
     <message>
-        <location filename="src/settings/ui.cpp" line="61"/>
+        <location filename="src/settings/ui.cpp" line="62"/>
         <source>dark</source>
         <translation>тёмный</translation>
     </message>
     <message>
-        <location filename="src/settings/ui.cpp" line="69"/>
+        <location filename="src/settings/ui.cpp" line="70"/>
         <source>&amp;Icon set</source>
         <translation>&amp;Набор иконок</translation>
     </message>
     <message>
-        <location filename="src/settings/ui.cpp" line="71"/>
+        <location filename="src/settings/ui.cpp" line="72"/>
         <source>&amp;Show icon in the system tray</source>
         <translation>&amp;Показывать иконку в системном лотке</translation>
     </message>
     <message>
-        <location filename="src/settings/ui.cpp" line="77"/>
+        <location filename="src/settings/ui.cpp" line="78"/>
+        <source>Show &amp;pop-up messages in the system tray</source>
+        <translation>Показывать &amp;всплывающие сообщения в системном лотке</translation>
+    </message>
+    <message>
+        <location filename="src/settings/ui.cpp" line="85"/>
         <source>&amp;Minimize on start study</source>
         <translation>&amp;Сворачивать окно в начале исследования</translation>
     </message>
     <message>
-        <location filename="src/settings/ui.cpp" line="81"/>
+        <location filename="src/settings/ui.cpp" line="89"/>
         <source>Start in &amp;fullscreen mode</source>
         <translation>При запуске активировать режим &quot;во весь &amp;экран&quot;</translation>
     </message>
     <message>
-        <location filename="src/settings/ui.cpp" line="85"/>
+        <location filename="src/settings/ui.cpp" line="93"/>
         <source>Emulate mouse &amp;double click on tap</source>
         <translation>Эмулировать двойной &amp;щелчок мыши долгим нажатием</translation>
     </message>
     <message>
-        <location filename="src/settings/ui.cpp" line="90"/>
+        <location filename="src/settings/ui.cpp" line="98"/>
         <source>Extra &amp;CSS</source>
         <translation>&amp;Дополнительный CSS</translation>
     </message>
     <message>
-        <location filename="src/settings/ui.cpp" line="93"/>
+        <location filename="src/settings/ui.cpp" line="101"/>
+        <source>NOTE: some changes on this page will take effect
+the next time the application starts.</source>
+        <translation>ПРИМЕЧАНИЕ: часть изменений с этой вкладки вступят в силу
+только при следующем запуске приложения.</translation>
+    </message>
+    <message>
         <source>NOTE: some changes on this page will take effect the next time the application starts.</source>
         <translation>ПРИМЕЧАНИЕ: часть изменений с этой вкладки вступят в силу только при следующем запуске приложения.</translation>
     </message>

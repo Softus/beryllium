@@ -32,6 +32,7 @@ class UiSettings : public QWidget
     QComboBox* cbLanguage;
     QComboBox* cbIconSet;
     QCheckBox* checkTrayIcon;
+    QCheckBox* checkShowTrayMessages;
     QCheckBox* checkMinimizeOnStart;
     QCheckBox* checkShowFullscreen;
     QCheckBox* checkEmulateDblClick;

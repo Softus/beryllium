@@ -137,8 +137,8 @@ DebugSettings::DebugSettings(QWidget *parent)
 #endif
 
     layoutMain->addStretch();
-    layoutMain->addWidget(new QLabel(tr("NOTE: some changes on this page will take effect" \
-        " the next time the application starts.")));
+    layoutMain->addWidget(new QLabel(tr("NOTE: some changes on this page will take effect\n" \
+        "the next time the application starts.")));
     setLayout(layoutMain);
 }
 

@@ -158,6 +158,7 @@ public slots:
     bool applySettings();
     void toggleSetting();
     void playSound(const QString& file);
+    void showNotification(const QString& message);
     void onClipRecordComplete();
 
 private slots:
