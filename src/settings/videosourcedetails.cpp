@@ -126,6 +126,7 @@ VideoSourceDetails::VideoSourceDetails
     widgetWithExtraButton(layoutMain, tr("Video m&uxer"), listVideoMuxers = new QComboBox());
     widgetWithExtraButton(layoutMain, tr("Ima&ge codec"), listImageCodecs = new QComboBox());
     widgetWithExtraButton(layoutMain, tr("RTP &payloader"), listRtpPayloaders = new QComboBox());
+    widgetWithExtraButton(layoutMain, tr("&Display sink"), listDisplaySinks = new QComboBox());
 
     // UDP streaming
     //
@@ -192,6 +193,8 @@ VideoSourceDetails::VideoSourceDetails
         GST_ELEMENT_FACTORY_TYPE_ENCODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_IMAGE, listImageCodecs);
     updateGstList("rtp-payloader", DEFAULT_RTP_PAYLOADER, GST_ELEMENT_FACTORY_TYPE_PAYLOADER,
         listRtpPayloaders);
+    updateGstList("display-sink", DEFAULT_DISPLAY_SINK,
+        GST_ELEMENT_FACTORY_TYPE_SINK | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, listDisplaySinks);
 }
 
 QString VideoSourceDetails::updateGstList
@@ -202,7 +205,8 @@ QString VideoSourceDetails::updateGstList
     )
 {
     cb->clear();
-    auto selectedCodec = parameters.value(settingName, def).toString();
+    auto currentIndex = -1;
+    auto currentElement = parameters.value(settingName, def).toString();
     auto extra = parameters.value(QString(settingName)+"-extra").toBool()
         || qApp->keyboardModifiers().testFlag(Qt::ShiftModifier);
     auto elmList = gst_element_factory_list_get_elements(type,
@@ -210,15 +214,37 @@ QString VideoSourceDetails::updateGstList
     for (auto curr = elmList; curr; curr = curr->next)
     {
         auto factory = QGst::ElementFactoryPtr::wrap(GST_ELEMENT_FACTORY(curr->data), true);
-        cb->addItem(factory->metadata(GST_ELEMENT_METADATA_LONGNAME), factory->name());
-        if (selectedCodec == factory->name())
+        if (currentElement == factory->name())
         {
-            cb->setCurrentIndex(cb->count() - 1);
+            currentIndex = cb->count();
+        }
+        cb->addItem(tr("%1: %2").arg(factory->name())
+            .arg(factory->metadata(GST_ELEMENT_METADATA_LONGNAME)), factory->name());
+    }
+
+    // The previously selected itme may be filtered out by the rank at this time.
+    //
+    if (currentIndex < 0)
+    {
+        currentIndex = cb->count();
+        auto factory = QGst::ElementFactory::find(currentElement);
+        if (factory)
+        {
+            cb->addItem(tr("%1: %2").arg(factory->name())
+                .arg(factory->metadata(GST_ELEMENT_METADATA_LONGNAME)), factory->name());
+        }
+        else
+        {
+            // An unknown element. The pipeline may fail to start.
+            //
+            cb->addItem(tr("%1: %2").arg(currentElement).arg(tr("(not found)")), currentElement);
         }
     }
 
+    cb->setCurrentIndex(currentIndex);
+
     gst_plugin_feature_list_free(elmList);
-    return selectedCodec;
+    return currentElement;
 }
 
 void VideoSourceDetails::updateDevice(const QString& device)
@@ -585,8 +611,9 @@ void VideoSourceDetails::getParameters(QVariantMap& settings)
     settings["size"]              = getListData(listSizes);
     settings["video-encoder"]     = getListData(listVideoCodecs);
     settings["video-muxer"]       = getListData(listVideoMuxers);
-    settings["rtp-payloader"]     = getListData(listRtpPayloaders);
     settings["image-encoder"]     = getListData(listImageCodecs);
+    settings["rtp-payloader"]     = getListData(listRtpPayloaders);
+    settings["display-sink"]      = getListData(listDisplaySinks);
     settings["enable-rtp"]        = checkEnableRtp->isChecked();
     settings["rtp-clients"]       = editRtpClients->text();
     settings["enable-http"]       = checkEnableHttp->isChecked();

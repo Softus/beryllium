@@ -47,8 +47,9 @@ class VideoSourceDetails : public QDialog
     QComboBox *listSizes;
     QComboBox *listVideoCodecs;
     QComboBox *listVideoMuxers;
-    QComboBox *listRtpPayloaders;
     QComboBox *listImageCodecs;
+    QComboBox *listRtpPayloaders;
+    QComboBox *listDisplaySinks;
     QCheckBox *checkFps;
     QSpinBox  *spinFps;
     QSpinBox  *spinBitrate;
