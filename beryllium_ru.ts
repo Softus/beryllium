@@ -1702,8 +1702,8 @@ Are you want to continue?</source>
     <message>
         <location filename="src/settings/videosourcedetails.cpp" line="90"/>
         <location filename="src/settings/videosourcedetails.cpp" line="95"/>
-        <location filename="src/settings/videosourcedetails.cpp" line="370"/>
-        <location filename="src/settings/videosourcedetails.cpp" line="418"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="396"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="444"/>
         <source>(default)</source>
         <translation>(по умолчанию)</translation>
     </message>
@@ -1778,58 +1778,75 @@ Are you want to continue?</source>
         <translation>Кон&amp;тейнер RTP</translation>
     </message>
     <message>
-        <location filename="src/settings/videosourcedetails.cpp" line="133"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="129"/>
+        <source>&amp;Display sink</source>
+        <translation>Вывод на &amp;экран</translation>
+    </message>
+    <message>
+        <location filename="src/settings/videosourcedetails.cpp" line="134"/>
         <source>&amp;RTP clients</source>
         <translation>Клиент&amp;ы RTP</translation>
     </message>
     <message>
-        <location filename="src/settings/videosourcedetails.cpp" line="141"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="142"/>
         <source>&amp;HTTP push URL</source>
         <translation>URL по&amp;тока HTTP</translation>
     </message>
     <message>
-        <location filename="src/settings/videosourcedetails.cpp" line="149"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="150"/>
         <source>R&amp;TMP push URL</source>
         <translation>URL пото&amp;ка RTTP</translation>
     </message>
     <message>
-        <location filename="src/settings/videosourcedetails.cpp" line="157"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="158"/>
         <source>A&amp;dvanced</source>
         <translation>Особые &amp;настройки</translation>
     </message>
     <message>
-        <location filename="src/settings/videosourcedetails.cpp" line="161"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="162"/>
         <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="src/settings/videosourcedetails.cpp" line="164"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="165"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="src/settings/videosourcedetails.cpp" line="179"/>
-        <location filename="src/settings/videosourcedetails.cpp" line="186"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="180"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="187"/>
         <source>(none)</source>
         <translation>(нет)</translation>
     </message>
     <message>
-        <location filename="src/settings/videosourcedetails.cpp" line="231"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="221"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="233"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="240"/>
+        <source>%1: %2</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/settings/videosourcedetails.cpp" line="240"/>
+        <source>(not found)</source>
+        <translation>(не найден)</translation>
+    </message>
+    <message>
+        <location filename="src/settings/videosourcedetails.cpp" line="257"/>
         <source>Failed to create pipeline</source>
         <translation>Не удалось создать конвейер</translation>
     </message>
     <message>
-        <location filename="src/settings/videosourcedetails.cpp" line="240"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="266"/>
         <source>Failed to create element &apos;%1&apos;</source>
         <translation>Не удалось создать элемент &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="src/settings/videosourcedetails.cpp" line="324"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="350"/>
         <source>%1 (%2,%3) - (%4,%5)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/settings/videosourcedetails.cpp" line="497"/>
+        <location filename="src/settings/videosourcedetails.cpp" line="523"/>
         <source>%1x%2</source>
         <translation>%1х%2</translation>
     </message>

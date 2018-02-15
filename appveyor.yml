@@ -66,7 +66,7 @@ install:
 - git clone -q %DCMTK_URI% -b %DCMTK_VER% && cd dcmtk
 - mkdir build && cd build
 - set PATH=%PATH:C:\Program Files\Git\usr\bin=%
-- cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DDCMTK_WITH_OPENSSL=OFF -G "MinGW Makefiles"
+- cmake -Wno-dev .. -DCMAKE_INSTALL_PREFIX=c:\usr -DDCMTK_WITH_OPENSSL=OFF -DDCMTK_WITH_ICU=OFF -DDCMTK_WITH_ICONV=OFF -G "MinGW Makefiles"
 - cmake --build . --target install -- -j 4
 - set PATH=%PATH%;C:\Program Files\Git\usr\bin
 - cd ..\..

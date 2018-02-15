@@ -31,11 +31,12 @@ BuildRequires: make, gcc-c++
 %if 0%{?mageia}
 %define qmake qmake
 %define lrelease lrelease
+BuildRequires: qttools5
 %ifarch x86_64 amd64
-BuildRequires: lib64v4l-devel, lib64avc1394-devel, lib64mediainfo-devel, lib64qt5-gstreamer-devel, lib64boost-devel, lib64gstreamer1.0-devel, lib64gstreamer-plugins-base1.0-devel, lib64qt5base5-devel
+BuildRequires: lib64v4l-devel, lib64avc1394-devel, lib64mediainfo-devel, lib64qt5-gstreamer-devel, lib64boost-devel, lib64gstreamer1.0-devel, lib64gstreamer-plugins-base1.0-devel, lib64qt5base5-devel, lib64qt5x11extras-devel
 Requires: lib64gstreamer-plugins-base1.0_0
 %else
-BuildRequires: libv4l-devel,   libavc1394-devel,   libmediainfo-devel,   libqt5-gstreamer-devel,   libboost-devel,   libgstreamer1.0-devel,   libgstreamer-plugins-base1.0-devel,   libqt5base5-devel
+BuildRequires: libv4l-devel,   libavc1394-devel,   libmediainfo-devel,   libqt5-gstreamer-devel,   libboost-devel,   libgstreamer1.0-devel,   libgstreamer-plugins-base1.0-devel,   libqt5base5-devel,   libqt5x11extras-devel
 Requires: libgstreamer-plugins-base1.0_0
 %endif
 %else
