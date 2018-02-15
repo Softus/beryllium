@@ -24,19 +24,23 @@ win32 {
     INCLUDEPATH  += c:/usr/include
     QMAKE_LIBDIR += c:/usr/lib
 
-    USERNAME    = $$(USERNAME)
-    OS_DISTRO   = Windows
-    OS_REVISION = $$system($$quote('cmd.exe /q /c "for /f "tokens=4-5 delims=. " %i in (\'ver\') do echo %i.%j"'))
+    USERNAME      = $$(USERNAME)
+    OS_DISTRO     = Windows
+    OS_REVISION   = $$system($$quote('cmd.exe /q /c "for /f "tokens=4-5 delims=. " %i in (\'ver\') do echo %i.%j"'))
 } linux {
-    LIBS       += -lX11
+    LIBS         += -lX11
 
-    USERNAME    = $$(USER)
-    OS_DISTRO   = $$system($$quote('lsb_release -is | cut -d" " -f1'))
-    OS_REVISION = $$system(lsb_release -rs)
+    USERNAME      = $$(USER)
+    OS_DISTRO     = $$system($$quote('lsb_release -is | cut -d" " -f1'))
+    OS_REVISION   = $$system(lsb_release -rs)
 } macx {
-    USERNAME    = $$(LOGNAME)
-    OS_DISTRO   = MacOSX
-    OS_REVISION = $$system(sw_vers -productVersion)
+    INCLUDEPATH  += /usr/local/include
+    QMAKE_LIBDIR += /usr/local/lib
+    LIBS         += -framework Carbon
+
+    USERNAME      = $$(LOGNAME)
+    OS_DISTRO     = MacOSX
+    OS_REVISION   = $$system(sw_vers -productVersion)
 }
 
 DEFINES += OS_DISTRO=$$OS_DISTRO OS_REVISION=$$OS_REVISION USERNAME=$$USERNAME
