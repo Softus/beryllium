@@ -93,6 +93,7 @@ public:
     void onUsbDiskChanged();
 
 protected:
+    virtual void hideEvent(QHideEvent *);
     virtual void showEvent(QShowEvent *);
     virtual void timerEvent(QTimerEvent *);
 

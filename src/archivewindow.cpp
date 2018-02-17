@@ -471,6 +471,12 @@ ArchiveWindow::~ArchiveWindow()
     reallyDeleteFiles();
 }
 
+void ArchiveWindow::hideEvent(QHideEvent *evt)
+{
+    stopMedia();
+    QWidget::hideEvent(evt);
+}
+
 void ArchiveWindow::showEvent(QShowEvent *evt)
 {
     actionBack->setVisible(parent() != nullptr);
@@ -1491,6 +1497,7 @@ void ArchiveWindow::onStateChangedMessage(const QGst::StateChangedMessagePtr& me
 
 void ArchiveWindow::onBackToMainWindowClick()
 {
+    stopMedia();
     reallyDeleteFiles();
     auto stackWidget = static_cast<SlidingStackedWidget*>(parent()->
         qt_metacast("SlidingStackedWidget"));
