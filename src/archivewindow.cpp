@@ -363,14 +363,14 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
     barMediaControls = new QToolBar(tr("Media"));
     actionSeekBack = barMediaControls->addAction(QIcon(":buttons/rewind"), tr("Rewing"), this,
         SLOT(onSeekClick()));
-    actionSeekBack->setVisible(false);
+    actionSeekBack->setEnabled(false);
     actionSeekBack->setData(-40000000);
     actionPlay = barMediaControls->addAction(QIcon(":buttons/play"), tr("Play"), this,
         SLOT(onPlayPauseClick()));
-    actionPlay->setVisible(false);
+    actionPlay->setEnabled(false);
     actionSeekFwd = barMediaControls->addAction(QIcon(":buttons/forward"),  tr("Forward"), this,
         SLOT(onSeekClick()));
-    actionSeekFwd->setVisible(false);
+    actionSeekFwd->setEnabled(false);
     actionSeekFwd->setData(+40000000);
     barMediaControls->setMinimumSize(48, 48);
 
@@ -381,8 +381,6 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
 
     listFiles = new ThumbnailList(true);
     listFiles->setSelectionMode(QListWidget::ExtendedSelection);
-//    listFiles->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-//    listFiles->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     listFiles->setMovement(QListView::Snap);
     connect(listFiles, SIGNAL(currentRowChanged(int)), this, SLOT(onListRowChanged(int)));
     connect(listFiles, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
@@ -1268,7 +1266,7 @@ void ArchiveWindow::stopMedia()
 {
     foreach (auto action, barMediaControls->actions())
     {
-        action->setVisible(false);
+        action->setEnabled(false);
     }
 
     if (pipeline)
@@ -1314,7 +1312,7 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
         static_cast<QGst::Ui::VideoWidget*>(hiddenVideoWidget)->watchPipeline(pipeline);
         QGlib::connect(pipeline->bus(), "message", this, &ArchiveWindow::onBusMessage);
         pipeline->bus()->addSignalWatch();
-        pipeline->setState(QGst::StatePaused);
+        pipeline->setState(QGst::StatePlaying);
         pipeline->getState(nullptr, nullptr, GST_SECOND * 10); // 10 sec
         auto details = GstDebugGraphDetails
             ( GST_DEBUG_GRAPH_SHOW_MEDIA_TYPE
@@ -1335,7 +1333,7 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
     actionEdit->setEnabled(isVideo);
     foreach (auto action, barMediaControls->actions())
     {
-        action->setVisible(isVideo);
+        action->setEnabled(true);
     }
 }
 
