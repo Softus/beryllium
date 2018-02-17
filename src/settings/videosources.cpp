@@ -297,7 +297,10 @@ void VideoSources::onAddScreenCaptureClicked()
     QVariantMap parameters;
     parameters["alias"] = QString("src%1").arg(listSources->topLevelItemCount());
     parameters["device-type"] = PLATFORM_SPECIFIC_SCREEN_CAPTURE;
-    listSources->addTopLevelItem(newItem("", "Screen capture", parameters, true));
+#ifdef Q_OS_OSX
+    parameters[PLATFORM_SPECIFIC_SCREEN_CAPTURE "-parameters"] = " capture-screen=true";
+#endif
+    listSources->addTopLevelItem(newItem(tr("Screen capture"), "", parameters, true));
 }
 
 void VideoSources::onAddTestClicked()
@@ -305,7 +308,7 @@ void VideoSources::onAddTestClicked()
     QVariantMap parameters;
     parameters["alias"] = QString("src%1").arg(listSources->topLevelItemCount());
     parameters["device-type"] = "videotestsrc";
-    listSources->addTopLevelItem(newItem("", "Video test source", parameters, true));
+    listSources->addTopLevelItem(newItem(tr("Video test source"), "", parameters, true));
 }
 
 void VideoSources::save(QSettings& settings)

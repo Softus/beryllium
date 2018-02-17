@@ -427,11 +427,16 @@ int main(int argc, char *argv[])
     // Get rid of vaapisink until somebody get it fixed
     //
     auto registry = gst_registry_get();
-    auto feature = gst_registry_lookup_feature(registry, "vaapisink");
-    if (feature)
+    auto blacklisted = settings.value("gst/blacklisted", DEFAULT_GST_BLACKLISTED).toStringList();
+    foreach (auto elm, blacklisted)
     {
-        gst_plugin_feature_set_rank(feature, GST_RANK_NONE);
-        gst_object_unref(feature);
+        auto feature = gst_registry_lookup_feature(registry, elm.toUtf8());
+        if (feature)
+        {
+            gst_plugin_feature_set_rank(feature, GST_RANK_NONE);
+            gst_object_unref(feature);
+            qDebug() << elm << "rank set to" << GST_RANK_NONE;
+        }
     }
 
     // QT init

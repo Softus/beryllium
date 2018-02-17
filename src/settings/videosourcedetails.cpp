@@ -208,7 +208,7 @@ QString VideoSourceDetails::updateGstList
     auto currentIndex = -1;
     auto currentElement = parameters.value(settingName, def).toString();
     auto extra = parameters.value(QString(settingName)+"-extra").toBool()
-        || qApp->keyboardModifiers().testFlag(Qt::ShiftModifier);
+        || qApp->queryKeyboardModifiers().testFlag(Qt::ShiftModifier);
     auto elmList = gst_element_factory_list_get_elements(type,
         extra? GST_RANK_NONE: GST_RANK_SECONDARY);
     for (auto curr = elmList; curr; curr = curr->next)
@@ -235,7 +235,8 @@ QString VideoSourceDetails::updateGstList
         }
         else
         {
-            // An unknown element. The pipeline may fail to start.
+            // An unknown element. The pipeline may fail to start, but this helps to
+            // keep the config unchanged.
             //
             cb->addItem(tr("%1: %2").arg(currentElement).arg(tr("(not found)")), currentElement);
         }
@@ -259,7 +260,7 @@ void VideoSourceDetails::updateDevice(const QString& device)
     }
 
     auto deviceType = parameters.value("device-type").toString();
-    auto src = QGst::ElementFactory::make(parameters.value("device-type").toString());
+    auto src = QGst::ElementFactory::make(deviceType);
     if (!src)
     {
         QMessageBox::critical(this, windowTitle(),
@@ -340,17 +341,35 @@ void VideoSourceDetails::updateDevice(const QString& device)
             }
             else if (deviceType == PLATFORM_SPECIFIC_SCREEN_CAPTURE)
             {
-                foreach (auto screen, QGuiApplication::screens())
+#ifdef Q_OS_OSX
+                // For macosx video and screen capture are performed by the same element.
+                // We need to check one additional parameter to find out which one it is.
+                //
+                auto extra = parameters[PLATFORM_SPECIFIC_SCREEN_CAPTURE "-parameters"].toString();
+                if (!extra.contains("capture-screen=true"))
                 {
-                    if (selectedChannelLabel == screen->name())
+                    // It's a video source.
+                    //
+                    listChannels->addItem(tr("Wide angle"), "wide-angle");
+                    listChannels->addItem(tr("Telephoto"), "telephoto");
+                    listChannels->addItem(tr("Dual"), "dual");
+                    idx = listChannels->findData(selectedChannelLabel);
+                }
+                else
+#endif
+                {
+                    foreach (auto screen, QGuiApplication::screens())
                     {
-                        idx = listChannels->count();
+                        if (selectedChannelLabel == screen->name())
+                        {
+                            idx = listChannels->count();
+                        }
+                        auto geom = screen->geometry();
+                        listChannels->addItem(tr("%1 (%2,%3) - (%4,%5)").arg(screen->name())
+                                .arg(geom.left()).arg(geom.top())
+                                .arg(geom.right()).arg(geom.bottom()),
+                            screen->name());
                     }
-                    auto geom = screen->geometry();
-                    listChannels->addItem(tr("%1 (%2,%3) - (%4,%5)").arg(screen->name())
-                            .arg(geom.left()).arg(geom.top())
-                            .arg(geom.right()).arg(geom.bottom()),
-                        screen->name());
                 }
             }
         }

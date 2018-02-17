@@ -54,7 +54,7 @@
 #define DEFAULT_HOTKEY_SEEK_FWD       (int)(Qt::ShiftModifier | Qt::Key_Right)
 #define DEFAULT_HOTKEY_PLAY           (int)(Qt::Key_Space)
 #define DEFAULT_HOTKEY_SELECT         (int)(Qt::Key_Return)
-#define DEFAULT_OUTPUT_PATH           "/video"
+#define DEFAULT_OUTPUT_PATH           "~/video"
 #define DEFAULT_OUTPUT_UNIQUE         true
 #define DEFAULT_RTP_PAYLOADER         "rtpmp2tpay"
 #define DEFAULT_RTP_SINK              "udpsink"
@@ -87,6 +87,7 @@
 #define DEFAULT_NOTIFY_CLIP_COUNTDOWN 2
 #define DEFAULT_LONG_PRESS_TIMEOUT    1000
 
+#define DEFAULT_GST_BLACKLISTED       (QStringList() << "glimagesink" << "vaapisink")
 #define DEFAULT_GST_DEBUG_ON          true
 #define DEFAULT_GST_DEBUG_LEVEL       GST_LEVEL_WARNING
 #define DEFAULT_GST_DEBUG_NO_COLOR    true

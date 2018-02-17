@@ -403,6 +403,37 @@ QString Pipeline::buildPipeline
             }
         }
     }
+    else if (deviceType == "avfvideosrc")
+    {
+        if (!inputChannel.isEmpty())
+        {
+            // For macosx video and screen capture are performed by the same element.
+            // We need to check one additional parameter to find out which one it is.
+            //
+            if (!srcParams.contains("capture-screen=true"))
+            {
+                // It's a video source.
+                // pipe.append(" device-type=1");
+                //
+                pipe.append(" device-type=").append(inputChannel);
+            }
+            else
+            {
+                // It's a screen capture.
+                // pipe.append(" device-index=2");
+                //
+                auto screens = QGuiApplication::screens();
+                for (auto screenIdx = 0; screenIdx < screens.size(); ++screenIdx)
+                {
+                    if (inputChannel == screens[screenIdx]->name())
+                    {
+                        pipe.append(" device-index=").append(QString::number(screenIdx));
+                        break;
+                    }
+                }
+            }
+        }
+    }
     else if (deviceType == "videotestsrc")
     {
         // Special handling of test video sources

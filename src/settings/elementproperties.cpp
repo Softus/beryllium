@@ -44,7 +44,9 @@ static bool isBlacklistedProp
     , const QString& propName
     )
 {
-    return propName == "bitrate" || getDeviceIdPropName(elmType) == propName;
+    return propName == "bitrate" || getDeviceIdPropName(elmType) == propName
+            || (propName == "capture-screen" && elmType == "avfvideosrc")
+            || (propName == "device-type"    && elmType == "avfvideosrc");
 }
 
 static QWidget* createEditor
