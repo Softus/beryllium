@@ -1310,7 +1310,7 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
     try
     {
         auto pipeDef = QString("uridecodebin uri=\"%1\" ! videoconvert" \
-                " ! %2 autovideosink name=displaysink async=0")
+                " ! %2 " DEFAULT_DISPLAY_SINK " name=displaysink async=0")
             .arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toEncoded().constData())
             .arg(isVideo ? "" : "imagefreeze ! ");
         pipeline = QGst::Parse::launch(pipeDef).dynamicCast<QGst::Pipeline>();
