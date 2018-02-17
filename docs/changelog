@@ -2,7 +2,7 @@ beryllium (1.4.0) debian;
 
   * Screen capture source.
   * Generic property editor for sources & codecs.
-  * Windows global hotkeys.
+  * Windows & OSX global hotkeys.
   * Tray icon.
   * OSX build.
 
