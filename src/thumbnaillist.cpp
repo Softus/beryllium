@@ -128,7 +128,8 @@ void ThumbnailList::keyPressEvent(QKeyEvent *e)
         return;
     }
 
-    QKeyEvent evt(QEvent::KeyPress, key, e->modifiers(), e->text(), e->isAutoRepeat(), e->count());
+    QKeyEvent evt(QEvent::KeyPress, key, e->modifiers(), e->text(), e->isAutoRepeat(),
+        ushort(e->count()));
     QListWidget::keyPressEvent(&evt);
 }
 
@@ -150,6 +151,6 @@ void ThumbnailList::keyReleaseEvent(QKeyEvent *e)
     }
 
     QKeyEvent evt(QEvent::KeyRelease, key, e->modifiers(), e->text(), e->isAutoRepeat(),
-        e->count());
+        ushort(e->count()));
     QListWidget::keyReleaseEvent(&evt);
 }

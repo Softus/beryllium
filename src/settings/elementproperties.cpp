@@ -106,10 +106,10 @@ static QWidget* createEditor
         {
             auto spec = G_PARAM_SPEC_ULONG(static_cast<GParamSpec *>(prop));
             auto spin = new QSpinBox;
-            spin->setMinimum(spec->minimum);
-            spin->setMaximum(spec->maximum);
-            spin->setValue(elmValue.toULong());
-            qtDefValue = (uint)spec->default_value;
+            spin->setMinimum(int(spec->minimum));
+            spin->setMaximum(int(spec->maximum));
+            spin->setValue(int(elmValue.toULong()));
+            qtDefValue = uint(spec->default_value);
             widget = spin;
         }
         break;
@@ -119,12 +119,12 @@ static QWidget* createEditor
             auto spin = new QSpinBox;
             if (spec->minimum < std::numeric_limits<int>::min())
                 spec->minimum = std::numeric_limits<int>::min();
-            spin->setMinimum(spec->minimum);
+            spin->setMinimum(int(spec->minimum));
             if (spec->maximum > std::numeric_limits<int>::max())
                 spec->maximum = std::numeric_limits<int>::max();
-            spin->setMaximum(spec->maximum);
-            spin->setValue(elmValue.toInt64());
-            qtDefValue = (qlonglong)spec->default_value;
+            spin->setMaximum(int(spec->maximum));
+            spin->setValue(int(elmValue.toInt64()));
+            qtDefValue = qlonglong(spec->default_value);
             widget = spin;
         }
         break;
@@ -132,12 +132,12 @@ static QWidget* createEditor
         {
             auto spec = G_PARAM_SPEC_UINT64(static_cast<GParamSpec *>(prop));
             auto spin = new QSpinBox;
-            spin->setMinimum(spec->minimum);
-            if (spec->maximum > (guint)std::numeric_limits<int>::max())
+            spin->setMinimum(int(spec->minimum));
+            if (spec->maximum > guint(std::numeric_limits<int>::max()))
                 spec->maximum = std::numeric_limits<int>::max();
-            spin->setMaximum(spec->maximum);
-            spin->setValue(elmValue.toUInt64());
-            qtDefValue = (qulonglong)spec->default_value;
+            spin->setMaximum(int(spec->maximum));
+            spin->setValue(int(elmValue.toUInt64()));
+            qtDefValue = qulonglong(spec->default_value);
             widget = spin;
         }
         break;
@@ -145,9 +145,9 @@ static QWidget* createEditor
         {
             auto spec = G_PARAM_SPEC_FLOAT(static_cast<GParamSpec *>(prop));
             auto spin = new QDoubleSpinBox;
-            spin->setMinimum(spec->minimum);
-            spin->setMaximum(spec->maximum);
-            spin->setValue(elmValue.get<float>());
+            spin->setMinimum(double(spec->minimum));
+            spin->setMaximum(double(spec->maximum));
+            spin->setValue(double(elmValue.get<float>()));
             spin->setProperty("epsilon", spec->epsilon);
             qtDefValue = spec->default_value;
             widget = spin;
@@ -187,7 +187,7 @@ static QWidget* createEditor
                 combo->addItem(cls->values[i].value_name, cls->values[i].value);
                 if (value == cls->values[i].value)
                 {
-                    idx = i;
+                    idx = int(i);
                 }
             }
             combo->setCurrentIndex(idx);

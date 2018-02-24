@@ -120,7 +120,7 @@ SettingsDialog::SettingsDialog(const QString& pageTitle, QWidget *parent, Qt::Wi
     setWindowTitle(tr("Settings"));
     settings.beginGroup("ui");
     restoreGeometry(settings.value("settings-geometry").toByteArray());
-    setWindowState((Qt::WindowState)settings.value("settings-state").toInt());
+    setWindowState(Qt::WindowState(settings.value("settings-state").toInt()));
     QString selectedPage = pageTitle.isEmpty() ? settings.value("settings-page").toString()
                                                : pageTitle;
     settings.endGroup();
@@ -197,14 +197,16 @@ void SettingsDialog::recreatePages()
 void SettingsDialog::changePage(QListWidgetItem *current, QListWidgetItem *previous)
 {
     if (!current)
+    {
         current = previous;
+    }
 
     QWaitCursor wait(this);
-    const QVariant& data = current->data(Qt::UserRole);
+    auto data = current->data(Qt::UserRole);
     if (data.type() == QVariant::UserType)
     {
-        const QMetaObject& mobj = data.value<QMetaObject>();
-        QWidget* page = static_cast<QWidget*>(mobj.newInstance());
+        auto mobj = data.value<QMetaObject>();
+        auto page = static_cast<QWidget*>(mobj.newInstance());
         connect(this, SIGNAL(save(QSettings&)), page, SLOT(save(QSettings&)));
         auto count = pagesWidget->count();
         current->setData(Qt::UserRole, count);
@@ -278,7 +280,7 @@ void SettingsDialog::hideEvent(QHideEvent *evt)
     {
         settings.setValue("settings-geometry", saveGeometry());
     }
-    settings.setValue("settings-state", (int)windowState() & ~Qt::WindowMinimized);
+    settings.setValue("settings-state", int(windowState() & ~Qt::WindowMinimized));
     settings.setValue("settings-page", listWidget->currentItem()->text());
     settings.endGroup();
 
@@ -291,7 +293,6 @@ void SettingsDialog::hideEvent(QHideEvent *evt)
 #endif
     QDialog::hideEvent(evt);
 }
-
 
 void SettingsDialog::saveToFile()
 {

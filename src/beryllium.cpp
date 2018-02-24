@@ -62,12 +62,7 @@ namespace dcmtk{}
 using namespace dcmtk;
 #endif
 
-// The mpegps type finder is a bit broken,
-// this code fixes it.
-//
-extern bool gstApplyFixes();
-
-volatile sig_atomic_t fatal_error_in_progress = 0;
+static volatile sig_atomic_t fatal_error_in_progress = 0;
 void sighandler(int signum)
 {
     // Since this handler is established for more than one kind of signal,
@@ -202,7 +197,7 @@ void setupGstDebug(const QSettings& settings)
     gst_debug_set_colored(
         !settings.value("gst-debug-no-color", DEFAULT_GST_DEBUG_NO_COLOR).toBool());
     auto gstDebugLevel =
-        (GstDebugLevel)settings.value("gst-debug-level", DEFAULT_GST_DEBUG_LEVEL).toInt();
+        GstDebugLevel(settings.value("gst-debug-level", DEFAULT_GST_DEBUG_LEVEL).toInt());
     gst_debug_set_default_threshold(gstDebugLevel);
 }
 
@@ -236,14 +231,14 @@ dcmtkLogConfigCallback(const gchar *, const gchar *value, gpointer, GError **)
 // See http://support.dcmtk.org/docs-dcmrt/file_filelog.html for details
 //
 static GOptionEntry dcmtkOptions[] = {
-    {"dcmtk-log-file", '\x0', 0, G_OPTION_ARG_CALLBACK, (gpointer)dcmtkLogFileCallback,
+    {"dcmtk-log-file", '\x0', 0, G_OPTION_ARG_CALLBACK, gpointer(dcmtkLogFileCallback),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "DCMTK log output file."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "FILE")},
-    {"dcmtk-log-level", '\x0', 0, G_OPTION_ARG_CALLBACK, (gpointer)dcmtkLogLevelCallback,
+    {"dcmtk-log-level", '\x0', 0, G_OPTION_ARG_CALLBACK, gpointer(dcmtkLogLevelCallback),
         QT_TRANSLATE_NOOP_UTF8("cmdline",
             "DCMTK logging level: fatal, error, warn, info, debug, trace."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "LEVEL")},
-    {"dcmtk-log-config", '\x0', 0, G_OPTION_ARG_CALLBACK, (gpointer)dcmtkLogConfigCallback,
+    {"dcmtk-log-config", '\x0', 0, G_OPTION_ARG_CALLBACK, gpointer(dcmtkLogConfigCallback),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Config file for DCMTK logger."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "FILE")},
     {nullptr, '\x0', 0, G_OPTION_ARG_NONE, nullptr, nullptr, nullptr},
@@ -263,7 +258,7 @@ void setupDcmtkDebug(const QSettings& settings)
         auto value = settings.value(o->long_name).toString();
         if (!value.isEmpty())
         {
-            ((GOptionArgFunc)o->arg_data)(o->long_name, value.toLocal8Bit().constData(), nullptr,
+            (GOptionArgFunc(o->arg_data))(o->long_name, value.toLocal8Bit().constData(), nullptr,
                 nullptr);
         }
     }
@@ -282,54 +277,54 @@ static gboolean printVersion = false;
 
 static GOptionEntry options[] = {
     {"archive", '\x0', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK,
-        (gpointer)setModeCallback,
+        gpointer(setModeCallback),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Show the archive window."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "PATH")},
     {"edit-video", '\x0', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK,
-        (gpointer)setModeCallback,
+        gpointer(setModeCallback),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Show the video editor window."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "FILE")},
     {"settings", '\x0', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK,
-        (gpointer)setModeCallback,
+        gpointer(setModeCallback),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Show the settings window."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "PAGE")},
-    {"safe-mode", '\x0', G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK, (gpointer)setValueCallback,
+    {"safe-mode", '\x0', G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK, gpointer(setValueCallback),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Run the program in safe mode."), nullptr},
 #ifdef WITH_QT_X11EXTRAS
-    {"sync", '\x0', G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK, (gpointer)xSyncCallback,
+    {"sync", '\x0', G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK, gpointer(xSyncCallback),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Run the program in X synchronous mode."), nullptr},
 #endif
-    {"config-path", 'c', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_CALLBACK, (gpointer)cfgPathCallback,
+    {"config-path", 'c', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_CALLBACK, gpointer(cfgPathCallback),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Set root path to the settings file."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "PATH")},
 
-    {"study-id", 'a', 0, G_OPTION_ARG_STRING, (gpointer)&accessionNumber,
+    {"study-id", 'a', 0, G_OPTION_ARG_STRING, gpointer(&accessionNumber),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Study accession number (id)."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "ID")},
-    {"patient-birthdate", 'b', 0, G_OPTION_ARG_STRING, (gpointer)&patientBirthdate,
+    {"patient-birthdate", 'b', 0, G_OPTION_ARG_STRING, gpointer(&patientBirthdate),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Patient birthdate."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "YYYYMMDD")},
-    {"study-description", 'd', 0, G_OPTION_ARG_STRING, (gpointer)&studyDescription,
+    {"study-description", 'd', 0, G_OPTION_ARG_STRING, gpointer(&studyDescription),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Study description."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "STRING")},
-    {"patient-id", 'i', 0, G_OPTION_ARG_STRING, (gpointer)&patientId,
+    {"patient-id", 'i', 0, G_OPTION_ARG_STRING, gpointer(&patientId),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Patient id."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "ID")},
-    {"patient-name", 'n', 0, G_OPTION_ARG_STRING, (gpointer)&patientName,
+    {"patient-name", 'n', 0, G_OPTION_ARG_STRING, gpointer(&patientName),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Patient name."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "STRING")},
-    {"physician", 'p', 0, G_OPTION_ARG_STRING, (gpointer)&physician,
+    {"physician", 'p', 0, G_OPTION_ARG_STRING, gpointer(&physician),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Performing physician name."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "STRING")},
-    {"patient-sex", 's', 0, G_OPTION_ARG_STRING, (gpointer)&patientSex,
+    {"patient-sex", 's', 0, G_OPTION_ARG_STRING, gpointer(&patientSex),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Patient sex."),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "F|M|O|U")},
-    {"auto-start", '\x0', 0, G_OPTION_ARG_NONE, (gpointer)&autoStart,
+    {"auto-start", '\x0', 0, G_OPTION_ARG_NONE, gpointer(&autoStart),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Automatically start the study."), nullptr},
-    {"version", '\x0', 0, G_OPTION_ARG_NONE, (gpointer)&printVersion,
+    {"version", '\x0', 0, G_OPTION_ARG_NONE, gpointer(&printVersion),
         QT_TRANSLATE_NOOP_UTF8("cmdline", "Print version information and exit."), nullptr},
 
-    {G_OPTION_REMAINING, '\x0', 0, G_OPTION_ARG_CALLBACK, (gpointer)setValueCallback,
+    {G_OPTION_REMAINING, '\x0', 0, G_OPTION_ARG_CALLBACK, gpointer(setValueCallback),
         nullptr, nullptr},
     {nullptr, '\x0', 0, G_OPTION_ARG_NONE, nullptr,
         nullptr, nullptr},

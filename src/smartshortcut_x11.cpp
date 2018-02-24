@@ -82,9 +82,9 @@ bool X11ErrorHandler::error = false;
 const QVector<quint32> maskModifiers = QVector<quint32>()
     << 0 << Mod2Mask << LockMask << (Mod2Mask | LockMask);
 
-static QList<unsigned int> translateButtons(int buttons)
+static QList<uint> translateButtons(uint buttons)
 {
-    QList<unsigned int> ret;
+    QList<uint> ret;
     if (buttons & Qt::LeftButton)    ret << Button1;
     if (buttons & Qt::MidButton)     ret << Button2;
     if (buttons & Qt::RightButton)   ret << Button3;
@@ -94,10 +94,10 @@ static QList<unsigned int> translateButtons(int buttons)
     return ret;
 }
 
-static unsigned int translateModifiers(int modifiers)
+static uint translateModifiers(uint modifiers)
 {
     // ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask, Mod4Mask, and Mod5Mask
-    auto native = 0;
+    auto native = 0U;
     if (modifiers & Qt::ShiftModifier)
         native |= ShiftMask;
     if (modifiers & Qt::ControlModifier)
@@ -110,7 +110,7 @@ static unsigned int translateModifiers(int modifiers)
     return native;
 }
 
-static unsigned int translateKey(int key, Display* display)
+static int translateKey(int key, Display* display)
 {
     KeySym keysym = XStringToKeysym(QKeySequence(key).toString().toLatin1().data());
     if (keysym == NoSymbol)
@@ -123,11 +123,11 @@ bool ungrabKey(int key)
     X11ErrorHandler errorHandler;
     auto display = QX11Info::display();
     auto appWindow = QX11Info::appRootWindow();
-    auto mod = translateModifiers(key);
+    auto mod = translateModifiers(uint(key));
 
     if (MOUSE_SHORTCUT_MASK & key)
     {
-        foreach (auto btn, translateButtons(key))
+        foreach (auto btn, translateButtons(uint(key)))
         {
             for (int i = 0; !errorHandler.error && i < maskModifiers.size(); ++i)
             {
@@ -152,11 +152,11 @@ bool grabKey(int key)
     X11ErrorHandler errorHandler;
     auto display = QX11Info::display();
     auto appWindow = QX11Info::appRootWindow();
-    auto mod = translateModifiers(key);
+    auto mod = translateModifiers(uint(key));
 
     if (MOUSE_SHORTCUT_MASK & key)
     {
-        foreach (auto btn, translateButtons(key))
+        foreach (auto btn, translateButtons(uint(key)))
         {
             for (int i = 0; !errorHandler.error && i < maskModifiers.size(); ++i)
             {

@@ -114,7 +114,7 @@ MainWindow::MainWindow(QWidget *parent)
     auto layoutMain = new QVBoxLayout();
     extraTitle = new QLabel;
     auto font = extraTitle->font();
-    font.setPointSize(font.pointSize() * 1.5);
+    font.setPointSize(font.pointSize() * 3 / 2);
     extraTitle->setFont(font);
     layoutMain->addWidget(extraTitle);
     listImagesAndClips = new ThumbnailList();
@@ -165,7 +165,7 @@ MainWindow::MainWindow(QWidget *parent)
     setLayout(layoutMain);
 
     restoreGeometry(settings.value("mainwindow-geometry").toByteArray());
-    setWindowState((Qt::WindowState)settings.value("mainwindow-state").toInt());
+    setWindowState(Qt::WindowState(settings.value("mainwindow-state").toInt()));
     settings.endGroup();
 
     updateStartButton();
@@ -312,7 +312,7 @@ void MainWindow::hideEvent(QHideEvent *evt)
     settings.setValue("mainwindow-geometry", saveGeometry());
     // Do not save window state, if it is in fullscreen mode or minimized
     //
-    auto state = (int)windowState() & ~(Qt::WindowMinimized | Qt::WindowFullScreen);
+    auto state = int(windowState() & ~(Qt::WindowMinimized | Qt::WindowFullScreen));
     settings.setValue("mainwindow-state", state);
     settings.endGroup();
     QWidget::hideEvent(evt);
@@ -1465,12 +1465,12 @@ void MainWindow::onStartStudy()
     if (QFileInfo(localPatientInfoFile).exists())
     {
         DcmDataset ds;
-        ds.loadFile((const char*)localPatientInfoFile.toLocal8Bit());
+        ds.loadFile(localPatientInfoFile.toLocal8Bit().constData());
         ds.findAndGetUint16(DCM_ImageNo, imageNo);
         ds.findAndGetUint16(DCM_ClipNo, clipNo);
     }
 
-    auto cond = pendingPatient->saveFile((const char*)localPatientInfoFile.toLocal8Bit(),
+    auto cond = pendingPatient->saveFile(localPatientInfoFile.toLocal8Bit().constData(),
         writeXfer);
     if (cond.bad())
     {
@@ -1569,7 +1569,7 @@ void MainWindow::onStopStudy()
         auto localPatientInfoFile = outputPath.absoluteFilePath(".patient.dcm");
         pendingPatient->putAndInsertUint16(DCM_ImageNo, imageNo);
         pendingPatient->putAndInsertUint16(DCM_ClipNo, clipNo);
-        pendingPatient->saveFile((const char*)localPatientInfoFile.toLocal8Bit(), writeXfer);
+        pendingPatient->saveFile(localPatientInfoFile.toLocal8Bit().constData(), writeXfer);
 
         delete pendingPatient;
         pendingPatient = nullptr;

@@ -31,7 +31,7 @@ void VideoEncodingProgressDialog::onPositionChanged()
     QGst::PositionQueryPtr queryPos = QGst::PositionQuery::create(QGst::FormatTime);
     if (pipeline->query(queryPos))
     {
-        setValue(queryPos->position() * SLIDER_SCALE / duration);
+        setValue(int(queryPos->position() * SLIDER_SCALE / duration));
     }
 }
 

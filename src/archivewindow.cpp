@@ -850,7 +850,7 @@ void ArchiveWindow::switchViewMode(int mode)
     else
     {
         player->setVisible(false);
-        listFiles->setViewMode((QListView::ViewMode)mode);
+        listFiles->setViewMode(QListView::ViewMode(mode));
         listFiles->setMaximumHeight(QWIDGETSIZE_MAX);
         listFiles->setMinimumSize(videoSize);
         listFiles->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -1153,7 +1153,7 @@ void ArchiveWindow::onStoreClick()
     PatientDataDialog dlg(true, "archive-store", this);
     DcmDataset patientDs;
     auto cond = patientDs.loadFile(
-            (const char*)curr.absoluteFilePath(".patient.dcm").toLocal8Bit());
+            curr.absoluteFilePath(".patient.dcm").toLocal8Bit().constData());
     if (cond.good())
     {
         dlg.readPatientData(&patientDs);
@@ -1469,8 +1469,8 @@ void ArchiveWindow::onStateChangedMessage(const QGst::StateChangedMessagePtr& me
             {
                 qDebug() << GST_SECOND;
                 auto frameDuration = (GST_SECOND * denominator) / numerator + 1;
-                actionSeekFwd->setData((int)frameDuration);
-                actionSeekBack->setData((int)-frameDuration);
+                actionSeekFwd->setData(int(frameDuration));
+                actionSeekBack->setData(int(-frameDuration));
             }
 
 

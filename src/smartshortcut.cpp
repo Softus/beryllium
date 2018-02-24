@@ -30,19 +30,21 @@ bool ungrabKey(int key);
 
 struct SmartTarget
 {
-    bool global;
-    bool longPress;
-    QObject *target;
+    QObject* target;
+    bool     global;
+    bool     longPress;
+    qint64   padding: 48;
+
     SmartTarget(bool g, bool l, QObject* t)
-        : global(g)
+        : target(t)
+        , global(g)
         , longPress(l)
-        , target(t)
     {
     }
     SmartTarget(QObject* t)
-        : global(false)
+        : target(t)
+        , global(false)
         , longPress(false)
-        , target(t)
     {
     }
 
@@ -317,7 +319,7 @@ QString SmartShortcut::toString(int key, QKeySequence::SequenceFormat format)
     }
     else
     {
-        auto modifiers = key & Qt::MODIFIER_MASK & ~MOUSE_SHORTCUT_MASK;
+        auto modifiers = key & int(Qt::MODIFIER_MASK & ~MOUSE_SHORTCUT_MASK);
         if (modifiers)
         {
             auto modifiersStr = QKeySequence(modifiers).toString(format);
@@ -329,7 +331,7 @@ QString SmartShortcut::toString(int key, QKeySequence::SequenceFormat format)
             returnText += modifiersStr;
         }
 
-        auto buttons = key & Qt::MouseButtonMask;
+        auto buttons = uint(key) & Qt::MouseButtonMask;
 
         if (buttons & Qt::LeftButton)    returnText += "LeftButton";
         if (buttons & Qt::RightButton)   returnText += "RightButton";
@@ -412,7 +414,7 @@ bool SmartShortcut::eventFilter(QObject *o, QEvent *e)
                 QKeyEvent *evt = static_cast<QKeyEvent*>(e);
                 if (!evt->isAutoRepeat())
                 {
-                    int key = evt->modifiers() | evt->key();
+                    auto key = int(evt->modifiers()) | evt->key();
                     if (handlePress(key, evt))
                     {
                         return true;
@@ -423,7 +425,7 @@ bool SmartShortcut::eventFilter(QObject *o, QEvent *e)
         case QEvent::MouseButtonPress:
             {
                 QMouseEvent *evt = static_cast<QMouseEvent*>(e);
-                int btn = MOUSE_SHORTCUT_MASK | evt->modifiers() | evt->button();
+                auto btn = MOUSE_SHORTCUT_MASK | int(evt->modifiers()) | int(evt->button());
                 if (handlePress(btn, evt))
                 {
                     return true;
@@ -435,7 +437,7 @@ bool SmartShortcut::eventFilter(QObject *o, QEvent *e)
                 QKeyEvent *evt = static_cast<QKeyEvent*>(e);
                 if (!evt->isAutoRepeat())
                 {
-                    int key = evt->modifiers() | evt->key();
+                    auto key = int(evt->modifiers()) | evt->key();
                     auto handler = handlers.find(key);
                     if (handler != handlers.end())
                     {
@@ -449,7 +451,7 @@ bool SmartShortcut::eventFilter(QObject *o, QEvent *e)
         case QEvent::MouseButtonRelease:
             {
                 QMouseEvent *evt = static_cast<QMouseEvent*>(e);
-                int btn = MOUSE_SHORTCUT_MASK | evt->modifiers() | evt->button();
+                auto btn = MOUSE_SHORTCUT_MASK | int(evt->modifiers()) | int(evt->button());
                 auto handler = handlers.find(btn);
                 if (handler != handlers.end())
                 {

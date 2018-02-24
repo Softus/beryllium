@@ -618,7 +618,7 @@ bool Pipeline::updatePipeline()
         if (src)
         {
             int fd = src->property("device-fd").toInt();
-            int n = 0;
+            uint n = 0;
             struct v4l2_input input;
 
             for (;;)

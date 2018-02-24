@@ -57,7 +57,7 @@ void HotKeyEdit::handleKeyReleaseEvent(QKeyEvent *event)
         return;
     }
 
-    int key = event->key();
+    auto key = event->key();
 
     // Handle some special keys
     //
@@ -110,7 +110,7 @@ void HotKeyEdit::handleMouseReleaseEvent(QMouseEvent *evt)
     //
     if (!m_ignoreNextMouseEvent && evt->button() && isEnabled())
     {
-        int key = 0x80000000 | evt->modifiers() | evt->button();
+        auto key = int(0x80000000 | evt->modifiers() | evt->button());
         if (SmartShortcut::longPressTimeout(m_ts))
         {
             key |= LONG_PRESS_MASK;

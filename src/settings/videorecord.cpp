@@ -102,13 +102,13 @@ VideoRecordSettings::VideoRecordSettings(QWidget *parent)
     spinGap->setEnabled(checkMotionStop->isChecked());
 
     layoutMotionDetection->addRow(tr("S&ensitivity"), spinSensitivity = new QSpinBox);
-    spinSensitivity->setValue(settings.value("motion-sensitivity",
-        DEFAULT_MOTION_SENSITIVITY).toReal()* 100);
+    spinSensitivity->setValue(int(settings.value("motion-sensitivity",
+        DEFAULT_MOTION_SENSITIVITY).toReal() * 100));
     spinSensitivity->setSuffix(tr("%"));
 
     layoutMotionDetection->addRow(tr("&Threshold"), spinThreshold = new QSpinBox);
-    spinThreshold->setValue(settings.value("motion-threshold",
-        DEFAULT_MOTION_THRESHOLD).toReal()* 100);
+    spinThreshold->setValue(int(settings.value("motion-threshold",
+        DEFAULT_MOTION_THRESHOLD).toReal() * 100));
     spinThreshold->setSuffix(tr("%"));
 
     layoutMotionDetection->addRow(nullptr, checkMotionDebug =

@@ -51,11 +51,11 @@ DebugSettings::DebugSettings(QWidget *parent)
     auto layoutGst = new QFormLayout;
 
     layoutGst->addRow(tr("&Log level"), cbGstLogLevel = new QComboBox);
-    auto gstDebugLevel = (GstDebugLevel)settings.value("gst-debug-level",
-        DEFAULT_GST_DEBUG_LEVEL).toInt();
+    auto gstDebugLevel = GstDebugLevel(settings.value("gst-debug-level",
+        DEFAULT_GST_DEBUG_LEVEL).toInt());
     for (int i = GST_LEVEL_ERROR; i < GST_LEVEL_COUNT; ++i)
     {
-        auto name = QString::fromUtf8(gst_debug_level_get_name((GstDebugLevel)i));
+        auto name = QString::fromUtf8(gst_debug_level_get_name(GstDebugLevel(i)));
         if (name.isEmpty())
         {
             // For some reason, GstDebugLevel contains gaps
@@ -64,7 +64,7 @@ DebugSettings::DebugSettings(QWidget *parent)
         }
 
         cbGstLogLevel->addItem(name, i);
-        if (gstDebugLevel == (GstDebugLevel)i)
+        if (gstDebugLevel == GstDebugLevel(i))
         {
             cbGstLogLevel->setCurrentIndex(cbGstLogLevel->count() - 1);
         }

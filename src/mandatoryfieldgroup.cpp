@@ -39,7 +39,7 @@ void MandatoryFieldGroup::add(QWidget* widget)
     //
     if (widget->inherits("QComboBox"))
     {
-        widget = ((QComboBox*)widget->qt_metacast("QComboBox"))->lineEdit();
+        widget = (static_cast<QComboBox*>(widget))->lineEdit();
     }
 
     if (widgets.contains(widget))
@@ -68,7 +68,7 @@ void MandatoryFieldGroup::remove(QWidget* widget)
 {
     if (widget->inherits("QComboBox"))
     {
-        widget = ((QComboBox*)widget->qt_metacast("QComboBox"))->lineEdit();
+        widget = (static_cast<QComboBox*>(widget))->lineEdit();
     }
 
     if (widgets.removeAll(widget))
@@ -102,7 +102,7 @@ void MandatoryFieldGroup::setMandatory(QWidget* widget, bool mandatory)
         auto layoutParent = static_cast<QWidget*>(parent())->layout();
         if (layoutParent && layoutParent->inherits("QFormLayout"))
         {
-            auto layoutForm = ((QFormLayout*)layoutParent->qt_metacast("QFormLayout"));
+            auto layoutForm = static_cast<QFormLayout*>(layoutParent->qt_metacast("QFormLayout"));
             label = layoutForm->labelForField(widget);
             if (!label)
             {
@@ -128,18 +128,17 @@ void MandatoryFieldGroup::setMandatory(QWidget* widget, bool mandatory)
         widget->setToolTip(tr("This is a mandatory field"));
         if (widget->inherits("QxtLineEdit"))
         {
-            ((QxtLineEdit*)widget->qt_metacast("QxtLineEdit"))->
-                setSampleText(tr("This is a mandatory field"));
+            static_cast<QxtLineEdit*>(widget)->setSampleText(tr("This is a mandatory field"));
         }
     }
     else
     {
         p.setColor(QPalette::Foreground, widget->property("mandatoryFieldBaseColor").toUInt());
         widget->setProperty("mandatoryFieldBaseColor", 0);
-        widget->setToolTip("");
+        widget->setToolTip(QString());
         if (widget->inherits("QxtLineEdit"))
         {
-            ((QxtLineEdit*)widget->qt_metacast("QxtLineEdit"))->setSampleText("");
+            static_cast<QxtLineEdit*>(widget)->setSampleText(QString());
         }
     }
     label->setPalette(p);
@@ -148,16 +147,17 @@ void MandatoryFieldGroup::setMandatory(QWidget* widget, bool mandatory)
 void MandatoryFieldGroup::changed()
 {
     if (!okButton)
+    {
         return;
+    }
 
     bool enable = true;
     foreach (auto widget, widgets)
     {
         if ((widget->inherits("QCheckBox")
-                && ((QCheckBox*)widget->qt_metacast("QCheckBox"))->checkState()
-                    == Qt::PartiallyChecked)
+                && static_cast<QCheckBox*>(widget)->checkState() == Qt::PartiallyChecked)
             || (widget->inherits("QLineEdit")
-                && ((QLineEdit*)widget->qt_metacast("QLineEdit"))->text().isEmpty()))
+                && static_cast<QLineEdit*>(widget)->text().isEmpty()))
         {
             enable = false;
             setMandatory(widget, true);
@@ -183,4 +183,3 @@ void MandatoryFieldGroup::clear()
         okButton = nullptr;
     }
 }
-

@@ -35,7 +35,8 @@ newItem
     ( const QSettings& settings
     , const QString& title
     , const QString& settingsKey
-    , int defaultValue)
+    , int defaultValue
+    )
 {
     auto key = settings.value(settingsKey, defaultValue).toInt();
     auto item = new QTreeWidgetItem(QStringList()

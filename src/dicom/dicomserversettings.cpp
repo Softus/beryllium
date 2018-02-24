@@ -43,9 +43,9 @@ DicomServerSettings::DicomServerSettings(QWidget *parent) :
     connect(listServers, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this,
         SLOT(onCellDoubleClicked(QTableWidgetItem*)));
 
-    size_t columns = sizeof(columnNames)/sizeof(columnNames[0]);
+    auto columns = int(sizeof(columnNames) / sizeof(columnNames[0]));
     listServers->setColumnCount(columns);
-    for (size_t i = 0; i < columns; ++i)
+    for (auto i = 0; i < columns; ++i)
     {
         listServers->setHorizontalHeaderItem(i, new QTableWidgetItem(columnNames[i]));
     }

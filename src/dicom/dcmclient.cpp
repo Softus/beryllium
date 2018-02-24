@@ -90,8 +90,8 @@ static void BuildCFindDataSet(DcmDataset& ds)
     ds.insertEmptyElement(DCM_IssuerOfPatientID);
     ds.insertEmptyElement(DCM_PatientBirthDate);
     ds.insertEmptyElement(DCM_PatientSex);
-    ds.insertEmptyElement(DCM_PatientSize),
-    ds.insertEmptyElement(DCM_PatientWeight),
+    ds.insertEmptyElement(DCM_PatientSize);
+    ds.insertEmptyElement(DCM_PatientWeight);
     ds.insertEmptyElement(DCM_StudyInstanceUID);
     ds.insertEmptyElement(DCM_SeriesInstanceUID);
     ds.insertEmptyElement(DCM_StudyID);
@@ -472,7 +472,7 @@ QString DcmClient::cEcho(const QString &peerAet, const QString &peerAddress, int
     if (cond.good())
     {
         DIC_US msgId = assoc->nextMsgID++;
-        DIC_US status = -1;
+        DIC_US status = DIC_US(-1);
 
         cond = DIMSE_echoUser(assoc, msgId, 0 == timeout? DIMSE_BLOCKING: DIMSE_NONBLOCKING,
             timeout, &status, nullptr);
@@ -832,7 +832,7 @@ bool DcmClient::sendToServer
 
     char seriesUID[100] = {0};
     dcmGenerateUniqueIdentifier(seriesUID, SITE_SERIES_UID_ROOT);
-    int idx = strlen(seriesUID) - 1;
+    auto idx = strlen(seriesUID) - 1;
 
     if (translate)
     {
@@ -921,7 +921,7 @@ bool DcmClient::sendToServer
                 }
             }
 
-            seriesUID[idx] = '0' + seriesNo;
+            seriesUID[idx] = char('0' + seriesNo);
             if (!sendToServer(server, dsPatient, seriesUID, seriesNo, filePath, mimeType, i))
             {
                 result = false;

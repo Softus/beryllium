@@ -166,7 +166,7 @@ VideoEditor::VideoEditor(const QString& filePath, QWidget *parent)
     QSettings settings;
     settings.beginGroup("ui");
     restoreGeometry(settings.value("video-editor-geometry").toByteArray());
-    setWindowState((Qt::WindowState)settings.value("video-editor-state").toInt());
+    setWindowState(Qt::WindowState(settings.value("video-editor-state").toInt()));
     settings.endGroup();
     setWindowTitle(tr("Video editor"));
 
@@ -196,7 +196,7 @@ void VideoEditor::closeEvent(QCloseEvent *evt)
     QSettings settings;
     settings.beginGroup("ui");
     settings.setValue("video-editor-geometry", saveGeometry());
-    settings.setValue("video-editor-state", (int)windowState() & ~Qt::WindowMinimized);
+    settings.setValue("video-editor-state", int(windowState() & ~Qt::WindowMinimized));
     settings.endGroup();
     QWidget::closeEvent(evt);
 }
@@ -214,7 +214,7 @@ void VideoEditor::timerEvent(QTimerEvent *)
                 pos = duration;
             }
             //qDebug() << pos << SLIDER_SCALE << duration << pos * SLIDER_SCALE / duration;
-            sliderPos->setValue(pos * SLIDER_SCALE / duration);
+            sliderPos->setValue(int(pos * SLIDER_SCALE / duration));
 
             setLabelTime(pos, lblCurr);
         }
@@ -296,8 +296,8 @@ void VideoEditor::onBusMessage(const QGst::MessagePtr& message)
                 if (pipeline->query(queryPos) && duration > 0LL)
                 {
                     auto min = queryPos->position() * SLIDER_SCALE / duration;
-                    sliderPos->setMinimum(min);
-                    sliderRange->setMinimum(min);
+                    sliderPos->setMinimum(int(min));
+                    sliderRange->setMinimum(int(min));
                 }
             }
         }
@@ -390,8 +390,8 @@ void VideoEditor::onStateChange(const QGst::StateChangedMessagePtr& message)
             if (denominator > 0 && numerator > 0)
             {
                 frameDuration = (GST_SECOND * denominator) / numerator + 1;
-                actionSeekFwd->setData((int)frameDuration);
-                actionSeekBack->setData((int)-frameDuration);
+                actionSeekFwd->setData(int(frameDuration));
+                actionSeekBack->setData(int(-frameDuration));
             }
         }
 
@@ -439,7 +439,7 @@ void VideoEditor::setPosition(int position, QLabel* lbl)
 
 void VideoEditor::setLabelTime(qint64 time, QLabel* lbl)
 {
-    auto text = QGst::ClockTime(time).toTime().toString("hh:mm:ss.zzz");
+    auto text = QGst::ClockTime(quint64(time)).toTime().toString("hh:mm:ss.zzz");
     lbl->setText(text);
 }
 
@@ -634,12 +634,12 @@ void VideoEditor::onCutClick()
         auto handle = static_cast<QAction*>(sender())->data().toInt();
         if (handle < 0)
         {
-            sliderRange->setLowerValue(value);
+            sliderRange->setLowerValue(int(value));
             setLabelTime(pos, lblStart);
         }
         else if (handle > 0)
         {
-            sliderRange->setUpperValue(value);
+            sliderRange->setUpperValue(int(value));
             setLabelTime(pos, lblStop);
         }
     }

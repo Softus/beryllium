@@ -28,9 +28,9 @@ class QAction;
 class QInputEvent;
 QT_END_NAMESPACE
 
-#define MOUSE_SHORTCUT_MASK  0x80000000
-#define GLOBAL_SHORTCUT_MASK 0x00800000
-#define LONG_PRESS_MASK      0x00400000
+#define MOUSE_SHORTCUT_MASK  int(0x80000000)
+#define GLOBAL_SHORTCUT_MASK int(0x00800000)
+#define LONG_PRESS_MASK      int(0x00400000)
 
 class SmartShortcut : public QObject
 {

@@ -208,7 +208,7 @@ void VideoSources::updateDeviceList()
                 }
 
                 auto num_nodes = raw1394_get_nodecount (handle);
-                for (int node = 0; node < num_nodes; node++)
+                for (ushort node = 0; node < num_nodes; node++)
                 {
                     rom1394_get_directory (handle, node, &directory);
                     if (rom1394_get_node_type (&directory) == ROM1394_NODE_TYPE_AVC

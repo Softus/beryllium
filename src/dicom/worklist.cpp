@@ -157,7 +157,7 @@ void Worklist::onAddRow(DcmDataset* dset)
     {
         const char *str = nullptr;
         auto tag = table->horizontalHeaderItem(col)->data(Qt::UserRole).toInt();
-        DcmTagKey tagKey(tag >> 16, tag & 0xFFFF);
+        DcmTagKey tagKey(ushort(tag >> 16), tag & 0xFFFF);
         OFCondition cond = dset->findAndGetString(tagKey, str, true);
         auto text = QString::fromUtf8(str? str: cond.text());
         auto item = new QTableWidgetItem(text);
@@ -172,7 +172,8 @@ void Worklist::onAddRow(DcmDataset* dset)
         }
     }
 
-    table->item(row, 0)->setData(Qt::UserRole, QVariant::fromValue(*(DcmDataset*)dset->clone()));
+    table->item(row, 0)->setData(Qt::UserRole,
+        QVariant::fromValue(*static_cast<DcmDataset*>(dset->clone())));
 
     if (date < QDateTime::currentDateTime() && date > maxDate)
     {
