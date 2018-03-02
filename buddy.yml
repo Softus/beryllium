@@ -6,13 +6,15 @@
     type: "BUILD"
     docker_image_name: "library/mageia"
     docker_image_tag: "latest"
+    cached_dirs:
+    - "/cache-mageia"
     execute_commands:
-    - if [ ! -d cache ]; then mkdir cache; fi
-    - cd cache
-    - ../.ci/git-install.sh https://github.com/DCMTK/dcmtk.git DCMTK-3.6.3 "-DDCMTK_WITH_OPENSSL=OFF -DDCMTK_WITH_WRAP=OFF -DDCMTK_WITH_ICU=OFF -DDCMTK_WITH_ICONV=OFF"
+    - if [ ! -d cache-mageia ]; then mkdir cache-mageia; fi
+    - cd cache-mageia
+    - ../.ci/git-install.sh https://github.com/DCMTK/dcmtk.git DCMTK-3.6.3 "-DCMAKE_INSTALL_PREFIX=/usr -DDCMTK_WITH_OPENSSL=OFF -DDCMTK_WITH_WRAP=OFF -DDCMTK_WITH_ICU=OFF -DDCMTK_WITH_ICONV=OFF"
     - cd ..
     - export RPM_BUILD_NCPUS=2
-    - tar czf ../${project.name}.tar.gz --exclude=cache --exclude=debian --exclude=*.yml * && rpmbuild -ta ../${project.name}.tar.gz
+    - tar czf ../${project.name}.tar.gz --exclude=cache* --exclude=debian --exclude=*.yml * && rpmbuild -ta ../${project.name}.tar.gz
     setup_commands:
     - dnf install -y lsb-release rpm-build git make cmake gcc-c++ qttools5 lib64v4l-devel lib64avc1394-devel lib64mediainfo-devel lib64qt5-gstreamer-devel lib64boost-devel lib64gstreamer1.0-devel lib64gstreamer-plugins-base1.0-devel lib64qt5base5-devel lib64qt5x11extras-devel
     trigger_condition: "ALWAYS"
@@ -23,15 +25,15 @@
     docker_image_name: "library/centos"
     docker_image_tag: "latest"
     cached_dirs:
-    - "/cache"
+    - "/cache-centos"
     execute_commands:
-    - if [ ! -d cache ]; then mkdir cache; fi
-    - cd cache
-    - ../.ci/git-install.sh git://anongit.freedesktop.org/gstreamer/qt-gstreamer master "-DQT_VERSION=5"
-    - ../.ci/git-install.sh https://github.com/DCMTK/dcmtk.git DCMTK-3.6.3 "-DDCMTK_WITH_OPENSSL=OFF -DDCMTK_WITH_WRAP=OFF -DDCMTK_WITH_ICU=OFF -DDCMTK_WITH_ICONV=OFF"
+    - if [ ! -d cache-centos ]; then mkdir cache-centos; fi
+    - cd cache-centos
+    - ../.ci/git-install.sh git://anongit.freedesktop.org/gstreamer/qt-gstreamer master "-DCMAKE_INSTALL_PREFIX=/usr -DQT_VERSION=5"
+    - ../.ci/git-install.sh https://github.com/DCMTK/dcmtk.git DCMTK-3.6.3 "-DCMAKE_INSTALL_PREFIX=/usr -DDCMTK_WITH_OPENSSL=OFF -DDCMTK_WITH_WRAP=OFF -DDCMTK_WITH_ICU=OFF -DDCMTK_WITH_ICONV=OFF"
     - cd ..
     - export RPM_BUILD_NCPUS=2
-    - tar czf ../${project.name}.tar.gz --exclude=cache --exclude=debian --exclude=*.yml * && rpmbuild -ta ../${project.name}.tar.gz
+    - tar czf ../${project.name}.tar.gz --exclude=cache* --exclude=debian --exclude=*.yml * && rpmbuild -ta ../${project.name}.tar.gz
     setup_commands:
     - yum install -y epel-release
     - yum update -y
@@ -59,7 +61,7 @@
     docker_image_tag: "latest"
     execute_commands:
     - export RPM_BUILD_NCPUS=2
-    - tar czf ../${project.name}.tar.gz --exclude=debian --exclude=*.yml * && rpmbuild -ta ../${project.name}.tar.gz
+    - tar czf ../${project.name}.tar.gz --exclude=cache* --exclude=debian --exclude=*.yml * && rpmbuild -ta ../${project.name}.tar.gz
     setup_commands:
     - dnf install -y redhat-lsb rpm-build make gstreamer1-devel libv4l-devel qt5-qtbase-devel qt5-gstreamer-devel qt5-linguist qt5-qtx11extras-devel libavc1394-devel libmediainfo-devel dcmtk-devel openssl-devel gcc-c++
     trigger_condition: "ALWAYS"
@@ -71,7 +73,7 @@
     docker_image_tag: "latest"
     execute_commands:
     - export RPM_BUILD_NCPUS=2
-    - tar czf ../${project.name}.tar.gz --exclude=debian --exclude=*.yml * && rpmbuild -ta ../${project.name}.tar.gz
+    - tar czf ../${project.name}.tar.gz --exclude=cache* --exclude=debian --exclude=*.yml * && rpmbuild -ta ../${project.name}.tar.gz
     setup_commands:
     - zypper install -y lsb-release rpm-build make libqt5-linguist libqt5-qtbase-devel gstreamer-plugins-qt5-devel dcmtk-devel libmediainfo-devel libqt5-qtx11extras-devel openssl-devel libavc1394-devel libv4l-devel
     trigger_condition: "ALWAYS"
