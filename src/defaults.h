@@ -59,7 +59,7 @@
 #define DEFAULT_RTP_PAYLOADER         "rtpmp2tpay"
 #define DEFAULT_RTP_SINK              "udpsink"
 #define DEFAULT_RTMP_SINK             "rtmpsink"
-#define DEFAULT_HTTP_SINK             "souphttpclientsink"
+#define DEFAULT_HTTP_SINK             "souphttpclientsink retries=-1"
 #define DEFAULT_VIDEOBITRATE          4000
 #define DEFAULT_NOTIFY_CLIP_LIMIT     true
 #define DEFAULT_CLIP_LIMIT            true
