@@ -3,7 +3,7 @@ Section: contrib/misc
 Priority: optional
 Maintainer: Softus team <contact@softus.org>
 Standards-Version: 3.2.1
-Build-Depends: libdcmtk2-dev, libboost-dev, debhelper, libmediainfo-dev, libssl-dev, libwrap0-dev,
+Build-Depends: libdcmtk2-dev, libboost-dev, debhelper, libmediainfo-dev, libwrap0-dev,
   libgstreamer1.0-dev, libqt5gstreamer-dev, libgstreamer-plugins-base1.0-dev, libqt5opengl5-dev,
   libavc1394-dev, libraw1394-dev, libv4l-dev, qt5-default, qttools5-dev-tools, libqt5x11extras5-dev,
   lsb-release, fakeroot

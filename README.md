@@ -33,7 +33,7 @@ Debian/Ubuntu/Mint
 * Build dependecies
 
         sudo apt install lsb-release debhelper fakeroot libdcmtk2-dev libboost-dev \
-          libmediainfo-dev libssl-dev libwrap0-dev libqt5opengl5-dev libgstreamer1.0-dev \
+          libmediainfo-dev libwrap0-dev libqt5opengl5-dev libgstreamer1.0-dev \
           libgstreamer-plugins-base1.0-dev libqt5gstreamer-1.0-0 libqt5gstreamer-dev \
           libavc1394-dev libraw1394-dev libv4l-dev qttools5-dev-tools qt5-default libqt5x11extras5-dev
 
