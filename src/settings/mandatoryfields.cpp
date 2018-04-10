@@ -33,7 +33,7 @@ MandatoryFieldsSettings::MandatoryFieldsSettings(QWidget *parent) :
     auto fieldNames = QStringList() << "PatientID"
         << "Name" << "Sex" << "Birthday"
         << "Physician" << "StudyType" << "IssuerOfPatientID";
-    auto listMandatory = settings.value("patient-data-mandatory-fields",
+    auto const& listMandatory = settings.value("patient-data-mandatory-fields",
         DEFAULT_MANDATORY_FIELDS).toStringList();
 
     if (settings.value("patient-data-show-accession-number").toBool())

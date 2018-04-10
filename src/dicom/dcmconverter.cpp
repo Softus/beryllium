@@ -70,13 +70,13 @@ static QString getGenericSopClass(const QString& mimeType)
 static QString getImageSopClass(const QSettings& settings)
 {
     Q_ASSERT(settings.group() == "dicom");
-    auto sopClass = settings.value("image-sopclass").toString();
+    auto const& sopClass = settings.value("image-sopclass").toString();
     if (!sopClass.isEmpty())
     {
         return sopClass;
     }
 
-    auto modality = settings.value("modality", DEFAULT_MODALITY).toString();
+    auto const& modality = settings.value("modality", DEFAULT_MODALITY).toString();
 
     return
         modality == "ES"? UID_VLEndoscopicImageStorage:
@@ -90,13 +90,13 @@ static QString getImageSopClass(const QSettings& settings)
 static QString getVideoSopClass(const QSettings& settings)
 {
     Q_ASSERT(settings.group() == "dicom");
-    auto sopClass = settings.value("video-sopclass").toString();
+    auto const& sopClass = settings.value("video-sopclass").toString();
     if (!sopClass.isEmpty())
     {
         return sopClass;
     }
 
-    auto modality = settings.value("modality", DEFAULT_MODALITY).toString();
+    auto const& modality = settings.value("modality", DEFAULT_MODALITY).toString();
 
     return
         modality == "ES"? UID_VideoEndoscopicImageStorage:
@@ -197,7 +197,7 @@ public:
         if (cond.bad())
           return cond;
 
-        auto subsampling = getStr(__T("ChromaSubsampling"));
+        auto const& subsampling = getStr(__T("ChromaSubsampling"));
         if (subsampling == "4:2:0")
         {
             cond = dset->putAndInsertString(DCM_PhotometricInterpretation, "YBR_FULL");
@@ -241,7 +241,7 @@ public:
               return cond;
         }
 
-        auto codec = getStr(__T("Codec"));
+        auto const& codec = getStr(__T("Codec"));
 
         if (type == MediaInfoLib::Stream_Image)
         {
@@ -276,7 +276,7 @@ public:
         }
         else
         {
-            auto frameRate = getStr(__T("FrameRate")).toDouble();
+            auto const& frameRate = getStr(__T("FrameRate")).toDouble();
             cond = dset->putAndInsertString(DCM_CineRate,
                 QString::number((Uint16)(frameRate + 0.5)).toUtf8());
             if (cond.bad())
@@ -307,12 +307,12 @@ public:
             }
             else
             {
-                auto sopClass = getVideoSopClass(settings);
+                auto const& sopClass = getVideoSopClass(settings);
                 cond = dset->putAndInsertString(DCM_SOPClassUID, sopClass.toUtf8());
                 if (cond.bad())
                   return cond;
 
-                auto codecProfile = getStr(__T("Codec_Profile"));
+                auto const& codecProfile = getStr(__T("Codec_Profile"));
                 if (0 == codec.compare("MPEG-2V", Qt::CaseInsensitive))
                 {
                     if (codecProfile.startsWith("main@", Qt::CaseInsensitive))

@@ -65,11 +65,11 @@ void VideoWidget::mouseMoveEvent(QMouseEvent *evt)
      data->setData("videowidget", QByteArray());
      drag->setMimeData(data);
 
-     auto sink = videoSink();
+     auto const& sink = videoSink();
      if (sink)
      {
          QImage img;
-         auto sample = sink->property("last-sample").get<QGst::SamplePtr>();
+         auto const& sample = sink->property("last-sample").get<QGst::SamplePtr>();
          if (sample)
          {
              img = extractImage(sample->buffer(), sample->caps(), 160);
@@ -77,7 +77,7 @@ void VideoWidget::mouseMoveEvent(QMouseEvent *evt)
 
          if (!img.isNull())
          {
-             auto pm = QPixmap::fromImage(img);
+             auto const& pm = QPixmap::fromImage(img);
              drag->setPixmap(pm);
              drag->setHotSpot(pm.rect().center());
          }

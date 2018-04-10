@@ -57,9 +57,9 @@ static QSize videoSize(352, 258);
 
 static void DamnQtMadeMeDoTheSunsetByHands(QToolBar* bar)
 {
-    foreach (auto action, bar->actions())
+    foreach (auto const& action, bar->actions())
     {
-        auto shortcut = action->shortcut();
+        auto const& shortcut = action->shortcut();
         if (shortcut.isEmpty())
         {
             continue;
@@ -319,7 +319,7 @@ void VideoEditor::onBusMessage(const QGst::MessagePtr& message)
         break;
     case QGst::MessageElement:
         {
-            auto s = message->internalStructure();
+            auto const& s = message->internalStructure();
             if (!s || !message->source())
             {
                 qDebug() << "Got empty QGst::MessageElement";
@@ -336,8 +336,8 @@ void VideoEditor::onBusMessage(const QGst::MessagePtr& message)
         break;
     case QGst::MessageError:
         {
-            auto ex = message.staticCast<QGst::ErrorMessage>()->error();
-            auto obj = message->source();
+            auto const& ex = message.staticCast<QGst::ErrorMessage>()->error();
+            auto const& obj = message->source();
             QString msg;
             if (obj)
             {
@@ -371,16 +371,16 @@ void VideoEditor::onStateChange(const QGst::StateChangedMessagePtr& message)
             // Time to adjust framerate
             //
             gint numerator = 0, denominator = 0;
-            auto sink = videoWidget->videoSink();
+            auto const& sink = videoWidget->videoSink();
             if (sink)
             {
-                auto pad = sink->getStaticPad("sink");
+                auto const& pad = sink->getStaticPad("sink");
                 if (pad)
                 {
-                    auto caps = pad->currentCaps();
+                    auto const& caps = pad->currentCaps();
                     if (caps)
                     {
-                        auto s = caps->internalStructure(0);
+                        auto const& s = caps->internalStructure(0);
                         gst_structure_get_fraction(s.data()->operator const GstStructure *(),
                             "framerate", &numerator, &denominator);
                     }
@@ -439,14 +439,14 @@ void VideoEditor::setPosition(int position, QLabel* lbl)
 
 void VideoEditor::setLabelTime(qint64 time, QLabel* lbl)
 {
-    auto text = QGst::ClockTime(quint64(time)).toTime().toString("hh:mm:ss.zzz");
+    auto const& text = QGst::ClockTime(quint64(time)).toTime().toString("hh:mm:ss.zzz");
     lbl->setText(text);
 }
 
 void VideoEditor::onSaveClick()
 {
     QTemporaryFile tmpFile;
-    auto confirm = QMessageBox::question(this, tr("Video editor"),
+    auto const& confirm = QMessageBox::question(this, tr("Video editor"),
         tr("Overwrite %1?").arg(filePath), QMessageBox::Yes, QMessageBox::No);
     if (confirm == QMessageBox::Yes && exportVideo(&tmpFile))
     {
@@ -465,7 +465,7 @@ void VideoEditor::onSaveAsClick()
     dlg.setAcceptMode(QFileDialog::AcceptSave);
     dlg.setFileMode(QFileDialog::AnyFile);
     auto filters = dlg.nameFilters();
-    auto suffix = fi.suffix();
+    auto const& suffix = fi.suffix();
     filters.insert(0, QString("*.").append(suffix));
     dlg.setDefaultSuffix(suffix);
     dlg.setNameFilters(filters);
@@ -499,7 +499,7 @@ bool VideoEditor::exportVideo(QFile* outFile)
     if (encoder.isEmpty())
     {
         bool useAv = QGst::ElementFactory::find("avenc_mpeg2video");
-        auto caps = typeDetect(filePath);
+        auto const& caps = typeDetect(filePath);
         if (caps.startsWith("video/x-dv"))
         {
             // Some distros have libav plugins, some ffmpeg plugins
@@ -536,9 +536,9 @@ bool VideoEditor::exportVideo(QFile* outFile)
             .append(" ! ").append(muxer).append(" ! filesink location=\"")
             .append(outFile->fileName()).append("\"");
         qDebug() << pipeDef;
-        auto pipelineExport = QGst::Parse::launch(pipeDef).dynamicCast<QGst::Pipeline>();
+        auto const& pipelineExport = QGst::Parse::launch(pipeDef).dynamicCast<QGst::Pipeline>();
 
-        auto videoEncoder = pipelineExport->getElementByName("videoencoder");
+        auto const& videoEncoder = pipelineExport->getElementByName("videoencoder");
         if (videoEncoder)
         {
             // To set correct bitrate we must examine default bitrate first
@@ -561,7 +561,7 @@ bool VideoEditor::exportVideo(QFile* outFile)
         GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(pipelineExport.staticCast<QGst::Bin>(), details,
             qApp->applicationName().append(".video-edit-export").toUtf8());
 
-        auto text = tr("Saving %1").arg(outFile->inherits("QTemporaryFile")
+        auto const& text = tr("Saving %1").arg(outFile->inherits("QTemporaryFile")
             ? filePath : outFile->fileName());
         VideoEncodingProgressDialog dlgProgress(pipelineExport, duration, this);
         dlgProgress.setLabelText(text);
@@ -649,7 +649,7 @@ void VideoEditor::onSnapshotClick()
 {
     QImage img;
 
-    auto sample = pipeline->property("sample").get<QGst::SamplePtr>();
+    auto const& sample = pipeline->property("sample").get<QGst::SamplePtr>();
     if (sample)
     {
         img = extractImage(sample->buffer(), sample->caps(), 160);

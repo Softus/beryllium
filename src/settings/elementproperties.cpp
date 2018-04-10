@@ -55,7 +55,7 @@ static QWidget* createEditor
     )
 {
     QWidget* widget{};
-    auto elmValue = elm->property(prop->name().toUtf8());
+    auto const& elmValue = elm->property(prop->name().toUtf8());
     QVariant qtDefValue;
 
     switch (prop->valueType())
@@ -235,10 +235,10 @@ ElementProperties::ElementProperties
     auto layoutForm = new QFormLayout();
     try
     {
-        auto elm = QGst::Parse::launch(QString().append(elementType).append(" ").append(properties));
-        auto elmType = QGlib::Type::fromInstance(elm);
+        auto const& elm = QGst::Parse::launch(QString().append(elementType).append(" ").append(properties));
+        auto const& elmType = QGlib::Type::fromInstance(elm);
 
-        foreach (auto prop, elm->listProperties())
+        foreach (auto const& prop, elm->listProperties())
         {
             if (prop->flags() & QGlib::ParamSpec::Writable && prop->ownerType() == elmType
                     && (prop->valueType().isFundamental()
@@ -288,7 +288,7 @@ ElementProperties::ElementProperties
 QString ElementProperties::getProperties()
 {
     QString ret;
-    foreach(auto widget, findChildren<QWidget*>())
+    foreach(auto const& widget, findChildren<QWidget*>())
     {
         auto propName = widget->property("property-name");
         if (propName.isNull())

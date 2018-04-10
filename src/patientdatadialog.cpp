@@ -63,7 +63,7 @@ PatientDataDialog::PatientDataDialog(bool noWorklist, const QString& settingsKey
     , moveCounter(0)
 {
     QSettings settings;
-    auto listMandatory = settings.value("ui/patient-data-mandatory-fields",
+    auto const& listMandatory = settings.value("ui/patient-data-mandatory-fields",
         DEFAULT_MANDATORY_FIELDS).toStringList();
     auto showAccessionNumber = settings.value("ui/patient-data-show-accession-number").toBool();
 

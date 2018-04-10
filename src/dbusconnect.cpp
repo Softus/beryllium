@@ -22,7 +22,7 @@ int connectToDbusService
 
     for (int i = 0; i < obj->methodCount(); ++i)
     {
-        auto method = obj->method(i);
+        auto const& method = obj->method(i);
         if (0 == (method.attributes() & QMetaMethod::Scriptable)
             || method.methodType() != QMetaMethod::Signal)
         {
@@ -31,7 +31,7 @@ int connectToDbusService
             continue;
         }
 
-        auto sign = QString::fromUtf8(method.methodSignature());
+        auto const& sign = QString::fromUtf8(method.methodSignature());
         if (bus.connect(
             service, path, interface, method.name(),  target, QString("1").append(sign).toUtf8()))
         {

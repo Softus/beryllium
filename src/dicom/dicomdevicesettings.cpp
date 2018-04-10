@@ -98,7 +98,7 @@ DicomDeviceSettings::DicomDeviceSettings(QWidget *parent) :
     settings.beginGroup("dicom");
     auto mainLayout = new QFormLayout;
 
-    auto localHost = QHostInfo::localHostName();
+    auto const& localHost = QHostInfo::localHostName();
     auto textName = new QLineEdit(localHost);
     textName->setReadOnly(true);
     mainLayout->addRow(tr("&Name"), textName);
@@ -107,7 +107,7 @@ DicomDeviceSettings::DicomDeviceSettings(QWidget *parent) :
     textIp->setReadOnly(true);
     QString strIps;
 
-    foreach (auto addr, QNetworkInterface::allAddresses())
+    foreach (auto const& addr, QNetworkInterface::allAddresses())
     {
         if (addr.isLoopback())
         {

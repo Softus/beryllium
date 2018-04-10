@@ -36,7 +36,7 @@
 
 bool setFileExtAttribute(const QString& filePath, const QString& name, const QString& value)
 {
-    auto encodedValue = QUrl::toPercentEncoding(value);
+    auto const& encodedValue = QUrl::toPercentEncoding(value);
 
     bool ret = false;
     auto file = g_file_new_for_path(filePath.toLocal8Bit());
@@ -118,10 +118,10 @@ QString typeDetect(const QString& filePath)
 {
     QGst::State   state;
     QGst::CapsPtr caps;
-    auto pipeline = QGst::Pipeline::create("typedetect");
-    auto source   = QGst::ElementFactory::make("filesrc", "source");
-    auto typefind = QGst::ElementFactory::make("typefind", "typefind");
-    auto fakesink = QGst::ElementFactory::make("fakesink", "fakesink");
+    auto const& pipeline = QGst::Pipeline::create("typedetect");
+    auto const& source   = QGst::ElementFactory::make("filesrc", "source");
+    auto const& typefind = QGst::ElementFactory::make("typefind", "typefind");
+    auto const& fakesink = QGst::ElementFactory::make("fakesink", "fakesink");
 
     if (pipeline && source && typefind && fakesink)
     {
@@ -133,7 +133,7 @@ QString typeDetect(const QString& filePath)
         QGst::ClockTime timeout(10ULL * 1000 * 1000 * 1000); // 10 Sec
         if (QGst::StateChangeSuccess == pipeline->getState(&state, nullptr, timeout))
         {
-            auto prop = typefind->property("caps");
+            auto const& prop = typefind->property("caps");
             if (prop)
             {
                 caps = prop.get<QGst::CapsPtr>();
@@ -145,7 +145,7 @@ QString typeDetect(const QString& filePath)
 
     if (caps)
     {
-        auto str = caps->internalStructure(0);
+        auto const& str = caps->internalStructure(0);
         if (str)
         {
             return str->name();
@@ -157,7 +157,7 @@ QString typeDetect(const QString& filePath)
 
 QImage extractRgbImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int width = 0)
 {
-    auto structure = caps->internalStructure(0);
+    auto const& structure = caps->internalStructure(0);
     auto imgWidth  = structure->value("width").toInt();
     auto imgHeight = structure->value("height").toInt();
 
@@ -175,7 +175,7 @@ QImage extractImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int w
 {
     QImage img;
     QGst::State   state;
-    auto structure = caps->internalStructure(0);
+    auto const& structure = caps->internalStructure(0);
     if (structure->name() == "video/x-raw" && structure->value("format").toString() == "RGB"
         && structure->value("bpp").toInt() == 24)
     {
@@ -184,12 +184,12 @@ QImage extractImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int w
         return extractRgbImage(buf, caps, width);
     }
 
-    auto pipeline = QGst::Pipeline::create("imgconvert");
-    auto src   = QGst::ElementFactory::make("appsrc", "src");
-    auto vaapi = structure->name() == "video/x-surface"?
+    auto const& pipeline = QGst::Pipeline::create("imgconvert");
+    auto const& src   = QGst::ElementFactory::make("appsrc", "src");
+    auto const& vaapi = structure->name() == "video/x-surface"?
          QGst::ElementFactory::make("vaapidownload", "vaapi"): QGst::ElementPtr();
-    auto cvt   = QGst::ElementFactory::make("videoconvert", "cvt");
-    auto sink  = QGst::ElementFactory::make("appsink", "sink");
+    auto const& cvt   = QGst::ElementFactory::make("videoconvert", "cvt");
+    auto const& sink  = QGst::ElementFactory::make("appsink", "sink");
 
     if (pipeline && src && cvt && sink)
     {
@@ -211,7 +211,7 @@ QImage extractImage(const QGst::BufferPtr& buf, const QGst::CapsPtr& caps, int w
             if (QGst::StateChangeSuccess == pipeline->getState(&state, nullptr, timeout))
             {
                 QGlib::emit<void>(src, "push-buffer", buf);
-                auto rgbSample = QGlib::emit<QGst::SamplePtr>(sink, "pull-preroll");
+                auto const& rgbSample = QGlib::emit<QGst::SamplePtr>(sink, "pull-preroll");
                 if (rgbSample)
                 {
                     img = extractRgbImage(rgbSample->buffer(), rgbSample->caps(), width);

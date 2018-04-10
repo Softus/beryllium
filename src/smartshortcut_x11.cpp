@@ -127,7 +127,7 @@ bool ungrabKey(int key)
 
     if (MOUSE_SHORTCUT_MASK & key)
     {
-        foreach (auto btn, translateButtons(uint(key)))
+        foreach (auto const& btn, translateButtons(uint(key)))
         {
             for (int i = 0; !errorHandler.error && i < maskModifiers.size(); ++i)
             {
@@ -156,7 +156,7 @@ bool grabKey(int key)
 
     if (MOUSE_SHORTCUT_MASK & key)
     {
-        foreach (auto btn, translateButtons(uint(key)))
+        foreach (auto const& btn, translateButtons(uint(key)))
         {
             for (int i = 0; !errorHandler.error && i < maskModifiers.size(); ++i)
             {
@@ -167,7 +167,7 @@ bool grabKey(int key)
     }
     else
     {
-        auto xkey = translateKey(key, display);
+        auto const& xkey = translateKey(key, display);
         for (int i = 0; !errorHandler.error && i < maskModifiers.size(); ++i)
         {
             XGrabKey(display, xkey, maskModifiers[i] | mod, appWindow, True,

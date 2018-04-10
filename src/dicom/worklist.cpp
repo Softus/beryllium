@@ -82,7 +82,7 @@ Worklist::Worklist(QWidget *parent) :
     for (auto i = 0; i < cols.size(); ++i)
     {
         DcmTag tag;
-        auto text = DcmTag::findTagFromName(cols[i].toUtf8(), tag).good()
+        auto const& text = DcmTag::findTagFromName(cols[i].toUtf8(), tag).good()
             ? QString::fromUtf8(tag.getTagName()) : cols[i];
         auto item = new QTableWidgetItem(text);
         item->setData(Qt::UserRole, (tag.getGroup() << 16) | tag.getElement());
@@ -159,7 +159,7 @@ void Worklist::onAddRow(DcmDataset* dset)
         auto tag = table->horizontalHeaderItem(col)->data(Qt::UserRole).toInt();
         DcmTagKey tagKey(ushort(tag >> 16), tag & 0xFFFF);
         OFCondition cond = dset->findAndGetString(tagKey, str, true);
-        auto text = QString::fromUtf8(str? str: cond.text());
+        auto const& text = QString::fromUtf8(str? str: cond.text());
         auto item = new QTableWidgetItem(text);
         table->setItem(row, col, item);
         if (col == dateColumn)

@@ -27,7 +27,7 @@ class VideoEncodingProgressDialog : public QProgressDialog
     Q_OBJECT
 public:
     VideoEncodingProgressDialog
-        ( QGst::PipelinePtr& pipeline
+        ( const QGst::PipelinePtr& pipeline
         , qint64 duration
         , QWidget* parent = nullptr
         );
@@ -42,9 +42,9 @@ private:
     void onStateChange(const QGst::StateChangedMessagePtr& message);
 
 private:
-    QGst::PipelinePtr& pipeline;
-    qint64             duration;
-    QTimer*            positionTimer;
+    const QGst::PipelinePtr& pipeline;
+    qint64                   duration;
+    QTimer*                  positionTimer;
 };
 
 #endif // VIDEOENCODINGPROGRESSDIALOG_H

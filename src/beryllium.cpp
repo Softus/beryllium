@@ -89,7 +89,7 @@ static QSettings systemSettings(QSettings::SystemScope, ORGANIZATION_DOMAIN, PRO
 static gboolean
 cfgPathCallback(const gchar *, const gchar *value, gpointer, GError **)
 {
-    auto path = QString::fromLocal8Bit(value);
+    auto const& path = QString::fromLocal8Bit(value);
     if (QFileInfo(path).isDir())
     {
         QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope, path);
@@ -97,7 +97,7 @@ cfgPathCallback(const gchar *, const gchar *value, gpointer, GError **)
             ORGANIZATION_DOMAIN, PRODUCT_SHORT_NAME);
         // Copy settings from file to memory
         //
-        foreach (auto key, fileSettings.allKeys())
+        foreach (auto const& key, fileSettings.allKeys())
         {
             systemSettings.setValue(key, fileSettings.value(key));
         }
@@ -107,7 +107,7 @@ cfgPathCallback(const gchar *, const gchar *value, gpointer, GError **)
         QSettings fileSettings(path, QSettings::IniFormat);
         // Copy settings from file to memory
         //
-        foreach (auto key, fileSettings.allKeys())
+        foreach (auto const& key, fileSettings.allKeys())
         {
             systemSettings.setValue(key, fileSettings.value(key));
         }
@@ -174,13 +174,13 @@ void setupGstDebug(const QSettings& settings)
 
     gst_debug_set_active(true);
 
-    auto gstDebug = settings.value("gst-debug", DEFAULT_GST_DEBUG).toString();
+    auto const& gstDebug = settings.value("gst-debug", DEFAULT_GST_DEBUG).toString();
     if (!gstDebug.isEmpty())
     {
         gst_debug_set_threshold_from_string(gstDebug.toLocal8Bit(), true);
     }
 
-    auto debugLogFile = settings.value("gst-debug-log-file", DEFAULT_GST_DEBUG_LOG_FILE).toString();
+    auto const& debugLogFile = settings.value("gst-debug-log-file", DEFAULT_GST_DEBUG_LOG_FILE).toString();
     if (debugLogFile.isEmpty())
     {
         gst_debug_remove_log_function (gst_debug_log_default);
@@ -255,7 +255,7 @@ void setupDcmtkDebug(const QSettings& settings)
 
     for (auto o = dcmtkOptions; o->long_name; ++o)
     {
-        auto value = settings.value(o->long_name).toString();
+        auto const& value = settings.value(o->long_name).toString();
         if (!value.isEmpty())
         {
             (GOptionArgFunc(o->arg_data))(o->long_name, value.toLocal8Bit().constData(), nullptr,
@@ -333,7 +333,7 @@ static GOptionEntry options[] = {
 #ifdef WITH_QT_DBUS
 bool switchToRunningInstance()
 {
-    auto msg = QDBusInterface(PRODUCT_NAMESPACE, "/org/softus/Beryllium/Main",
+    auto const& msg = QDBusInterface(PRODUCT_NAMESPACE, "/org/softus/Beryllium/Main",
             "org.softus.beryllium.Main")
          .call("startStudy", accessionNumber, patientId, patientName, patientSex, patientBirthdate,
                physician, studyDescription, !!autoStart);
@@ -384,7 +384,7 @@ int main(int argc, char *argv[])
 
     // Mysterious abrakadabra to solve glib encoding issue.
     //
-    auto activeLocale = std::locale::global(std::locale(""));
+    auto const& activeLocale = std::locale::global(std::locale(""));
     g_option_context_parse(ctx, &argc, &argv, &err);
     g_option_context_free(ctx);
     std::locale::global(activeLocale);
@@ -422,8 +422,8 @@ int main(int argc, char *argv[])
     // Get rid of vaapisink until somebody get it fixed
     //
     auto registry = gst_registry_get();
-    auto blacklisted = settings.value("gst/blacklisted", DEFAULT_GST_BLACKLISTED).toStringList();
-    foreach (auto elm, blacklisted)
+    auto const& blacklisted = settings.value("gst/blacklisted", DEFAULT_GST_BLACKLISTED).toStringList();
+    foreach (auto const& elm, blacklisted)
     {
         auto feature = gst_registry_lookup_feature(registry, elm.toUtf8());
         if (feature)
@@ -520,7 +520,7 @@ int main(int argc, char *argv[])
                 adapter->startStudy(accessionNumber, patientId, patientName, patientSex,
                     patientBirthdate, physician, studyDescription, !!autoStart);
 
-                auto dbusService = settings.value("connect-to-dbus-service").toStringList();
+                auto const& dbusService = settings.value("connect-to-dbus-service").toStringList();
                 if (dbusService.length() >= 4)
                 {
                     if (!connectToDbusService(adapter,

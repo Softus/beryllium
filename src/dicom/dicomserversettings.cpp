@@ -55,13 +55,13 @@ DicomServerSettings::DicomServerSettings(QWidget *parent) :
     listServers->setSortingEnabled(true);
 
     settings.beginGroup("servers");
-    auto keys = settings.allKeys();
+    auto const& keys = settings.allKeys();
     listServers->setUpdatesEnabled(false);
     listServers->setRowCount(keys.count());
     for (int row = 0; row < keys.count(); ++row)
     {
         auto item = new QTableWidgetItem(keys[row]);
-        auto values = settings.value(keys[row]).toStringList();
+        auto const& values = settings.value(keys[row]).toStringList();
         listServers->setItem(row, 0, item);
         item->setData(Qt::UserRole, values);
         updateColumns(row, values);
@@ -132,7 +132,7 @@ void DicomServerSettings::onAddClicked()
         auto item = new QTableWidgetItem(dlg.name());
         listServers->setItem(row, 0, item);
 
-        auto values = dlg.values();
+        auto const& values = dlg.values();
         item->setData(Qt::UserRole, values);
         updateColumns(row, values);
         updateServerList();
@@ -146,7 +146,7 @@ void DicomServerSettings::onEditClicked()
     dlg.setValues(item->text(), item->data(Qt::UserRole).toStringList());
     if (dlg.exec())
     {
-        auto values = dlg.values();
+        auto const& values = dlg.values();
         item->setData(Qt::UserRole, values);
         item->setText(dlg.name());
         updateColumns(item->row(), values);

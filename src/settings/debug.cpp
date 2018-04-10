@@ -55,7 +55,7 @@ DebugSettings::DebugSettings(QWidget *parent)
         DEFAULT_GST_DEBUG_LEVEL).toInt());
     for (int i = GST_LEVEL_ERROR; i < GST_LEVEL_COUNT; ++i)
     {
-        auto name = QString::fromUtf8(gst_debug_level_get_name(GstDebugLevel(i)));
+        auto const& name = QString::fromUtf8(gst_debug_level_get_name(GstDebugLevel(i)));
         if (name.isEmpty())
         {
             // For some reason, GstDebugLevel contains gaps
@@ -105,10 +105,10 @@ DebugSettings::DebugSettings(QWidget *parent)
     auto layoutDicom = new QFormLayout;
 
     layoutDicom->addRow(tr("Log l&evel"), cbDicomLogLevel = new QComboBox);
-    auto dicomDebugLevel = settings.value("dcmtk-log-level", DEFAULT_DCMTK_DEBUG_LEVEL).toString();
+    auto const& dicomDebugLevel = settings.value("dcmtk-log-level", DEFAULT_DCMTK_DEBUG_LEVEL).toString();
     for (size_t i = 0; i < sizeof(levels)/sizeof(levels[0]); ++i)
     {
-        auto name = QString::fromStdString(
+        auto const& name = QString::fromStdString(
             log4cplus::getLogLevelManager().toString(levels[i]).c_str());
         cbDicomLogLevel->addItem(name);
         if (dicomDebugLevel == name)

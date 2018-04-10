@@ -63,7 +63,7 @@ VideoRecordSettings::VideoRecordSettings(QWidget *parent)
     grpRecordLog->setChecked(settings.value("enable-video").toBool());
     grpRecordLog->setLayout(layoutLog);
 
-    auto elm = QGst::ElementFactory::make("multifilesink");
+    auto const& elm = QGst::ElementFactory::make("multifilesink");
     if (elm && elm->findProperty("max-file-size"))
     {
         layoutLog->addRow(checkMaxVideoSize = new QCheckBox(tr("&Split files by")),
@@ -129,7 +129,7 @@ void VideoRecordSettings::save(QSettings& settings)
     auto useDetection = grpMotionDetection->isChecked();
     if (useDetection)
     {
-        auto elm = QGst::ElementFactory::make("motioncells");
+        auto const& elm = QGst::ElementFactory::make("motioncells");
         if (elm.isNull() && QMessageBox::question(this, windowTitle()
           , tr("Motion detection requires the opencv plugin which is not found.\n" \
                "Are you want to continue?")

@@ -42,13 +42,13 @@ UiSettings::UiSettings(QWidget *parent)
     cbLanguage->addItem(tr("(auto)"), "");
     cbLanguage->addItem(tr("english (en)"), "en");
 
-    auto currentLocale = settings.value("locale").toString();
+    auto const& currentLocale = settings.value("locale").toString();
     QDir translations(TRANSLATIONS_FOLDER);
-    foreach (auto file, translations.entryList(QStringList(PRODUCT_SHORT_NAME "_*.qm")))
+    foreach (auto const& file, translations.entryList(QStringList(PRODUCT_SHORT_NAME "_*.qm")))
     {
         auto start = file.indexOf('_') + 1;
         auto end = file.indexOf('.', start);
-        auto localeName = file.mid(start, end - start);
+        auto const& localeName = file.mid(start, end - start);
         QLocale locale(localeName);
         cbLanguage->addItem(tr("%1 (%2)").arg(locale.nativeLanguageName()).arg(localeName),
             localeName);
@@ -57,7 +57,7 @@ UiSettings::UiSettings(QWidget *parent)
     layoutMain->addRow(tr("&Language"), cbLanguage);
 
     cbIconSet = new QComboBox;
-    auto currentIconSet = settings.value("icon-set", DEFAULT_ICON_SET).toString();
+    auto const& currentIconSet = settings.value("icon-set", DEFAULT_ICON_SET).toString();
     QStringList iconSetNames;
     iconSetNames << tr("(auto)") << tr("light") << tr("dark");
     QStringList iconSetValues;

@@ -47,7 +47,7 @@
 
 static void ensurePathExist(const QString& filePath)
 {
-    auto dir = QFileInfo(filePath).dir();
+    auto const& dir = QFileInfo(filePath).dir();
     if (!dir.mkpath("."))
     {
         qDebug() << "Failed to create folder" << dir.absolutePath() << errno;
@@ -220,23 +220,23 @@ QString appendVideo
                             [clip writer]
 
 */
-    auto rtpPayDef       = settings.value("rtp-payloader",  DEFAULT_RTP_PAYLOADER).toString();
-    auto rtpPayParams    = settings.value(rtpPayDef + "-parameters").toString();
-    auto rtpSinkDef      = settings.value("rtp-sink",       DEFAULT_RTP_SINK).toString();
-    auto rtpSinkParams   = settings.value(rtpSinkDef + "-parameters").toString();
+    auto const& rtpPayDef       = settings.value("rtp-payloader",  DEFAULT_RTP_PAYLOADER).toString();
+    auto const& rtpPayParams    = settings.value(rtpPayDef + "-parameters").toString();
+    auto const& rtpSinkDef      = settings.value("rtp-sink",       DEFAULT_RTP_SINK).toString();
+    auto const& rtpSinkParams   = settings.value(rtpSinkDef + "-parameters").toString();
 
-    auto rtpClients      = settings.value("rtp-clients").toString();
-    auto enableRtp       = !rtpSinkDef.isEmpty() && !rtpClients.isEmpty()
+    auto const& rtpClients      = settings.value("rtp-clients").toString();
+    auto const& enableRtp       = !rtpSinkDef.isEmpty() && !rtpClients.isEmpty()
                             && settings.value("enable-rtp").toBool();
-    auto httpSinkDef     = settings.value("http-sink",      DEFAULT_HTTP_SINK).toString();
-    auto enableHttp      = !httpSinkDef.isEmpty() && settings.value("enable-http").toBool();
-    auto httpPushUrl     = settings.value("http-push-url").toString();
-    auto httpSinkParams  = settings.value(httpSinkDef + "-parameters").toString();
+    auto const& httpSinkDef     = settings.value("http-sink",      DEFAULT_HTTP_SINK).toString();
+    auto const& enableHttp      = !httpSinkDef.isEmpty() && settings.value("enable-http").toBool();
+    auto const& httpPushUrl     = settings.value("http-push-url").toString();
+    auto const& httpSinkParams  = settings.value(httpSinkDef + "-parameters").toString();
 
-    auto rtmpSinkDef     = settings.value("rtmp-sink",      DEFAULT_RTMP_SINK).toString();
-    auto enableRtmp      = !rtmpSinkDef.isEmpty() && settings.value("enable-rtmp").toBool();
-    auto rtmpPushUrl     = settings.value("rtmp-push-url").toString();
-    auto rtmpSinkParams  = settings.value(rtmpSinkDef + "-parameters").toString();
+    auto const& rtmpSinkDef     = settings.value("rtmp-sink",      DEFAULT_RTMP_SINK).toString();
+    auto const& enableRtmp      = !rtmpSinkDef.isEmpty() && settings.value("enable-rtmp").toBool();
+    auto const& rtmpPushUrl     = settings.value("rtmp-push-url").toString();
+    auto const& rtmpSinkParams  = settings.value(rtmpSinkDef + "-parameters").toString();
 
     pipe.append(" ! tee name=videosplitter");
     if (enableRtp || enableRtmp || enableHttp || enableVideoLog)
@@ -288,18 +288,18 @@ QString appendVideo
 QString buildDetectMotion(const QSettings& settings)
 {
     QString pipe;
-    auto detectMotion = settings.value("detect-motion", DEFAULT_MOTION_DETECTION).toBool();
+    auto const& detectMotion = settings.value("detect-motion", DEFAULT_MOTION_DETECTION).toBool();
 
     if (detectMotion)
     {
-        auto motionDebug       = settings.value("motion-debug", false).toString();
-        auto motionSensitivity = settings.value("motion-sensitivity",
+        auto const& motionDebug       = settings.value("motion-debug", false).toString();
+        auto const& motionSensitivity = settings.value("motion-sensitivity",
                                     DEFAULT_MOTION_SENSITIVITY).toString();
-        auto motionThreshold   = settings.value("motion-threshold",
+        auto const& motionThreshold   = settings.value("motion-threshold",
                                     DEFAULT_MOTION_THRESHOLD).toString();
-        auto motionMinFrames   = settings.value("motion-min-frames",
+        auto const& motionMinFrames   = settings.value("motion-min-frames",
                                     DEFAULT_MOTION_MIN_FRAMES).toString();
-        auto motionGap         = settings.value("motion-gap",
+        auto const& motionGap         = settings.value("motion-gap",
                                     DEFAULT_MOTION_GAP).toString();
 
         pipe.append(" ! motioncells name=motion-detector display=").append(motionDebug)
@@ -324,26 +324,26 @@ QString Pipeline::buildPipeline
     //
     QString pipe;
 
-    auto deviceDef      = settings.value("device").toString();
-    auto deviceType     = settings.value("device-type", PLATFORM_SPECIFIC_VIDEO_SOURCE).toString();
-    auto inputChannel   = settings.value("video-channel").toString();
-    auto formatDef      = settings.value("format").toString();
-    auto sizeDef        = settings.value("size").toSize();
-    auto srcDeinterlace = settings.value("video-deinterlace").toBool();
-    auto srcParams      = settings.value(deviceType + "-parameters").toString();
-    alias               = settings.value("alias").toString();
-    modality            = settings.value("modality").toString();
+    auto const& deviceDef      = settings.value("device").toString();
+    auto const& deviceType     = settings.value("device-type", PLATFORM_SPECIFIC_VIDEO_SOURCE).toString();
+    auto const& inputChannel   = settings.value("video-channel").toString();
+    auto const& formatDef      = settings.value("format").toString();
+    auto const& sizeDef        = settings.value("size").toSize();
+    auto const& srcDeinterlace = settings.value("video-deinterlace").toBool();
+    auto const& srcParams      = settings.value(deviceType + "-parameters").toString();
+    alias                      = settings.value("alias").toString();
+    modality                   = settings.value("modality").toString();
 
     if (alias.isEmpty())
     {
         alias = QString("src%1").arg(index);
     }
 
-    auto colorConverter = QString(" ! ").append(
+    auto const& bitrate        = settings.value("bitrate").toString();
+    auto const& colorConverter = QString(" ! ").append(
                           settings.value("color-converter", "videoconvert").toString());
-    auto videoCodec     = settings.value("video-encoder").toString();
-    auto bitrate        = settings.value("bitrate").toString();
 
+    auto videoCodec = settings.value("video-encoder").toString();
     if (videoCodec.isEmpty())
     {
         bool useAv = QGst::ElementFactory::find("avenc_mpeg2video");
@@ -372,11 +372,11 @@ QString Pipeline::buildPipeline
         //
         if (!inputChannel.isEmpty())
         {
-            foreach (auto screen, QGuiApplication::screens())
+            foreach (auto const& screen, QGuiApplication::screens())
             {
                 if (inputChannel == screen->name())
                 {
-                    auto geom = screen->geometry();
+                    auto const& geom = screen->geometry();
                     pipe = pipe.append(" startx=%1 starty=%2 endx=%3 endy=%4")
                         .arg(geom.left()).arg(geom.top()).arg(geom.right()).arg(geom.bottom());
                     break;
@@ -391,11 +391,11 @@ QString Pipeline::buildPipeline
         //
         if (!inputChannel.isEmpty())
         {
-            foreach (auto screen, QGuiApplication::screens())
+            foreach (auto const& screen, QGuiApplication::screens())
             {
                 if (inputChannel == screen->name())
                 {
-                    auto geom = screen->geometry();
+                    auto const& geom = screen->geometry();
                     pipe = pipe.append(" x=%1 y=%2 width=%3 height=%4")
                         .arg(geom.x()).arg(geom.y()).arg(geom.width()).arg(geom.height());
                     break;
@@ -1057,7 +1057,7 @@ void Pipeline::onBusMessage(const QGst::MessagePtr& msg)
         //
         if (msg->source() == pipeline)
         {
-            foreach (auto w, qApp->topLevelWidgets())
+            foreach (auto const& w, qApp->topLevelWidgets())
             {
                 w->update();
             }

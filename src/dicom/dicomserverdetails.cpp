@@ -100,7 +100,7 @@ void DicomServerDetails::onClickTest()
 {
     QWaitCursor wait(this);
     DcmClient client(UID_VerificationSOPClass);
-    auto status = client.cEcho(textAet->text(),
+    auto const& status = client.cEcho(textAet->text(),
        textIp->text().append(':').append(QString::number(spinPort->value())), spinTimeout->value());
     QMessageBox::information(this, windowTitle(), tr("Server check result:\n\n%1\n").arg(status));
 }

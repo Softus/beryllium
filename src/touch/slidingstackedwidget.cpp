@@ -152,8 +152,8 @@ void SlidingStackedWidgetPrivate::slideInWgt(QWidget* next, bool rightToLeft)
         offsetx = -offsetx;
     }
 
-    auto currPos = curr->pos();
-    auto nextPos = next->pos();
+    auto const& currPos = curr->pos();
+    auto const& nextPos = next->pos();
 
     // Re-position the next widget outside/aside of the display area
     //

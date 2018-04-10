@@ -80,7 +80,7 @@ WorklistQuerySettings::WorklistQuerySettings(QWidget *parent) :
     cbAeTitle = new QComboBox;
     cbAeTitle->setEditable(true);
     checkAeTitle = new QCheckBox(tr("&AE title"));
-    auto aet = settings.value("worklist-aet").toString();
+    auto const& aet = settings.value("worklist-aet").toString();
     if (!aet.isEmpty())
     {
         checkAeTitle->setChecked(true);
@@ -92,7 +92,7 @@ WorklistQuerySettings::WorklistQuerySettings(QWidget *parent) :
     cbModality = new QComboBox;
     cbModality->setEditable(true);
     checkModality = new QCheckBox(tr("&Modality"));
-    auto modality = settings.value("worklist-modality").toString();
+    auto const& modality = settings.value("worklist-modality").toString();
     if (!modality.isEmpty())
     {
         checkModality->setChecked(true);

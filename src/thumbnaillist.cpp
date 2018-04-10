@@ -55,7 +55,7 @@ void ThumbnailList::startDrag(Qt::DropActions /*supportedActions*/)
     data->setData("remove", QByteArray());
     drag->setMimeData(data);
 
-    auto pm = item->icon().pixmap(item->sizeHint());
+    auto const& pm = item->icon().pixmap(item->sizeHint());
     drag->setPixmap(pm.copy());
     drag->setHotSpot(pm.rect().center());
 

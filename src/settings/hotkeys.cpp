@@ -39,7 +39,7 @@ newItem
     )
 {
     auto key = settings.value(settingsKey, defaultValue).toInt();
-    auto item = new QTreeWidgetItem(QStringList()
+    auto const& item = new QTreeWidgetItem(QStringList()
        << title
        << SmartShortcut::toString(key)
        << (SmartShortcut::isGlobal(key)? "*": "")

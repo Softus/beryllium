@@ -25,7 +25,7 @@ const QIcon DarkThemeStyle::invertIcon(const QIcon& icon)
 {
     QIcon inverted;
 
-    foreach (auto size, icon.availableSizes())
+    foreach (auto const& size, icon.availableSizes())
     {
         inverted.addPixmap(invertPixmap(icon.pixmap(size)));
     }

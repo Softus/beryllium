@@ -40,7 +40,7 @@
 static QTreeWidgetItem*
 newItem(const QString& name, const QString& device, const QVariantMap& parameters, bool enabled)
 {
-    auto title = name.isEmpty()? device: device + " (" + name + ")";
+    auto const& title = name.isEmpty()? device: device + " (" + name + ")";
     auto item = new QTreeWidgetItem(QStringList()
                                     << title
                                     << parameters.value("modality").toString()
@@ -119,7 +119,7 @@ void VideoSources::addItem(const QSettings& settings)
     bool    enabled = true;
     QVariantMap parameters;
 
-    foreach (auto key, settings.childKeys())
+    foreach (auto const& key, settings.childKeys())
     {
         if (key == "device")
         {
@@ -165,11 +165,11 @@ void VideoSources::updateDeviceList()
             auto device = static_cast<GstDevice *>(devices->data);
             {
                 auto name = gst_device_get_display_name(device);
-                auto src = QGst::ElementPtr::wrap(gst_device_create_element(device, name));
+                auto const& src = QGst::ElementPtr::wrap(gst_device_create_element(device, name));
                 g_free(name);
 
-                auto deviceType = QGlib::Type::fromInstance(src).name().mid(3).toLower();
-                auto deviceIdPropName = getDeviceIdPropName(deviceType);
+                auto const& deviceType = QGlib::Type::fromInstance(src).name().mid(3).toLower();
+                auto const& deviceIdPropName = getDeviceIdPropName(deviceType);
 
                 if (deviceIdPropName.isEmpty())
                 {
@@ -177,8 +177,8 @@ void VideoSources::updateDeviceList()
                 }
                 else
                 {
-                    auto deviceId = src->property(deviceIdPropName.toUtf8()).toString();
-                    auto deviceName = src->property("name").toString();
+                    auto const& deviceId = src->property(deviceIdPropName.toUtf8()).toString();
+                    auto const& deviceName = src->property("name").toString();
                     addDevice(deviceId, deviceName, deviceType);
                 }
             }
@@ -232,10 +232,10 @@ void VideoSources::addDevice
     , const QString& deviceType
     )
 {
-    foreach (auto item, listSources->findItems(deviceId, Qt::MatchStartsWith))
+    foreach (auto const& item, listSources->findItems(deviceId, Qt::MatchStartsWith))
     {
-        auto currDeviceId   = item->data(0, Qt::UserRole).toString();
-        auto currDeviceName = item->data(1, Qt::UserRole).toString();
+        auto const& currDeviceId   = item->data(0, Qt::UserRole).toString();
+        auto const& currDeviceName = item->data(1, Qt::UserRole).toString();
 
         if (currDeviceName == deviceName && currDeviceId == deviceId)
         {
@@ -244,7 +244,7 @@ void VideoSources::addDevice
         }
     }
 
-    auto alias = QString("src%1").arg(listSources->topLevelItemCount());
+    auto const& alias = QString("src%1").arg(listSources->topLevelItemCount());
     QVariantMap parameters;
     parameters["alias"] = alias;
     parameters["device-type"] = deviceType;
@@ -324,7 +324,7 @@ void VideoSources::save(QSettings& settings)
         settings.setValue("device", item->data(0, Qt::UserRole));
         settings.setValue("device-name", item->data(1, Qt::UserRole));
         settings.setValue("enabled", item->checkState(0) == Qt::Checked);
-        auto parameters = item->data(2, Qt::UserRole).toMap();
+        auto const& parameters = item->data(2, Qt::UserRole).toMap();
         for (auto p = parameters.begin(); p != parameters.end(); ++p)
         {
             settings.setValue(p.key(), p.value());

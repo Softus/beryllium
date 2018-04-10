@@ -117,14 +117,14 @@ static void BuildCFindDataSet(DcmDataset& ds)
             {
                 auto deltaDays = settings.value("worklist-delta",
                     DEFAULT_WORKLIST_DAY_DELTA).toInt();
-                auto range = QDate::currentDate().addDays(-deltaDays).toString("yyyyMMdd") + "-" +
+                auto const& range = QDate::currentDate().addDays(-deltaDays).toString("yyyyMMdd") + "-" +
                     QDate::currentDate().addDays(+deltaDays).toString("yyyyMMdd");
                 sps->putAndInsertString(DCM_ScheduledProcedureStepStartDate, range.toUtf8());
             }
             break;
         case 3: // From .. to
             {
-                auto range = settings.value("worklist-from").toDate().toString("yyyyMMdd") + "-" +
+                auto const& range = settings.value("worklist-from").toDate().toString("yyyyMMdd") + "-" +
                     settings.value("worklist-to").toDate().toString("yyyyMMdd");
                 sps->putAndInsertString(DCM_ScheduledProcedureStepStartDate, range.toUtf8());
             }
@@ -145,7 +145,7 @@ static void BuildCStoreDataSet
     , const QString& seriesUID
     )
 {
-    auto now = QDateTime::currentDateTime();
+    auto const& now = QDateTime::currentDateTime();
 
     if (patientDs.findAndInsertCopyOfElement(DCM_SpecificCharacterSet, &cStoreDs).bad())
     {
@@ -169,13 +169,13 @@ static void BuildCStoreDataSet
 
 static void BuildNCreateDataSet(/*const*/ DcmDataset& patientDs, DcmDataset& nCreateDs)
 {
-    QDateTime now = QDateTime::currentDateTime();
+    auto const& now = QDateTime::currentDateTime();
     QSettings settings;
     settings.beginGroup("dicom");
 
-    auto modality = settings.value("modality", DEFAULT_MODALITY).toString().toUpper().toUtf8();
-    auto issuer = settings.value("issuer", DEFAULT_ISSUER).toString().toUtf8();
-    QString aet = settings.value("aet", qApp->applicationName().toUpper()).toString();
+    auto const& modality = settings.value("modality", DEFAULT_MODALITY).toString().toUpper().toUtf8();
+    auto const& issuer = settings.value("issuer", DEFAULT_ISSUER).toString().toUtf8();
+    auto const& aet = settings.value("aet", qApp->applicationName().toUpper()).toString();
 
     nCreateDs.putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 192"); // UTF-8
     CopyPatientData(&patientDs, &nCreateDs);
@@ -303,8 +303,8 @@ void DcmClient::loadCallback(void *callbackData,
             char* val = nullptr;
             if (dset->findAndGetElement(keys[i], elm, true).good() && elm->getString(val).good())
             {
-                auto str = QString::fromUtf8(val);
-                auto tranlated = translateToCyrillic(str);
+                auto const& str = QString::fromUtf8(val);
+                auto const& tranlated = translateToCyrillic(str);
                 //qDebug() << str << " => " << tranlated;
                 elm->putString(tranlated.toUtf8().constData());
             }
@@ -325,9 +325,9 @@ void DcmClient::abort()
 
 T_ASC_Parameters* DcmClient::initAssocParams(const QString& server, const char* transferSyntax)
 {
-    auto srvName = QString("servers/").append(server);
+    auto const& srvName = QString("servers/").append(server);
     QSettings settings;
-    QString missedParameter = tr("Required settings parameter %1 is missing");
+    auto const& missedParameter = tr("Required settings parameter %1 is missing");
 
     // Format is server=AE_TITLE,host,port,timeout
     //
@@ -338,7 +338,7 @@ T_ASC_Parameters* DcmClient::initAssocParams(const QString& server, const char* 
         return nullptr;
     }
 
-    auto peerAet = values.takeFirst();
+    auto const& peerAet = values.takeFirst();
 
     auto peerAddress = values.isEmpty()? peerAet.toLower(): values.takeFirst();
     peerAddress.append(':').append(values.isEmpty()
@@ -840,13 +840,13 @@ bool DcmClient::sendToServer
         translateDcmObjectToLatin(dsPatient);
     }
 
-    foreach (auto server, settings.value("storage-servers").toStringList())
+    foreach (auto const& server, settings.value("storage-servers").toStringList())
     {
         for (auto i = 0; !pdlg.wasCanceled() && i < listFiles.count(); ++i)
         {
-            auto file = listFiles[i];
-            auto dir = file.dir();
-            auto filePath = file.absoluteFilePath();
+            auto const& file = listFiles[i];
+            auto const& dir = file.dir();
+            auto const& filePath = file.absoluteFilePath();
             if (QFile::exists(dir.filePath(file.completeBaseName())))
             {
                 // Skip clip thumbnail
@@ -854,10 +854,10 @@ bool DcmClient::sendToServer
                 continue;
             }
 
-            auto mimeType = typeDetect(filePath);
+            auto const& mimeType = typeDetect(filePath);
             if (mimeType.startsWith("video/"))
             {
-                auto thumbnailFileTemplate = QStringList("." + file.fileName() + ".*");
+                auto const& thumbnailFileTemplate = QStringList("." + file.fileName() + ".*");
                 auto isClip = !dir.entryList(thumbnailFileTemplate, QDir::Hidden | QDir::Files)
                     .isEmpty();
 

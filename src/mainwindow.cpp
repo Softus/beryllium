@@ -187,7 +187,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    foreach (auto p, pipelines)
+    foreach (auto const& p, pipelines)
     {
         delete p;
     }
@@ -522,8 +522,8 @@ static QString fixFileName(QString str)
 
 QString MainWindow::replace(QString str, int seqNo)
 {
-    auto nn = seqNo >= 10? QString::number(seqNo): QString("0").append('0' + seqNo);
-    auto ts = QDateTime::currentDateTime();
+    auto const& nn = seqNo >= 10? QString::number(seqNo): QString("0").append('0' + seqNo);
+    auto const& ts = QDateTime::currentDateTime();
 
     return str
         .replace("%an%",        accessionNumber,     Qt::CaseInsensitive)
@@ -571,7 +571,7 @@ bool MainWindow::checkPipelines()
             return false;
         }
 
-        auto alias = settings.value("alias").toString();
+        auto const& alias = settings.value("alias").toString();
         if (pipelines[nPipeline]->index != i || pipelines[nPipeline]->alias != alias)
         {
             return false;
@@ -592,7 +592,7 @@ Pipeline* MainWindow::findPipeline(const QString& alias)
         return nullptr;
     }
 
-    foreach (auto p, pipelines)
+    foreach (auto const& p, pipelines)
     {
         if (p->alias == alias)
         {
@@ -642,7 +642,7 @@ void MainWindow::rebuildPipelines()
 {
     activePipeline = nullptr;
 
-    foreach (auto p, pipelines)
+    foreach (auto const& p, pipelines)
     {
         delete p;
     }
@@ -694,7 +694,7 @@ bool MainWindow::applySettings()
     {
         // No new pipelines, just reconfigure (if need) all existing
         //
-        foreach (auto p, pipelines)
+        foreach (auto const& p, pipelines)
         {
             p->updatePipeline();
         }
@@ -707,7 +707,7 @@ bool MainWindow::applySettings()
     QSettings settings;
 
     bool allPipelinesAreReady = false;
-    foreach (auto p, pipelines)
+    foreach (auto const& p, pipelines)
     {
         allPipelinesAreReady = p->pipeline;
         if (!allPipelinesAreReady)
@@ -859,10 +859,10 @@ void MainWindow::updateOutputPath()
     QSettings settings;
     settings.beginGroup("storage");
 
-    auto root = settings.value("output-path", DEFAULT_OUTPUT_PATH).toString();
-    auto tpl = settings.value("folder-template", DEFAULT_FOLDER_TEMPLATE).toString();
-    auto path = replace(root + tpl, studyNo);
-    auto unique = settings.value("output-unique", DEFAULT_OUTPUT_UNIQUE).toBool();
+    auto const& root = settings.value("output-path", DEFAULT_OUTPUT_PATH).toString();
+    auto const& tpl = settings.value("folder-template", DEFAULT_FOLDER_TEMPLATE).toString();
+    auto const& path = replace(root + tpl, studyNo);
+    auto const& unique = settings.value("output-unique", DEFAULT_OUTPUT_UNIQUE).toBool();
     outputPath = checkPath(path, unique);
 
     auto videoRoot = settings.value("video-output-path").toString();
@@ -876,7 +876,7 @@ void MainWindow::updateOutputPath()
         videoTpl = tpl;
     }
 
-    auto videoPath = replace(videoRoot + videoTpl, studyNo);
+    auto const& videoPath = replace(videoRoot + videoTpl, studyNo);
 
     // If video path is same as images path, omit checkPath,
     // since it is already checked.
@@ -954,7 +954,7 @@ bool MainWindow::startVideoRecord()
         auto fileTemplate = settings.value("storage/video-template",
             DEFAULT_VIDEO_TEMPLATE).toString();
 
-        foreach (auto p, pipelines)
+        foreach (auto const& p, pipelines)
         {
             auto videoFileName = p->appendVideoTail(videoOutputPath, "video",
                  replace(fileTemplate, studyNo), split);
@@ -972,14 +972,14 @@ bool MainWindow::startVideoRecord()
 
         if (ok)
         {
-            foreach (auto p, pipelines)
+            foreach (auto const& p, pipelines)
             {
                 p->enableVideo(true);
             }
         }
         else
         {
-            foreach (auto p, pipelines)
+            foreach (auto const& p, pipelines)
             {
                 p->removeVideoTail("video");
             }
@@ -1043,7 +1043,7 @@ void MainWindow::onSnapshotClick()
 
 void MainWindow::onSourceSnapshot()
 {
-    foreach (auto p, pipelines)
+    foreach (auto const& p, pipelines)
     {
         if (p->displayWidget == sender())
         {
@@ -1111,7 +1111,7 @@ bool MainWindow::takeSnapshot(Pipeline* pipeline, const QString& imageTemplate)
     {
         // If no pipeline given, use all available
         //
-        foreach (auto p, pipelines)
+        foreach (auto const& p, pipelines)
         {
             settings.setArrayIndex(p->index);
             if (p != activePipeline && settings.value("log-only").toBool())
@@ -1176,7 +1176,7 @@ bool MainWindow::startRecord
         // If no pipeline given, use all available
         //
         settings.beginReadArray("src");
-        foreach (auto p, pipelines)
+        foreach (auto const& p, pipelines)
         {
             settings.setArrayIndex(p->index);
             if (p != activePipeline && settings.value("log-only").toBool())
@@ -1252,7 +1252,7 @@ void MainWindow::stopRecord(Pipeline* pipeline)
     {
         // If no pipeline given, use all available
         //
-        foreach (auto p, pipelines)
+        foreach (auto const& p, pipelines)
         {
             p->stopRecordingVideoClip();
         }
@@ -1292,7 +1292,7 @@ void MainWindow::onPrepareSettingsMenu()
     QSettings settings;
 
     auto menu = static_cast<QMenu*>(sender());
-    foreach (auto action, menu->actions())
+    foreach (auto const& action, menu->actions())
     {
         auto propName = action->data().toString();
         if (!propName.isEmpty())
@@ -1535,7 +1535,7 @@ void MainWindow::onStopStudy()
 
     onRecordStopClick();
 
-    foreach (auto p, pipelines)
+    foreach (auto const& p, pipelines)
     {
         p->removeVideoTail("video");
     }
@@ -1599,7 +1599,7 @@ void MainWindow::onStopStudy()
 
     updateStartButton();
 
-    foreach (auto p, pipelines)
+    foreach (auto const& p, pipelines)
     {
         p->enableEncoder(false);
         p->displayWidget->update();
@@ -1666,7 +1666,7 @@ void MainWindow::onSwapSources(QWidget* src, QWidget* dst)
     }
 
     settings.beginWriteArray("src");
-    foreach (auto p, pipelines)
+    foreach (auto const& p, pipelines)
     {
         settings.setArrayIndex(p->index);
         auto idx = layoutSources->indexOf(p->displayWidget);

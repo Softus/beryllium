@@ -10,7 +10,7 @@
 #define SLIDER_SCALE 20000L
 
 VideoEncodingProgressDialog::VideoEncodingProgressDialog
-    ( QGst::PipelinePtr& pipeline
+    ( const QGst::PipelinePtr &pipeline
     , qint64 duration
     , QWidget* parent
     )
@@ -47,8 +47,8 @@ void VideoEncodingProgressDialog::onBusMessage(const QGst::MessagePtr& message)
         break;
     case QGst::MessageError:
         {
-            auto ex = message.staticCast<QGst::ErrorMessage>()->error();
-            auto obj = message->source();
+            auto const& ex = message.staticCast<QGst::ErrorMessage>()->error();
+            auto const& obj = message->source();
             QString msg;
             if (obj)
             {

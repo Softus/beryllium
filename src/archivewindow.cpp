@@ -112,24 +112,24 @@ static QStringList collectRemovableDrives()
                                        "org.freedesktop.DBus.ObjectManager", "GetManagedObjects"));
     if (objectsReply.isValid())
     {
-        auto objects = objectsReply.value();
+        auto const& objects = objectsReply.value();
         for (auto i = objects.begin(); i != objects.end(); ++i)
         {
-            auto udi = i.key().path();
+            auto const& udi = i.key().path();
             if (!udi.startsWith("/org/freedesktop/UDisks2/block_devices"))
                  continue;
 
-            auto map = i.value();
-            auto block = map["org.freedesktop.UDisks2.Block"];
+            auto const& map = i.value();
+            auto const& block = map["org.freedesktop.UDisks2.Block"];
             if (block.isEmpty() || block["ReadOnly"].toBool())
                 continue;
 
-            auto drivePath = block["Drive"].value<QDBusObjectPath>();
-            auto drive = objects[drivePath]["org.freedesktop.UDisks2.Drive"];
+            auto const& drivePath = block["Drive"].value<QDBusObjectPath>();
+            auto const& drive = objects[drivePath]["org.freedesktop.UDisks2.Drive"];
             if (drive.isEmpty() || !drive["Ejectable"].toBool())
                 continue;
 
-            auto fs = map["org.freedesktop.UDisks2.Filesystem"];
+            auto const& fs = map["org.freedesktop.UDisks2.Filesystem"];
             if (fs.isEmpty())
                 continue;
 
@@ -158,11 +158,11 @@ static QStringList collectRemovableDrives()
     if (reply.isValid())
     {
         QList<QDBusObjectPath> removableDrives;
-        auto paths = reply.value();
+        auto const& paths = reply.value();
 
         // Collect all removable drives
         //
-        foreach (auto path, paths)
+        foreach (auto const& path, paths)
         {
             QDBusInterface iface("org.freedesktop.UDisks", path.path(),
                 "org.freedesktop.DBus.Properties", bus);
@@ -179,7 +179,7 @@ static QStringList collectRemovableDrives()
 
         // Now find all partitions belongs to removable drives collected before.
         //
-        foreach (auto path, paths)
+        foreach (auto const& path, paths)
         {
             QDBusInterface iface("org.freedesktop.UDisks", path.path(),
                 "org.freedesktop.DBus.Properties", bus);
@@ -399,9 +399,9 @@ ArchiveWindow::ArchiveWindow(QWidget *parent)
 
 #ifdef WITH_QT_DBUS
     auto bus = QDBusConnection::systemBus();
-    auto svc = "org.freedesktop.UDisks2";
-    auto path = "/org/freedesktop/UDisks2";
-    auto iface = "org.freedesktop.DBus.ObjectManager";
+    auto const& svc = "org.freedesktop.UDisks2";
+    auto const& path = "/org/freedesktop/UDisks2";
+    auto const& iface = "org.freedesktop.DBus.ObjectManager";
     if (bus.connect(svc, path, iface, "InterfacesAdded",  this,
             SLOT(InterfacesAdded(QDBusObjectPath,QVariantMapMap)))
         && bus.connect(svc, path, iface, "InterfacesRemoved",  this,
@@ -536,11 +536,11 @@ void ArchiveWindow::onRestoreClick()
 
 void ArchiveWindow::onUpFolderClick()
 {
-    auto pathActions = barPath->actions();
-    auto size = pathActions.size();
+    auto const& pathActions = barPath->actions();
+    auto const& size = pathActions.size();
     if (size > 1)
     {
-        auto currFolderName = curr.dirName();
+        auto const& currFolderName = curr.dirName();
         setPath(pathActions.at(pathActions.size() - 2)->data().toString());
         selectFile(currFolderName);
     }
@@ -557,7 +557,7 @@ void ArchiveWindow::createSubDirMenu(QAction* parentAction)
     QDir dir(parentAction->data().toString());
     auto menu = new QMenu;
 
-    foreach (auto subDir, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs))
+    foreach (auto const& subDir, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs))
     {
         auto action = menu->addAction(subDir.fileName(), this, SLOT(selectPath()));
         action->setData(subDir.absoluteFilePath());
@@ -576,7 +576,7 @@ void ArchiveWindow::updatePath()
     stopMedia();
 
     QAction* prev = nullptr;
-    QDir dir = curr;
+    auto dir = curr;
 
     auto group = new QActionGroup(barPath);
     connect(group, SIGNAL(triggered(QAction*)), this, SLOT(selectPath(QAction*)));
@@ -602,9 +602,9 @@ void ArchiveWindow::updatePath()
 
 void ArchiveWindow::preparePathPopupMenu()
 {
-    auto currPath = curr.absolutePath();
+    auto const& currPath = curr.absolutePath();
     auto menu = static_cast<QMenu*>(sender());
-    foreach (auto action, menu->actions())
+    foreach (auto const& action, menu->actions())
     {
         action->setChecked(currPath == action->data().toString());
         createSubDirMenu(action);
@@ -620,7 +620,7 @@ static QString addStatusOverlay
 {
     //qDebug() << filePath;
 
-    auto archiveStatus = getFileExtAttribute(filePath, attr);
+    auto const& archiveStatus = getFileExtAttribute(filePath, attr);
     if (!archiveStatus.isEmpty())
     {
         QPixmap pmOverlay;
@@ -633,8 +633,8 @@ static QString addStatusOverlay
             pmOverlay = QMessageBox::standardIcon(QMessageBox::Critical);
         }
 
-        auto sizes = icon.availableSizes();
-        auto size = sizes.empty()? QSize(128,128): sizes.first();
+        auto const& sizes = icon.availableSizes();
+        auto const& size = sizes.empty()? QSize(128,128): sizes.first();
         auto pm = icon.pixmap(size);
         QPainter painter(&pm);
         painter.setOpacity(0.75);
@@ -659,7 +659,7 @@ void ArchiveWindow::updateList()
     listFiles->clear();
     auto filter = QDir::AllEntries | QDir::NoDotAndDotDot;
 
-    foreach (QFileInfo fi, curr.entryInfoList(filter, QDir::Time | QDir::Reversed))
+    foreach (const QFileInfo& fi, curr.entryInfoList(filter, QDir::Time | QDir::Reversed))
     {
         //qDebug() << fi.absoluteFilePath();
         QIcon icon;
@@ -683,10 +683,10 @@ void ArchiveWindow::updateList()
         }
         else
         {
-            auto caps = typeDetect(fi.absoluteFilePath());
+            auto const& caps = typeDetect(fi.absoluteFilePath());
             if (caps.startsWith("video/"))
             {
-                auto thumbnailList = curr.entryInfoList(QStringList("." + fi.fileName() + ".*"),
+                auto const& thumbnailList = curr.entryInfoList(QStringList("." + fi.fileName() + ".*"),
                     QDir::Hidden | QDir::Files);
                 if (thumbnailList.isEmpty() || !pm.load(thumbnailList.first().absoluteFilePath()))
                 {
@@ -772,7 +772,7 @@ void ArchiveWindow::selectPath()
 
 void ArchiveWindow::selectFile(const QString& fileName)
 {
-    auto items = listFiles->findItems(fileName, Qt::MatchStartsWith);
+    auto const& items = listFiles->findItems(fileName, Qt::MatchStartsWith);
     if (!items.isEmpty())
     {
         listFiles->clearSelection();
@@ -899,7 +899,7 @@ void static removeFileOrFolder(const QString& path)
     }
 
     QDir dir(path);
-    foreach (auto file, dir.entryList(
+    foreach (auto const& file, dir.entryList(
         QDir::AllEntries | QDir::Hidden | QDir::System | QDir::NoDotAndDotDot))
     {
         removeFileOrFolder(dir.absoluteFilePath(file));
@@ -914,7 +914,7 @@ void ArchiveWindow::reallyDeleteFiles()
         return;
     }
 
-    foreach (auto file, deleteLater)
+    foreach (auto const& file, deleteLater)
     {
         removeFileOrFolder(file);
     }
@@ -940,7 +940,7 @@ void ArchiveWindow::queueFileDeletion(QListWidgetItem* item)
     // Delete both the clip and the thumbnail
     //
     deleteLater << curr.absoluteFilePath(item->text());
-    auto strPreviewFile = item->data(Qt::UserRole).toString();
+    auto const& strPreviewFile = item->data(Qt::UserRole).toString();
     if (!strPreviewFile.isEmpty())
     {
         deleteLater << strPreviewFile;
@@ -958,7 +958,7 @@ void ArchiveWindow::onListItemDraggedOut(QListWidgetItem* item)
 
 void ArchiveWindow::onDeleteClick()
 {
-    auto items = listFiles->selectedItems();
+    auto const& items = listFiles->selectedItems();
 
     if (items.isEmpty())
     {
@@ -977,7 +977,7 @@ void ArchiveWindow::onDeleteClick()
 
     reallyDeleteFiles();
 
-    foreach (auto item, items)
+    foreach (auto const& item, items)
     {
         queueFileDeletion(item);
     }
@@ -1019,7 +1019,7 @@ void ArchiveWindow::onUsbDiskChanged()
 
 void ArchiveWindow::updateUsbStoreButton()
 {
-    auto disks = collectRemovableDrives();
+    auto const& disks = collectRemovableDrives();
     actionUsbStore->setDisabled(disks.empty());
 
     if (actionUsbStore->isEnabled())
@@ -1032,7 +1032,7 @@ void ArchiveWindow::updateUsbStoreButton()
         if (disks.size() > 1)
         {
             menu = new QMenu;
-            foreach (auto disk, disks)
+            foreach (auto const& disk, disks)
             {
                 auto diskLabel = QFileInfo(disk).fileName();
                 if (diskLabel.isEmpty())
@@ -1060,7 +1060,7 @@ static QFileInfoList addFilesRecursively(const QDir& folder)
 {
     auto list = folder.entryInfoList(QDir::Files);
 
-    foreach (auto subFolder, folder.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot))
+    foreach (auto const& subFolder, folder.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot))
     {
         list += addFilesRecursively(QDir(subFolder.absoluteFilePath()));
     }
@@ -1070,14 +1070,14 @@ static QFileInfoList addFilesRecursively(const QDir& folder)
 
 void ArchiveWindow::copyToFolder(const QString& targetPath)
 {
-    auto files = addFilesRecursively(curr);
+    auto const& files = addFilesRecursively(curr);
 
     if (files.empty())
     {
         return;
     }
 
-    auto subDir = root.relativeFilePath(curr.absolutePath());
+    auto const& subDir = root.relativeFilePath(curr.absolutePath());
     QDir targetDir(targetPath);
     targetDir.mkpath(subDir);
     targetDir.cd(subDir);
@@ -1089,8 +1089,8 @@ void ArchiveWindow::copyToFolder(const QString& targetPath)
     bool result = true;
     for (auto i = 0; !pdlg.wasCanceled() && i < files.count(); ++i)
     {
-        auto file = files[i];
-        auto filePath = file.absoluteFilePath();
+        auto const& file = files[i];
+        auto const& filePath = file.absoluteFilePath();
         if (QFile::exists(curr.filePath(file.completeBaseName())))
         {
             // Skip clip thumbnail
@@ -1102,11 +1102,11 @@ void ArchiveWindow::copyToFolder(const QString& targetPath)
         pdlg.setLabelText(tr("Copying '%1' to '%2'")
             .arg(file.fileName(), targetDir.absolutePath()));
         qApp->processEvents();
-        auto targetFileName = targetDir.absoluteFilePath(
+        auto const& targetFileName = targetDir.absoluteFilePath(
             curr.relativeFilePath(file.absoluteFilePath()));
         if (!QFileInfo(targetFileName).dir().mkpath(".") || !QFile::copy(filePath, targetFileName))
         {
-            auto error = QString::fromLocal8Bit(strerror(errno));
+            auto const& error = QString::fromLocal8Bit(strerror(errno));
             setFileExtAttribute(filePath, "usb-status", error);
             if (QMessageBox::Yes != QMessageBox::critical(&pdlg, windowTitle(),
                   tr("Failed to copy '%1' to '%2':\n%3\nContinue?")
@@ -1152,7 +1152,7 @@ void ArchiveWindow::onStoreClick()
     QWaitCursor wait(this);
     PatientDataDialog dlg(true, "archive-store", this);
     DcmDataset patientDs;
-    auto cond = patientDs.loadFile(
+    auto const& cond = patientDs.loadFile(
             curr.absoluteFilePath(".patient.dcm").toLocal8Bit().constData());
     if (cond.good())
     {
@@ -1160,7 +1160,7 @@ void ArchiveWindow::onStoreClick()
     }
     else
     {
-        auto localPatientInfoFile = curr.absoluteFilePath(".patient");
+        auto const& localPatientInfoFile = curr.absoluteFilePath(".patient");
         QSettings patientData(localPatientInfoFile, QSettings::IniFormat);
         dlg.readPatientData(patientData);
     }
@@ -1198,8 +1198,8 @@ void ArchiveWindow::onEditClick()
     }
 
     QSettings settings;
-    auto filePath = curr.absoluteFilePath(listFiles->currentItem()->text());
-    auto editorExecutable = settings.value("video-editor-app",
+    auto const& filePath = curr.absoluteFilePath(listFiles->currentItem()->text());
+    auto const& editorExecutable = settings.value("video-editor-app",
         qApp->applicationFilePath()).toString();
     auto editorSwitches = settings.value("video-editor-switches", QStringList()
         << "--edit-video").toStringList();
@@ -1208,7 +1208,7 @@ void ArchiveWindow::onEditClick()
     if (!QProcess::startDetached(editorExecutable, editorSwitches))
     {
         auto err = tr("Failed to launch ").append(editorExecutable);
-        foreach (auto arg, editorSwitches)
+        foreach (auto const& arg, editorSwitches)
         {
             err.append(' ').append(arg);
         }
@@ -1270,7 +1270,7 @@ void ArchiveWindow::onPlayPauseClick()
 
 void ArchiveWindow::stopMedia()
 {
-    foreach (auto action, barMediaControls->actions())
+    foreach (auto const& action, barMediaControls->actions())
     {
         action->setEnabled(false);
     }
@@ -1299,7 +1299,7 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
 
     stopMedia();
 
-    auto caps = typeDetect(fi.absoluteFilePath());
+    auto const& caps = typeDetect(fi.absoluteFilePath());
     if (caps.isEmpty() || caps.startsWith("application/"))
     {
         return;
@@ -1309,7 +1309,7 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
 
     try
     {
-        auto pipeDef = QString("uridecodebin uri=\"%1\" ! videoconvert" \
+        auto const& pipeDef = QString("uridecodebin uri=\"%1\" ! videoconvert" \
                 " ! %2 " DEFAULT_DISPLAY_SINK " name=displaysink async=0")
             .arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toEncoded().constData())
             .arg(isVideo ? "" : "imagefreeze ! ");
@@ -1337,7 +1337,7 @@ void ArchiveWindow::playMediaFile(const QFileInfo& fi)
     }
 
     actionEdit->setEnabled(isVideo);
-    foreach (auto action, barMediaControls->actions())
+    foreach (auto const& action, barMediaControls->actions())
     {
         action->setEnabled(true);
     }
@@ -1354,7 +1354,7 @@ void ArchiveWindow::onBusMessage(const QGst::MessagePtr& message)
         break;
     case QGst::MessageElement:
         {
-            auto s = message->internalStructure();
+            auto const& s = message->internalStructure();
             if (!s)
             {
                 qDebug() << "Got empty QGst::MessageElement";
@@ -1369,8 +1369,8 @@ void ArchiveWindow::onBusMessage(const QGst::MessagePtr& message)
         break;
     case QGst::MessageError:
         {
-            auto ex = message.staticCast<QGst::ErrorMessage>()->error();
-            auto obj = message->source();
+            auto const& ex = message.staticCast<QGst::ErrorMessage>()->error();
+            auto const& obj = message->source();
             QString msg;
             if (obj)
             {
@@ -1405,7 +1405,7 @@ void ArchiveWindow::onBusMessage(const QGst::MessagePtr& message)
 #ifdef QT_DEBUG
     case QGst::MessageDurationChanged:
         {
-            auto durationQuery = QGst::DurationQuery::create(QGst::FormatTime);
+            auto const& durationQuery = QGst::DurationQuery::create(QGst::FormatTime);
             message->source().staticCast<QGst::Element>()->query(durationQuery);
             qDebug() << "Duration" << durationQuery->format() << durationQuery->duration();
         }
@@ -1449,16 +1449,16 @@ void ArchiveWindow::onStateChangedMessage(const QGst::StateChangedMessagePtr& me
             // Time to adjust framerate
             //
             gint numerator = 0, denominator = 0;
-            auto sink = pipeline->getElementByName("displaysink");
+            auto const& sink = pipeline->getElementByName("displaysink");
             if (sink)
             {
-                auto pad = sink->getStaticPad("sink");
+                auto const& pad = sink->getStaticPad("sink");
                 if (pad)
                 {
-                    auto caps = pad->currentCaps();
+                    auto const& caps = pad->currentCaps();
                     if (caps)
                     {
-                        auto s = caps->internalStructure(0);
+                        auto const& s = caps->internalStructure(0);
                         gst_structure_get_fraction(s.data()->operator const GstStructure *(),
                             "framerate", &numerator, &denominator);
                     }
@@ -1478,7 +1478,7 @@ void ArchiveWindow::onStateChangedMessage(const QGst::StateChangedMessagePtr& me
             // At this time we still don't know, is it a clip or a picture.
             // So, seek a bit forward to figure it out.
             //
-            QGst::SeekEventPtr evt = QGst::SeekEvent::create(
+            auto const& evt = QGst::SeekEvent::create(
                  1.0, QGst::FormatTime, QGst::SeekFlagFlush,
                  QGst::SeekTypeSet, 0,
                  QGst::SeekTypeNone, QGst::ClockTime::None

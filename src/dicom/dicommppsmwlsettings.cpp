@@ -92,7 +92,7 @@ void DicomMppsMwlSettings::onUpdateServers()
         settings.endGroup();
     }
 
-    auto server = cb->currentText();
+    auto const& server = cb->currentText();
     cb->clear();
     cb->addItems(serverNames);
     cb->setCurrentIndex(cb->findText(server));

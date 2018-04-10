@@ -99,7 +99,7 @@ VideoSourceDetails::VideoSourceDetails
     layoutMain->addRow(tr("Frame &size"), listSizes = new QComboBox());
     widgetWithExtraButton(layoutMain, tr("Video &codec"), listVideoCodecs = new QComboBox());
 
-    auto elm = QGst::ElementFactory::make("videorate");
+    auto const& elm = QGst::ElementFactory::make("videorate");
     if (elm && elm->findProperty("max-rate"))
     {
         layoutMain->addRow(checkFps = new QCheckBox(tr("&Limit rate")), spinFps = new QSpinBox());
@@ -171,18 +171,18 @@ VideoSourceDetails::VideoSourceDetails
     setLayout(layoutMain);
 
     bool useAv = QGst::ElementFactory::find("avenc_mpeg2video");
-    auto defaultEncoder = useAv? "avenc_mpeg2video": "ffenc_mpeg2video";
+    auto const& defaultEncoder = useAv? "avenc_mpeg2video": "ffenc_mpeg2video";
 
     // Refill the boxes every time the page is shown
     //
-    auto selectedCodec = updateGstList("video-encoder", defaultEncoder,
+    auto const& selectedCodec = updateGstList("video-encoder", defaultEncoder,
         GST_ELEMENT_FACTORY_TYPE_ENCODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, listVideoCodecs);
     listVideoCodecs->insertItem(0, tr("(none)"));
     if (selectedCodec.isEmpty())
     {
         listVideoCodecs->setCurrentIndex(0);
     }
-    auto selectedMuxer = updateGstList("video-muxer",
+    auto const& selectedMuxer = updateGstList("video-muxer",
         DEFAULT_VIDEO_MUXER,   GST_ELEMENT_FACTORY_TYPE_MUXER, listVideoMuxers);
     listVideoMuxers->insertItem(0, tr("(none)"));
     if (selectedMuxer.isEmpty())
@@ -206,14 +206,14 @@ QString VideoSourceDetails::updateGstList
 {
     cb->clear();
     auto currentIndex = -1;
-    auto currentElement = parameters.value(settingName, def).toString();
+    auto const& currentElement = parameters.value(settingName, def).toString();
     auto extra = parameters.value(QString(settingName)+"-extra").toBool()
         || qApp->queryKeyboardModifiers().testFlag(Qt::ShiftModifier);
     auto elmList = gst_element_factory_list_get_elements(type,
         extra? GST_RANK_NONE: GST_RANK_SECONDARY);
     for (auto curr = elmList; curr; curr = curr->next)
     {
-        auto factory = QGst::ElementFactoryPtr::wrap(GST_ELEMENT_FACTORY(curr->data), true);
+        auto const& factory = QGst::ElementFactoryPtr::wrap(GST_ELEMENT_FACTORY(curr->data), true);
         if (currentElement == factory->name())
         {
             currentIndex = cb->count();
@@ -227,7 +227,7 @@ QString VideoSourceDetails::updateGstList
     if (currentIndex < 0)
     {
         currentIndex = cb->count();
-        auto factory = QGst::ElementFactory::find(currentElement);
+        auto const& factory = QGst::ElementFactory::find(currentElement);
         if (factory)
         {
             cb->addItem(tr("%1: %2").arg(factory->name())
@@ -252,15 +252,15 @@ void VideoSourceDetails::updateDevice(const QString& device)
 {
     int idx = 0;
 
-    auto pipeline = QGst::Pipeline::create();
+    auto const& pipeline = QGst::Pipeline::create();
     if (!pipeline)
     {
         QMessageBox::critical(this, windowTitle(), tr("Failed to create pipeline"));
         return;
     }
 
-    auto deviceType = parameters.value("device-type").toString();
-    auto src = QGst::ElementFactory::make(deviceType);
+    auto const& deviceType = parameters.value("device-type").toString();
+    auto const& src = QGst::ElementFactory::make(deviceType);
     if (!src)
     {
         QMessageBox::critical(this, windowTitle(),
@@ -269,15 +269,15 @@ void VideoSourceDetails::updateDevice(const QString& device)
     }
     pipeline->add(src);
 
-    auto sink = QGst::ElementFactory::make("fakesink");
+    auto const& sink = QGst::ElementFactory::make("fakesink");
     if (sink)
     {
         pipeline->add(sink);
         src->link(sink);
     }
 
-    auto propName = getDeviceIdPropName(deviceType);
-    auto srcPad = src->getStaticPad("src");
+    auto const& propName = getDeviceIdPropName(deviceType);
+    auto const& srcPad = src->getStaticPad("src");
     if (srcPad)
     {
         if (!propName.isEmpty())
@@ -294,7 +294,7 @@ void VideoSourceDetails::updateDevice(const QString& device)
 
         caps = srcPad->allowedCaps();
         qDebug() << caps->toString();
-        auto selectedChannelLabel = selectedChannel.toString();
+        auto const& selectedChannelLabel = selectedChannel.toString();
 
 #ifdef WITH_LIBV4L2
         int fd = src->property("device-fd").toInt();
@@ -309,7 +309,7 @@ void VideoSourceDetails::updateDevice(const QString& device)
             {
                 break;
             }
-            auto label = QString::fromUtf8(reinterpret_cast<const char*>(input.name));
+            auto const& label = QString::fromUtf8(reinterpret_cast<const char*>(input.name));
             if (selectedChannelLabel == label)
             {
                 idx = listChannels->count();
@@ -328,7 +328,7 @@ void VideoSourceDetails::updateDevice(const QString& device)
             }
             else if (deviceType == "videotestsrc")
             {
-                auto pattern = src->findProperty("pattern");
+                auto const& pattern = src->findProperty("pattern");
                 auto cls = G_PARAM_SPEC_ENUM(static_cast<GParamSpec *>(pattern))->enum_class;
                 for (guint i = 0; i < cls->n_values; ++i)
                 {
@@ -345,7 +345,7 @@ void VideoSourceDetails::updateDevice(const QString& device)
                 // For macosx video and screen capture are performed by the same element.
                 // We need to check one additional parameter to find out which one it is.
                 //
-                auto extra = parameters[PLATFORM_SPECIFIC_SCREEN_CAPTURE "-parameters"].toString();
+                auto const& extra = parameters[PLATFORM_SPECIFIC_SCREEN_CAPTURE "-parameters"].toString();
                 if (!extra.contains("capture-screen=true"))
                 {
                     // It's a video source.
@@ -358,13 +358,13 @@ void VideoSourceDetails::updateDevice(const QString& device)
                 else
 #endif
                 {
-                    foreach (auto screen, QGuiApplication::screens())
+                    foreach (auto const& screen, QGuiApplication::screens())
                     {
                         if (selectedChannelLabel == screen->name())
                         {
                             idx = listChannels->count();
                         }
-                        auto geom = screen->geometry();
+                        auto const& geom = screen->geometry();
                         listChannels->addItem(tr("%1 (%2,%3) - (%4,%5)").arg(screen->name())
                                 .arg(geom.left()).arg(geom.top())
                                 .arg(geom.right()).arg(geom.bottom()),
@@ -421,16 +421,16 @@ void VideoSourceDetails::inputChannelChanged(int index)
 
     for (uint i = 0; i < caps->size(); ++i)
     {
-        auto s = caps->internalStructure(i);
-        foreach (auto format, getFormats(s->value("format")))
+        auto const& s = caps->internalStructure(i);
+        foreach (auto const& format, getFormats(s->value("format")))
         {
-            auto formatName = !format.isValid()
+            auto const& formatName = !format.isValid()
                 ? s->name() : s->name().append(",format=").append(valueToString(format));
             if (listFormats->findData(formatName) >= 0)
             {
                 continue;
             }
-            auto displayName = !format.isValid()
+            auto const& displayName = !format.isValid()
                 ? s->name() : s->name().append(" (").append(format.toString()).append(")");
             listFormats->addItem(displayName, formatName);
             if (formatName == selectedFormat)
@@ -462,7 +462,7 @@ void VideoSourceDetails::formatChanged(int index)
     listSizes->clear();
     listSizes->addItem(tr("(default)"));
 
-    auto selectedFormatStr = listFormats->itemData(index).toString();
+    auto const& selectedFormatStr = listFormats->itemData(index).toString();
     if (index < 0 || !caps || selectedFormatStr.isEmpty())
     {
         return;
@@ -470,7 +470,7 @@ void VideoSourceDetails::formatChanged(int index)
 
     // It is difficult to store QGst::Caps in QVariant, so we are using string serialization.
     //
-    auto selectedFormat = QGst::Caps::fromString(selectedFormatStr);
+    auto const& selectedFormat = QGst::Caps::fromString(selectedFormatStr);
 
     QList<QSize> sizes;
     for (uint i = 0; i < caps->size(); ++i)
@@ -482,7 +482,7 @@ void VideoSourceDetails::formatChanged(int index)
             continue;
         }
 
-        auto s = caps->internalStructure(i);
+        auto const& s = caps->internalStructure(i);
         auto widthRange = getRange(s->value("width"));
         auto heightRange = getRange(s->value("height"));
 
@@ -537,7 +537,7 @@ void VideoSourceDetails::formatChanged(int index)
     //
     sizes.erase(std::unique(sizes.begin(), sizes.end()), sizes.end());
 
-    foreach (auto size, sizes)
+    foreach (auto const& size, sizes)
     {
         QString name = tr("%1x%2").arg(size.width()).arg(size.height());
         listSizes->addItem(name, size);
@@ -551,8 +551,8 @@ void VideoSourceDetails::formatChanged(int index)
 void VideoSourceDetails::onAdvancedClick()
 {
     QWaitCursor wait(this);
-    auto deviceType = parameters.value("device-type").toString();
-    auto deviceParams = deviceType + "-parameters";
+    auto const& deviceType = parameters.value("device-type").toString();
+    auto const& deviceParams = deviceType + "-parameters";
 
     ElementProperties dlg(deviceType, parameters.value(deviceParams).toString(), this);
     if (dlg.exec())
@@ -599,8 +599,8 @@ void VideoSourceDetails::onExtraButtonPressed()
 
     auto btn = static_cast<QPushButton*>(sender());
     auto cb = static_cast<QComboBox*>(btn->previousInFocusChain());
-    auto elmType = getListData(cb).toString();
-    auto elmParams = elmType + "-parameters";
+    auto const& elmType = getListData(cb).toString();
+    auto const& elmParams = elmType + "-parameters";
 
     ElementProperties dlg(elmType, parameters.value(elmParams).toString(), this);
     if (dlg.exec())
@@ -613,7 +613,7 @@ void VideoSourceDetails::getParameters(QVariantMap& settings)
 {
     // Copy advanced options for source & codecs
     //
-    foreach(auto param, parameters.keys())
+    foreach(auto const& param, parameters.keys())
     {
         if (param.endsWith("-parameters"))
         {

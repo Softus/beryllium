@@ -37,7 +37,7 @@ bool MainWindowDBusAdaptor::busy()
 
 bool MainWindowDBusAdaptor::recording(const QString& src)
 {
-    auto pipeline = src.isEmpty()? wnd->activePipeline: wnd->findPipeline(src);
+    auto const& pipeline = src.isEmpty()? wnd->activePipeline: wnd->findPipeline(src);
     return pipeline && pipeline->recording;
 }
 
@@ -48,7 +48,7 @@ QString MainWindowDBusAdaptor::src()
 
 void MainWindowDBusAdaptor::setSrc(const QString& value)
 {
-    auto pipeline = wnd->findPipeline(value);
+    auto const& pipeline = wnd->findPipeline(value);
     if (pipeline && pipeline != wnd->activePipeline)
     {
         wnd->onSwapSources(pipeline->displayWidget, nullptr);
@@ -141,7 +141,7 @@ bool MainWindowDBusAdaptor::startRecord
 
 bool MainWindowDBusAdaptor::stopRecord(const QString &src)
 {
-    auto pipeline = src.isEmpty()? wnd->activePipeline: wnd->findPipeline(src);
+    auto const& pipeline = src.isEmpty()? wnd->activePipeline: wnd->findPipeline(src);
 
     if (pipeline && pipeline->recording)
     {

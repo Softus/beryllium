@@ -202,7 +202,7 @@ void SettingsDialog::changePage(QListWidgetItem *current, QListWidgetItem *previ
     }
 
     QWaitCursor wait(this);
-    auto data = current->data(Qt::UserRole);
+    auto const& data = current->data(Qt::UserRole);
     if (data.type() == QVariant::UserType)
     {
         auto mobj = data.value<QMetaObject>();
@@ -306,7 +306,7 @@ void SettingsDialog::saveToFile()
         save(settings);
 
         QSettings fileSettings(dlg.selectedFiles().first(), QSettings::NativeFormat);
-        foreach (auto key, settings.allKeys())
+        foreach (auto const& key, settings.allKeys())
         {
             fileSettings.setValue(key, settings.value(key));
         }
@@ -323,7 +323,7 @@ void SettingsDialog::loadFromFile()
     {
         QSettings settings;
         QSettings fileSettings(dlg.selectedFiles().first(), QSettings::NativeFormat);
-        foreach (auto key, fileSettings.allKeys())
+        foreach (auto const& key, fileSettings.allKeys())
         {
             settings.setValue(key, fileSettings.value(key));
         }

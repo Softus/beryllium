@@ -64,7 +64,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
     auto layoutText = new QVBoxLayout;
     layoutText->setContentsMargins(16,0,16,0);
 
-    auto str = QString(tr(PRODUCT_FULL_NAME)).append(" ").append(PRODUCT_VERSION_STR);
+    auto const& str = QString(tr(PRODUCT_FULL_NAME)).append(" ").append(PRODUCT_VERSION_STR);
     auto lblTitle = new QLabel(str);
     auto titleFont = lblTitle->font();
     titleFont.setBold(true);
@@ -145,7 +145,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
 
     if (qApp->keyboardModifiers().testFlag(Qt::ShiftModifier))
     {
-        auto buildInfo = "Built by " AUX_STR(USERNAME) " on " \
+        auto const& buildInfo = "Built by " AUX_STR(USERNAME) " on " \
           AUX_STR(OS_DISTRO) " " AUX_STR(OS_REVISION) " at " __DATE__ " " __TIME__;
         layoutText->addWidget(new QLabel(buildInfo));
     }

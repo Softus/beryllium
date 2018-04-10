@@ -44,7 +44,7 @@ bool ClickFilter::eventFilter(QObject *o, QEvent *e)
 
         if (tapGesture && tapGesture->state() == Qt::GestureFinished)
         {
-            auto pt = tapGesture->hotSpot().toPoint();
+            auto const& pt = tapGesture->hotSpot().toPoint();
             auto widget = QApplication::widgetAt(pt);
 
             // For some unknown reason, Qt::GestureFinished comes after QToolButton

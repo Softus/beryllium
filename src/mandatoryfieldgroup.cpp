@@ -120,7 +120,7 @@ void MandatoryFieldGroup::setMandatory(QWidget* widget, bool mandatory)
         label = widget;
     }
 
-    auto p = QPalette(label->palette());
+    QPalette p(label->palette());
     if (mandatory)
     {
         widget->setProperty("mandatoryFieldBaseColor", p.color(QPalette::Foreground).rgba());
@@ -152,7 +152,7 @@ void MandatoryFieldGroup::changed()
     }
 
     bool enable = true;
-    foreach (auto widget, widgets)
+    foreach (auto const& widget, widgets)
     {
         if ((widget->inherits("QCheckBox")
                 && static_cast<QCheckBox*>(widget)->checkState() == Qt::PartiallyChecked)
@@ -172,7 +172,7 @@ void MandatoryFieldGroup::changed()
 
 void MandatoryFieldGroup::clear()
 {
-    foreach (auto widget, widgets)
+    foreach (auto const& widget, widgets)
     {
         widget->setProperty("mandatoryField", false);
     }
