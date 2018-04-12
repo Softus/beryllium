@@ -140,7 +140,7 @@ Mageia
 
 * Build dependecies
 
-        sudo dnf install lsb-release rpm-build git make cmake gcc-c++ qttools5 \
+        sudo urpmi -a --auto lsb-release rpm-build git make cmake gcc-c++ qttools5 \
           lib64avc1394-devel lib64mediainfo-devel lib64qt5-gstreamer-devel lib64boost-devel \
           lib64gstreamer1.0-devel lib64gstreamer-plugins-base1.0-devel lib64qt5base5-devel \
           lib64qt5x11extras-devel lib64v4l-devel
