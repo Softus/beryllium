@@ -958,7 +958,7 @@ void ArchiveWindow::onListItemDraggedOut(QListWidgetItem* item)
 
 void ArchiveWindow::onDeleteClick()
 {
-    auto const& items = listFiles->selectedItems();
+    auto items = listFiles->selectedItems();
 
     if (items.isEmpty())
     {
