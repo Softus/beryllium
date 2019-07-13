@@ -27,7 +27,7 @@ install:
  - |
    if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
      export MKSPEC=macx-clang
-     brew install cmake git pkg-config qt boost gstreamer gst-plugins-base dcmtk media-info
+     brew install cmake git pkg-config qt boost gstreamer gst-plugins-base dcmtk media-info libffi
      export PATH="/usr/local/opt/qt/bin:$PATH"
      export PKG_CONFIG_PATH=/usr/local/opt/qt/lib/pkgconfig:/usr/local/lib/pkgconfig
      .ci/git-install.sh git://anongit.freedesktop.org/gstreamer/qt-gstreamer master "-DQT_VERSION=5"
