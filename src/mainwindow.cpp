@@ -45,6 +45,7 @@
 #include <dcmtk/dcmdata/dcelem.h>
 #include <dcmtk/dcmdata/dcuid.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
+#include "dcmtk/dcmdata/dctagkey.h"
 
 static DcmTagKey DCM_ImageNo(0x5000, 0x8001);
 static DcmTagKey DCM_ClipNo(0x5000,  0x8002);
@@ -181,7 +182,11 @@ MainWindow::MainWindow(QWidget *parent)
                                 0, 0, nullptr, false, nullptr));
     d.addEntry(new DcmDictEntry(DCM_ClipNo.getGroup(), DCM_ClipNo.getElement(), EVR_US, "ClipNo",
                                 0, 0, nullptr, false, nullptr));
+#if OFFIS_DCMTK_VERSION_NUMBER >= 364
+    dcmDataDict.wrunlock();
+#else
     dcmDataDict.unlock();
+#endif
 #endif
 }
 

@@ -339,8 +339,8 @@ QString Pipeline::buildPipeline
         alias = QString("src%1").arg(index);
     }
 
-    auto const& bitrate        = settings.value("bitrate").toString();
-    auto const& colorConverter = QString(" ! ").append(
+    auto bitrate        = settings.value("bitrate").toString();
+    auto colorConverter = QString(" ! ").append(
                           settings.value("color-converter", "videoconvert").toString());
 
     auto videoCodec = settings.value("video-encoder").toString();
@@ -504,7 +504,7 @@ QString Pipeline::buildPipeline
     {
         pipe.append("\nsplitter.").append(colorConverter).append(detectMotion)
             .append(" ! textoverlay name=displayoverlay color=-1 halignment=right valignment=top")
-            .append(" text=* xpad=8 ypad=0 font-desc=16").append(colorConverter).append(" ! " )
+            .append(" text=* xpad=8 ypad=0 font-desc=16").append(colorConverter).append(" ! ")
             .append(displaySinkDef).append(" name=displaysink async=0 ").append(displayParams);
     }
 

@@ -517,7 +517,13 @@ bool DcmClient::findSCU()
     //
     DcmDataset *statusDetail = nullptr;
     int tout = timeout();
+#if OFFIS_DCMTK_VERSION_NUMBER >= 364
+    int responseCount = 0;
+#endif
     cond = DIMSE_findUser(assoc, presId, &req, &ds,
+#if OFFIS_DCMTK_VERSION_NUMBER >= 364
+        responseCount,
+#endif
         loadCallback, static_cast<void*>(this),
         0 == tout? DIMSE_BLOCKING: DIMSE_NONBLOCKING, tout,
         &rsp, &statusDetail);
