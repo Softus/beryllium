@@ -88,6 +88,12 @@ VideoSources::VideoSources(QWidget *parent) :
     connect(btnAddScreenCapture, SIGNAL(clicked()), this, SLOT(onAddScreenCaptureClicked()));
     buttonsLayout->addWidget(btnAddScreenCapture);
 
+    // For Blackmagic Driver.
+    //
+    auto btnAddBlackMagicDriver = new QPushButton(tr("&Add BlackMagic\nsource"));
+    connect(btnAddBlackMagicDriver, SIGNAL(clicked()), this, SLOT(onAddScreenCaptureBlackMagicClicked()));
+    buttonsLayout->addWidget(btnAddBlackMagicDriver);
+
     // For debug purposes
     //
     auto btnAddTest = new QPushButton(tr("&Add test\nsource"));
@@ -309,6 +315,15 @@ void VideoSources::onAddTestClicked()
     parameters["alias"] = QString("src%1").arg(listSources->topLevelItemCount());
     parameters["device-type"] = "videotestsrc";
     listSources->addTopLevelItem(newItem(tr("Video test source"), "", parameters, true));
+}
+
+void VideoSources::onAddScreenCaptureBlackMagicClicked()
+{
+    QVariantMap parameters;
+    parameters["alias"] = QString("src%1").arg(listSources->topLevelItemCount());
+    parameters["device-type"] = "decklinkvideosrc";
+    parameters["deinterlace-parameters"]= " method=5 fields=1 locking=1 ignore-obscure=false drop-orphans=false";
+    listSources->addTopLevelItem(newItem(tr("Black Magic Capture source"), "", parameters, true));
 }
 
 void VideoSources::save(QSettings& settings)

@@ -117,8 +117,20 @@ VideoSourceDetails::VideoSourceDetails
     spinBitrate->setSuffix(tr(" kbit per second"));
     spinBitrate->setValue(parameters.value("bitrate", DEFAULT_VIDEOBITRATE).toInt());
 
-    layoutMain->addRow(nullptr, checkDeinterlace = new QCheckBox(tr("De&interlace")));
+    auto deinterlaceLayout = new QHBoxLayout;
+    checkDeinterlace = new QCheckBox(tr("De&interlace"));
     checkDeinterlace->setChecked(parameters.value("video-deinterlace").toBool());
+    checkDeinterlace->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    deinterlaceLayout->addWidget(checkDeinterlace);
+
+    auto btnDeinterlace = new QPushButton("\u2026");
+    btnDeinterlace->setEnabled(checkDeinterlace->isChecked());
+    connect(checkDeinterlace, SIGNAL(toggled(bool)), btnDeinterlace, SLOT(setEnabled(bool)));
+    connect(btnDeinterlace, SIGNAL(clicked()), this, SLOT(onDeinterlaceClick()));
+
+    deinterlaceLayout->addWidget(btnDeinterlace);
+    layoutMain->addRow(nullptr, deinterlaceLayout);
+
     layoutMain->addRow(nullptr,
         checkLogOnly = new QCheckBox(tr("Use this source for video log &only")));
     checkLogOnly->setChecked(parameters.value("log-only").toBool());
@@ -558,6 +570,19 @@ void VideoSourceDetails::onAdvancedClick()
     if (dlg.exec())
     {
         parameters[deviceParams]=dlg.getProperties();
+    }
+}
+
+void VideoSourceDetails::onDeinterlaceClick()
+{
+    QWaitCursor wait(this);
+    QString const& pluginType = "deinterlace";
+    auto const& pluginParams = pluginType + "-parameters";
+
+    ElementProperties dlg(pluginType, parameters.value(pluginParams).toString(), this);
+    if (dlg.exec())
+    {
+        parameters[pluginParams]=dlg.getProperties();
     }
 }
 
