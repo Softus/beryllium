@@ -50,6 +50,7 @@ protected:
 private slots:
     void onAddScreenCaptureClicked();
     void onAddTestClicked();
+    void onAddScreenCaptureBlackMagicClicked();
     void onRemoveClicked();
     void onEditClicked();
     void onTreeItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);

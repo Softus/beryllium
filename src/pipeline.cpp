@@ -492,7 +492,14 @@ QString Pipeline::buildPipeline
         pipe.append(" ! dvdemux ! dvdec");
     }
 
-    pipe.append(colorConverter).append(srcDeinterlace? " ! deinterlace": "");
+    pipe.append(colorConverter);
+    if (srcDeinterlace)
+    {
+        pipe.append(" ! deinterlace");
+        auto deinterlaceParam = settings.value("deinterlace-parameters").toString();
+        qDebug() << "Deinterlace parameters: " << deinterlaceParam;
+        pipe.append(deinterlaceParam.isEmpty()? "" : deinterlaceParam);
+    }
 
     // v4l2src ... ! tee name=splitter [! colorspace ! motioncells] ! colorspace ! autovideosink");
     //

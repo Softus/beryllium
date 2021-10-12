@@ -94,6 +94,7 @@ private slots:
     void inputChannelChanged(int index);
     void formatChanged(int index);
     void onAdvancedClick();
+    void onDeinterlaceClick();
     void onExtraButtonPressed();
 };
 
